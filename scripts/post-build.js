@@ -1,23 +1,23 @@
 const fs = require('fs');
 const path = require('path');
 
-// After Next.js build, reorganize files to work with /me/ basePath
+// After Next.js build, reorganize files to work with /portfolio/ basePath
 const outDir = path.join(__dirname, '../out');
-const meDir = path.join(outDir, 'me');
+const portfolioDir = path.join(outDir, 'portfolio');
 
-// Create /me/ directory
-if (!fs.existsSync(meDir)) {
-  fs.mkdirSync(meDir, { recursive: true });
+// Create /portfolio/ directory
+if (!fs.existsSync(portfolioDir)) {
+  fs.mkdirSync(portfolioDir, { recursive: true });
 }
 
-// Copy all files from out/ to out/me/
+// Copy all files from out/ to out/portfolio/
 const files = fs.readdirSync(outDir);
 files.forEach(file => {
   const srcPath = path.join(outDir, file);
-  const destPath = path.join(meDir, file);
+  const destPath = path.join(portfolioDir, file);
 
-  // Skip the 'me' directory itself and index.txt
-  if (file === 'me' || file === 'index.txt') return;
+  // Skip the 'portfolio' directory itself and index.txt
+  if (file === 'portfolio' || file === 'index.txt') return;
 
   // Copy file or directory
   if (fs.statSync(srcPath).isDirectory()) {
@@ -29,4 +29,4 @@ files.forEach(file => {
   }
 });
 
-console.log('✓ Files organized for /me/ basePath');
+console.log('✓ Files organized for /portfolio/ basePath');

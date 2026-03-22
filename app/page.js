@@ -1,30 +1,81 @@
 'use client';
 
-import { useState } from 'react';
-import Avatar from './components/Avatar';
-import QRCode from './components/QRCode';
-import DeploymentSelector from './components/DeploymentSelector';
-import { getVideoPath, ASSET_CONFIG } from '@/lib/assets';
+import { useState, useRef, useCallback } from 'react';
+import { ASSET_CONFIG } from '@/lib/assets';
+
+const PROJECTS = [
+  { title: 'DTR System', description: 'POC for a daily time record system with calendar view. Solo-built, no docs.', tech: ['Node.js', 'Express.js', 'MongoDB', 'AngularJS'] },
+  { title: 'Interactive Resume', description: 'AI chat with Llama, Gemma & Mistral APIs. Lip-sync avatars in EN/DE.', tech: ['Next.js', 'Kiro', 'ChatGPT', 'Claude', 'ElevenLabs', 'Sora 2'] },
+  { title: 'PPE Detection (Thesis)', description: 'Real-time PPE monitoring via YOLOv9. Alerts managers on Telegram.', tech: ['Python', 'YOLOv9', 'Google Colab'] },
+  { title: 'Sheets-to-Form Automation', description: 'Chrome extension automating Google Sheets to web form data entry.', tech: ['Python', 'Flask', 'Selenium'] },
+  { title: 'Food Price Forecasting', description: 'Time-series forecasting for food prices using ARIMA.', tech: ['Orange Data Mining', 'ARIMA'] },
+  { title: 'Local LLM App', description: 'Local language generation with LangChain & Mistral-7B.', tech: ['LangChain', 'Hugging Face', 'Mistral-7B'] },
+  { title: 'YouTube Q&A Tool', description: 'Extracts video transcripts and answers questions from content.', tech: ['Auto-GPT', 'YouTube API'] },
+  { title: 'RPSLS Game', description: 'Rock Paper Scissors Lizard Spock on RonnieAI for Digital Data Day.', tech: ['Adaptive Cards', 'Game Design'] },
+  { title: 'HTTYD Telegram Bots', description: 'Dragon character bots for "How To Train Your AI Dragon" game.', tech: ['Telegram BotFather'] },
+  { title: 'Hackathon Videos', description: 'Videos for r/factchecker, RecruitBolt & SpecSync on Devpost.', tech: ['Amazon Polly TTS', 'Video Production'] },
+  { title: 'Genie Game', description: 'Voice generation & lip-sync for the Genie character at Inspire.', tech: ['ElevenLabs', 'CapCut'] },
+];
+
+const STORYBOARD_SEGMENTS = [
+  'seg1_intro.mp4',
+  'seg2_skills.mp4',
+  'seg3_experience.mp4',
+  'seg4_certs.mp4',
+  'seg5_contact.mp4',
+];
+
+const SEGMENT_LABELS = [
+  'Intro',
+  'Skills',
+  'Experience',
+  'Certifications',
+  'Contact',
+];
 
 export default function Home() {
-  const [currentVideo, setCurrentVideo] = useState(null);
-  const [isAltAvatar, setIsAltAvatar] = useState(false);
-  const [language, setLanguage] = useState('english'); // 'english' or 'german'
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentSegment, setCurrentSegment] = useState(-1);
 
-  const playVideo = (videoName) => {
-    setCurrentVideo(getVideoPath(videoName, { isReal: isAltAvatar, language }));
-  };
+  const playSegments = useCallback(async () => {
+    if (isPlaying) return;
+    setIsPlaying(true);
 
-  const handleVideoEnd = () => {
-    setCurrentVideo(null);
-  };
+    const video = videoRef.current;
+    if (!video) return;
 
-  const handleAvatarSwitch = () => {
-    setIsAltAvatar(!isAltAvatar);
-  };
+    // Scroll video into view
+    video.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-  const handleLanguageToggle = () => {
-    setLanguage(language === 'english' ? 'german' : 'english');
+    for (let i = 0; i < STORYBOARD_SEGMENTS.length; i++) {
+      setCurrentSegment(i);
+      video.loop = false;
+      video.src = `${ASSET_CONFIG.basePath}/${STORYBOARD_SEGMENTS[i]}`;
+      video.load();
+
+      await new Promise((resolve) => {
+        video.oncanplay = () => {
+          video.play().catch(() => {});
+        };
+        video.onended = resolve;
+        video.onerror = resolve;
+      });
+    }
+
+    // Return to idle banner
+    setCurrentSegment(-1);
+    setIsPlaying(false);
+    video.loop = true;
+    video.src = `${ASSET_CONFIG.basePath}/idle_banner.mp4`;
+    video.load();
+    video.play().catch(() => {});
+  }, [isPlaying]);
+
+  const handleCardClick = (title) => {
+    if (title === 'Interactive Resume') {
+      playSegments();
+    }
   };
 
   return (
@@ -33,339 +84,110 @@ export default function Home() {
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <a
-              href="https://miguel-app.pages.dev/"
-              className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm hover:opacity-80 transition-opacity cursor-pointer">
-              M
-            </a>
-            <a
-              href="https://miguel-app.pages.dev/"
-              className="text-lg font-medium text-gray-800 hover:text-blue-600 transition-colors cursor-pointer">
+            <div className="flex items-center bg-gray-100 rounded-full p-0.5">
+              <a
+                href="https://miguel-app.pages.dev/"
+                className="px-3 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-gray-700 transition-colors"
+              >
+                Resume
+              </a>
+              <a
+                href="https://miguel-folio.pages.dev/"
+                className="px-3 py-1 rounded-full text-xs font-medium bg-white text-gray-900 shadow-sm"
+              >
+                Portfolio
+              </a>
+            </div>
+            <span className="text-lg font-medium text-gray-800">
               Miguel Lacanienta
-            </a>
+            </span>
           </div>
-          <DeploymentSelector />
         </div>
       </header>
 
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* Avatar Card */}
-        <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm relative overflow-hidden">
-          <QRCode />
-          <div className="grid md:grid-cols-3 gap-6 items-end min-w-0">
-            <div className="md:col-span-1 flex justify-center">
-              <div className="aspect-[2/3] rounded-xl overflow-hidden w-40 sm:w-56 md:w-full">
-                <Avatar
-                  isSpeaking={false}
-                  videoToPlay={currentVideo}
-                  onVideoEnd={handleVideoEnd}
-                  isAltAvatar={isAltAvatar}
-                  onAvatarSwitch={handleAvatarSwitch}
-                  language={language}
-                  onLanguageToggle={handleLanguageToggle}
-                />
-              </div>
-            </div>
-            <div className="md:col-span-2 flex flex-col h-full min-w-0">
-              <div className="flex-1 flex flex-col justify-center space-y-4">
-                <div className="text-center">
-                  <h2 className="text-2xl font-semibold text-gray-900">Miguel Lacanienta</h2>
-                  <p className="text-gray-600 mt-1">BS Computer Science • AI Specialization • Mapúa University</p>
-                </div>
-                <div className="flex flex-wrap gap-2 justify-center">
-                  <button
-                    onClick={() => playVideo('objective')}
-                    className="px-4 py-2 rounded-full bg-blue-50 text-blue-700 text-sm font-medium border border-blue-200 hover:bg-blue-100 hover:border-blue-300 transition-all duration-200 cursor-pointer">
-                    Objective
-                  </button>
-                  <button
-                    onClick={() => playVideo('skills')}
-                    className="px-4 py-2 rounded-full bg-purple-50 text-purple-700 text-sm font-medium border border-purple-200 hover:bg-purple-100 hover:border-purple-300 transition-all duration-200 cursor-pointer">
-                    Skills
-                  </button>
-                  <button
-                    onClick={() => playVideo('certs')}
-                    className="px-4 py-2 rounded-full bg-green-50 text-green-700 text-sm font-medium border border-green-200 hover:bg-green-100 hover:border-green-300 transition-all duration-200 cursor-pointer">
-                    Certifications
-                  </button>
-                  <button
-                    onClick={() => playVideo('applied')}
-                    className="px-4 py-2 rounded-full bg-orange-50 text-orange-700 text-sm font-medium border border-orange-200 hover:bg-orange-100 hover:border-orange-300 transition-all duration-200 cursor-pointer">
-                    Applied Skills
-                  </button>
-                  <button
-                    onClick={() => playVideo('projects')}
-                    className="px-4 py-2 rounded-full bg-pink-50 text-pink-700 text-sm font-medium border border-pink-200 hover:bg-pink-100 hover:border-pink-300 transition-all duration-200 cursor-pointer">
-                    Projects
-                  </button>
-                </div>
-              </div>
-
-              {/* Powered By Ticker */}
-              <div className="bg-gray-800 rounded-lg overflow-hidden mt-4">
-                <div className="py-2 px-3">
-                  <div className="flex items-center justify-start gap-2 mb-1">
-                    <span className="text-white text-xs font-semibold">Powered by:</span>
-                  </div>
-                  <div className="relative overflow-hidden">
-                    <div className="flex animate-scroll">
-                      {/* First complete set */}
-                      <div className="flex items-center gap-3 flex-shrink-0 pr-3">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/chatgpt_icon.png`} alt="ChatGPT" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">ChatGPT</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/claude_icon.png`} alt="Claude" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Claude</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/llama_icon.png`} alt="Llama 3.3" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Llama 3.3</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/gemma_icon.png`} alt="Gemma 3" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Gemma 3</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/mistral_icon.png`} alt="Mistral Large" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Mistral Large</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/elevenlabs_icon.png`} alt="ElevenLabs" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">ElevenLabs</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/sora_icon.png`} alt="Sora 2" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Sora 2</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/capcut_icon.png`} alt="CapCut" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">CapCut</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/pippit_icon.png`} alt="Pippit" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Pippit</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/github_icon.png`} alt="GitHub" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">GitHub</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/vercel_icon.png`} alt="Vercel" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Vercel</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/netlify_icon.png`} alt="Netlify" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Netlify</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/render_icon.png`} alt="Render" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Render</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/cloudflare_icon.png`} alt="Cloudflare" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Cloudflare</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/kiro_icon.png`} alt="Kiro" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Kiro</span>
-                        </div>
-                      </div>
-                      {/* Duplicate set for seamless loop */}
-                      <div className="flex items-center gap-3 flex-shrink-0 pr-3">
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/chatgpt_icon.png`} alt="ChatGPT" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">ChatGPT</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/claude_icon.png`} alt="Claude" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Claude</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/llama_icon.png`} alt="Llama 3.3" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Llama 3.3</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/gemma_icon.png`} alt="Gemma 3" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Gemma 3</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/mistral_icon.png`} alt="Mistral Large" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Mistral Large</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/elevenlabs_icon.png`} alt="ElevenLabs" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">ElevenLabs</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/sora_icon.png`} alt="Sora 2" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Sora 2</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/capcut_icon.png`} alt="CapCut" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">CapCut</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/pippit_icon.png`} alt="Pippit" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Pippit</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/github_icon.png`} alt="GitHub" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">GitHub</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/vercel_icon.png`} alt="Vercel" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Vercel</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/netlify_icon.png`} alt="Netlify" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Netlify</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/render_icon.png`} alt="Render" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Render</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/cloudflare_icon.png`} alt="Cloudflare" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Cloudflare</span>
-                        </div>
-                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gray-700 rounded-full min-w-fit">
-                          <img src={`${ASSET_CONFIG.basePath}/kiro_icon.png`} alt="Kiro" className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span className="text-white text-xs font-medium whitespace-nowrap">Kiro</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+        {/* Video Header */}
+        <div className="relative bg-black rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <div className="aspect-video w-full">
+            <video
+              ref={videoRef}
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-full h-full object-cover"
+              src={`${ASSET_CONFIG.basePath}/idle_banner.mp4`}
+            />
           </div>
+
+          {/* Segment indicator overlay */}
+          {isPlaying && currentSegment >= 0 && (
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3">
+              <div className="flex items-center gap-2">
+                {SEGMENT_LABELS.map((label, i) => (
+                  <div key={label} className="flex items-center gap-1.5">
+                    <div
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
+                        i === currentSegment
+                          ? 'w-8 bg-blue-400'
+                          : i < currentSegment
+                          ? 'w-4 bg-blue-400/50'
+                          : 'w-4 bg-white/30'
+                      }`}
+                    />
+                    <span
+                      className={`text-[10px] font-medium transition-colors ${
+                        i === currentSegment ? 'text-blue-300' : 'text-white/40'
+                      }`}
+                    >
+                      {label}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Footer - Chat Available Banner */}
+        {/* Projects Section */}
         <div className="mt-8 mb-8">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
-            <div className="text-center space-y-4">
-              <div className="flex items-center justify-center gap-2">
-                <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                <h3 className="text-lg font-semibold text-gray-900">Want to chat with me?</h3>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {PROJECTS.map((project) => (
+              <div
+                key={project.title}
+                onClick={() => handleCardClick(project.title)}
+                className={`bg-white rounded-xl p-3 border transition-all duration-200 ${
+                  project.title === 'Interactive Resume'
+                    ? 'border-blue-300 hover:border-blue-500 hover:shadow-lg cursor-pointer ring-1 ring-blue-100'
+                    : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
+                } ${
+                  isPlaying && project.title === 'Interactive Resume'
+                    ? 'animate-pulse border-blue-500 ring-2 ring-blue-300'
+                    : ''
+                }`}
+              >
+                <h5 className="text-xs font-semibold text-gray-900 mb-1">
+                  {project.title}
+                  {project.title === 'Interactive Resume' && (
+                    <span className="ml-1 text-[9px] text-blue-500 font-normal">
+                      {isPlaying ? '▶ Playing...' : '▶ Click to play'}
+                    </span>
+                  )}
+                </h5>
+                <p className="text-[10px] text-gray-500 leading-snug mb-2">{project.description}</p>
+                <div className="flex flex-wrap gap-1">
+                  {project.tech.map((t) => (
+                    <span key={t} className="px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-gray-100 text-gray-600">
+                      {t}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <p className="text-sm text-gray-600 max-w-2xl mx-auto">
-                This is a static portfolio site. For an interactive AI chat experience, visit{' '}
-                <a
-                  href="https://chatgpt.com/g/g-694e44e347008191abda5449e3a9eaa5-miguel-gpt"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 text-green-700 font-semibold hover:from-green-100 hover:to-teal-100 hover:border-green-300 hover:shadow-md transition-all duration-200"
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
-                  </svg>
-                  Miguel GPT
-                </a>
-                (ChatGPT Custom GPT) or choose one of the API-based chatbots below.
-              </p>
-              <p className="text-xs text-gray-500 max-w-2xl mx-auto italic">
-                Note: Some sites may be temporarily unavailable due to free tier limitations or usage caps.
-              </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4">
-                {/* Vercel Card */}
-                <a
-                  href="https://miguel-ai.vercel.app/"
-                  className="group bg-white rounded-xl p-4 border border-gray-200 hover:border-gray-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-3 h-3 rounded-full bg-black"></div>
-                    <h4 className="text-base font-semibold text-gray-900">Vercel</h4>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Llama 3.3 70B</span> <span className="text-gray-400">/ Groq</span></p>
-                    </div>
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Gemma 3 27B</span> <span className="text-gray-400">/ Google</span></p>
-                    </div>
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Mistral Large</span> <span className="text-gray-400">/ Mistral AI</span></p>
-                    </div>
-                  </div>
-                </a>
-
-                {/* Netlify Card */}
-                <a
-                  href="https://miguel-ai-2.netlify.app/"
-                  className="group bg-white rounded-xl p-4 border border-teal-200 hover:border-teal-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-3 h-3 rounded-full bg-teal-500"></div>
-                    <h4 className="text-base font-semibold text-teal-700">Netlify</h4>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Llama 3.3 70B</span> <span className="text-gray-400">/ Groq</span></p>
-                    </div>
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Gemma 3 27B</span> <span className="text-gray-400">/ Google</span></p>
-                    </div>
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Mistral Large</span> <span className="text-gray-400">/ Mistral AI</span></p>
-                    </div>
-                  </div>
-                </a>
-
-                {/* Render Card */}
-                <a
-                  href="https://miguel-ai.onrender.com/"
-                  className="group bg-white rounded-xl p-4 border border-purple-200 hover:border-purple-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-3 h-3 rounded-full bg-purple-500"></div>
-                    <h4 className="text-base font-semibold text-purple-700">Render</h4>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Llama 3.3 70B</span> <span className="text-gray-400">/ Groq</span></p>
-                    </div>
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Gemma 3 27B</span> <span className="text-gray-400">/ Google</span></p>
-                    </div>
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Mistral Large</span> <span className="text-gray-400">/ Mistral AI</span></p>
-                    </div>
-                  </div>
-                </a>
-
-                {/* Cloudflare Card */}
-                <a
-                  href="https://miguel-ai.pages.dev/"
-                  className="group bg-white rounded-xl p-4 border border-orange-200 hover:border-orange-300 hover:shadow-lg transition-all duration-200 cursor-pointer">
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                    <h4 className="text-base font-semibold text-orange-700">Cloudflare</h4>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex items-start gap-1.5">
-                      <span className="text-gray-400 text-xs mt-0.5">•</span>
-                      <p className="text-xs"><span className="text-gray-700 font-medium">Mistral Large</span> <span className="text-gray-400">/ Mistral AI</span></p>
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
     </div>
   );
 }
-

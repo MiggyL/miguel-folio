@@ -35,3 +35,6 @@ yarn-error.log*
 .wrangler/
 .open-next/
 wrangler.toml.local
+
+# Claude
+.claude/settings.local.json

@@ -12,7 +12,20 @@
       "Bash(npx serve:*)",
       "Bash(curl:*)",
       "Bash(echo:*)",
-      "Bash(CI=true npm run build:*)"
+      "Bash(CI=true npm run build:*)",
+      "Bash(git pull:*)",
+      "Bash(ffmpeg:*)",
+      "Bash(ls:*)",
+      "Bash(npm run dev:*)",
+      "WebFetch(domain:miguel-app.pages.dev)",
+      "Bash(du:*)",
+      "Bash(for video in *.mp4)",
+      "Bash(do echo \"Optimizing: $video\" ffmpeg -i \"$video\" -c:v libx264 -crf 23 -preset medium -c:a aac -b:a 128k -movflags +faststart \"optimized/$video\" -y)",
+      "Bash(lsof:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(git mv:*)",
+      "Bash(grep:*)",
+      "Bash(ipconfig getifaddr:*)"
     ],
     "deny": [],
     "ask": []
