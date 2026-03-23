@@ -17,41 +17,41 @@ const PROJECTS = [
   { title: 'Genie Game', description: 'Voice generation & lip-sync for the Genie character at Inspire.', tech: ['ElevenLabs', 'CapCut'] },
 ];
 
-const STORYBOARD_SEGMENTS = [
-  'seg1_intro.mp4',
-  'seg2_skills.mp4',
-  'seg3_experience.mp4',
-  'seg4_certs.mp4',
-  'seg5_contact.mp4',
-];
-
-const SEGMENT_LABELS = [
-  'Intro',
-  'Skills',
-  'Experience',
-  'Certifications',
-  'Contact',
-];
+// Each project with storyboard videos gets a segments config.
+// segments: array of mp4 filenames in public/
+// labels: matching array of overlay labels shown during playback
+const PROJECT_SEGMENTS = {
+  'Interactive Resume': {
+    segments: ['seg1_intro.mp4', 'seg2_skills.mp4', 'seg3_experience.mp4', 'seg4_certs.mp4', 'seg5_contact.mp4'],
+    labels: ['Intro', 'Skills', 'Experience', 'Certifications', 'Contact'],
+  },
+  'DTR System': {
+    segments: ['dtr_seg1.mp4', 'dtr_seg2.mp4', 'dtr_seg3.mp4', 'dtr_seg4.mp4', 'dtr_seg5.mp4'],
+    labels: ['The System', 'The Team', 'Miguel Joins', 'Calendar View', 'The Impact'],
+  },
+};
 
 export default function Home() {
   const videoRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState(-1);
+  const [activeProject, setActiveProject] = useState(null);
 
-  const playSegments = useCallback(async () => {
-    if (isPlaying) return;
+  const playSegments = useCallback(async (projectTitle) => {
+    const config = PROJECT_SEGMENTS[projectTitle];
+    if (!config || isPlaying) return;
     setIsPlaying(true);
+    setActiveProject(projectTitle);
 
     const video = videoRef.current;
     if (!video) return;
 
-    // Scroll video into view
     video.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
-    for (let i = 0; i < STORYBOARD_SEGMENTS.length; i++) {
+    for (let i = 0; i < config.segments.length; i++) {
       setCurrentSegment(i);
       video.loop = false;
-      video.src = `${ASSET_CONFIG.basePath}/${STORYBOARD_SEGMENTS[i]}`;
+      video.src = `${ASSET_CONFIG.basePath}/${config.segments[i]}`;
       video.load();
 
       await new Promise((resolve) => {
@@ -66,6 +66,7 @@ export default function Home() {
     // Return to idle banner
     setCurrentSegment(-1);
     setIsPlaying(false);
+    setActiveProject(null);
     video.loop = true;
     video.src = `${ASSET_CONFIG.basePath}/idle_banner.mp4`;
     video.load();
@@ -73,8 +74,8 @@ export default function Home() {
   }, [isPlaying]);
 
   const handleCardClick = (title) => {
-    if (title === 'Interactive Resume') {
-      playSegments();
+    if (PROJECT_SEGMENTS[title]) {
+      playSegments(title);
     }
   };
 
@@ -122,10 +123,10 @@ export default function Home() {
           </div>
 
           {/* Segment indicator overlay */}
-          {isPlaying && currentSegment >= 0 && (
+          {isPlaying && currentSegment >= 0 && activeProject && (
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3">
               <div className="flex items-center gap-2">
-                {SEGMENT_LABELS.map((label, i) => (
+                {PROJECT_SEGMENTS[activeProject].labels.map((label, i) => (
                   <div key={label} className="flex items-center gap-1.5">
                     <div
                       className={`h-1.5 rounded-full transition-all duration-300 ${
@@ -158,20 +159,20 @@ export default function Home() {
                 key={project.title}
                 onClick={() => handleCardClick(project.title)}
                 className={`bg-white rounded-xl p-3 border transition-all duration-200 ${
-                  project.title === 'Interactive Resume'
+                  PROJECT_SEGMENTS[project.title]
                     ? 'border-blue-300 hover:border-blue-500 hover:shadow-lg cursor-pointer ring-1 ring-blue-100'
                     : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
                 } ${
-                  isPlaying && project.title === 'Interactive Resume'
+                  activeProject === project.title
                     ? 'animate-pulse border-blue-500 ring-2 ring-blue-300'
                     : ''
                 }`}
               >
                 <h5 className="text-xs font-semibold text-gray-900 mb-1">
                   {project.title}
-                  {project.title === 'Interactive Resume' && (
+                  {PROJECT_SEGMENTS[project.title] && (
                     <span className="ml-1 text-[9px] text-blue-500 font-normal">
-                      {isPlaying ? '▶ Playing...' : '▶ Click to play'}
+                      {activeProject === project.title ? '▶ Playing...' : '▶ Click to play'}
                     </span>
                   )}
                 </h5>
