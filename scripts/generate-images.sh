@@ -182,6 +182,7 @@ ENDJSON
 
   local max_retries=5
   local attempt=0
+  local error_file="/tmp/titan_error_$$.txt"
 
   while [[ $attempt -lt $max_retries ]]; do
     attempt=$((attempt + 1))
@@ -192,7 +193,7 @@ ENDJSON
       --content-type "application/json" \
       --accept "application/json" \
       --body "fileb://$input_file" \
-      "$output_json" > /dev/null 2>&1; then
+      "$output_json" 2>"$error_file"; then
 
       # Extract base64 image from response and decode to file
       python3 -c "
@@ -203,15 +204,29 @@ img_b64 = data['images'][0]
 with open('$output_file', 'wb') as f:
     f.write(base64.b64decode(img_b64))
 "
-      rm -f "$input_file" "$output_json"
+      rm -f "$input_file" "$output_json" "$error_file"
       return 0
     fi
 
-    echo "  Throttled (attempt $attempt/$max_retries). Waiting 60s..."
+    local err_msg
+    err_msg=$(cat "$error_file" 2>/dev/null)
+
+    # Content policy block - do NOT retry, it will never succeed
+    if echo "$err_msg" | grep -qi "content.*block\|AUP\|Responsible AI"; then
+      echo "  CONTENT BLOCKED: Prompt violates Titan content policy."
+      echo "  Error: $err_msg"
+      echo "  Fix the prompt in storyboards.md and re-run."
+      rm -f "$input_file" "$output_json" "$error_file"
+      return 1
+    fi
+
+    # Throttle or transient error - retry with backoff
+    echo "  Retry (attempt $attempt/$max_retries): $err_msg"
+    echo "  Waiting 60s..."
     sleep 60
   done
 
-  rm -f "$input_file" "$output_json"
+  rm -f "$input_file" "$output_json" "$error_file"
   echo "  ERROR: Failed after $max_retries attempts"
   return 1
 }

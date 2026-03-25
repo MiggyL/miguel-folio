@@ -103,7 +103,7 @@ The hiring manager's desk in Makati. The stack of paper resumes pushed into an o
 ## Segment 1 [~11s]
 
 ### Image Prompt
-Wide aerial view of a construction site in Metro Manila at dawn. Orange sunrise behind steel scaffolding and a tall crane, the silhouette of nearby condo towers lining the horizon. Filipino workers in hard hats and reflective vests walking through the gate single-file. A safety officer at the entrance holding a clipboard. The site stretching deep with concrete foundations, rebar stacks, and a forklift.
+Wide aerial view of Metro Manila at dawn with an orange sunrise. Modern buildings and condominiums lining the horizon. A large open lot below with concrete foundations and steel beams arranged in rows. A supervisor in a bright vest standing near the entrance holding a clipboard. Warm golden light.
 
 ### Avatar Script
 "For my thesis, I tackled a real problem - construction sites require full protective equipment at all times, but with hundreds of workers across a massive site, one safety officer can't watch everyone."
@@ -111,7 +111,7 @@ Wide aerial view of a construction site in Metro Manila at dawn. Orange sunrise 
 ## Segment 2 [~10s]
 
 ### Image Prompt
-A CCTV camera's POV of a construction site under the Philippine midday heat. A worker without a hard hat walking toward a steel beam suspended by crane cables. A red bounding box around the worker's unprotected head. A label reading "VIOLATION: Hard Hat Missing." A red alert icon flashing in the corner of the feed. The worker's yellow hard hat tucked under his arm.
+A desktop monitor in a bright Philippine office showing a computer vision dashboard. The screen displays a live video feed with colourful AI detection overlays and rectangular highlights. A label reading "ALERT" in red text in the corner. The desk is clean with a keyboard and coffee mug beside the monitor.
 
 ### Avatar Script
 "So I built a system that watches. It only takes one moment - a helmet comes off because it's hot, and no one notices. Except my system. It detects the violation the instant it happens."
@@ -119,7 +119,7 @@ A CCTV camera's POV of a construction site under the Philippine midday heat. A w
 ## Segment 3 [~11s]
 
 ### Image Prompt
-Close-up of a smartphone screen on a desk showing a Telegram notification. A red warning emoji followed by "PPE Violation - Zone C - Hard Hat Missing." Below the text, an attached photo showing the CCTV frame with the red bounding box around the worker. A woman's hand reaching for the phone. A two-way radio on the desk beside it.
+Close-up of a smartphone screen on a desk showing a Telegram notification. A red warning emoji followed by "Safety Alert - Zone C - Equipment Missing." Below the text, an attached photo showing the camera feed with a red bounding box overlay. A woman's hand reaching for the phone. A two-way radio on the desk beside it.
 
 ### Avatar Script
 "I connected it to Telegram so the site manager gets an instant alert - Zone C, hard hat missing. She radios in. The worker stops. Helmet goes back on. The whole thing takes eight seconds."
@@ -127,7 +127,7 @@ Close-up of a smartphone screen on a desk showing a Telegram notification. A red
 ## Segment 4 [~10s]
 
 ### Image Prompt
-A laptop screen showing a safety dashboard. A bar chart reading "Violations Today: 3." A second bar reading "Resolved less than 1 min: 3." A large green badge displaying "Injuries: 0." In the background through a window, the construction site at sunset with the Manila skyline glowing amber behind the cranes. Workers filing out through the gate, all wearing complete PPE.
+A laptop screen showing an analytics dashboard. A bar chart reading "Alerts Today: 3." A second bar reading "Resolved in under 1 min: 3." A large green badge displaying "Incidents: 0." In the background through a window, the Manila skyline glowing amber at sunset with cranes visible on the horizon. A clean modern office desk.
 
 ### Avatar Script
 "Three violations caught. Three resolved in under a minute. Zero injuries. Everyone goes home safe. This wasn't just my thesis - I built it to protect lives."
@@ -255,7 +255,7 @@ A developer's desk in a co-working space in Ortigas with a single ultrawide moni
 ## Segment 2 [~9s]
 
 ### Image Prompt
-A clean web app interface in a browser. A single input field at the top labelled "Paste YouTube URL" with a pasted link. A full transcript panel on the left with timestamped lines of text. On the right, a search bar reading "How do I configure the ingress controller?" A passage highlighted in yellow at timestamp 31:42. An embedded YouTube player showing the video jumped to 31:42.
+A clean web application interface in a browser window. A single input field at the top with a pasted URL. A transcript panel on the left showing timestamped lines of text. On the right, a search bar with a typed question. A passage highlighted in yellow. A video player embedded at the bottom of the page showing a paused tutorial.
 
 ### Avatar Script
 "With my tool, you paste the link and type your question. It pulls the entire transcript and highlights the exact answer - with a timestamp. One click, and the video jumps right to it."
@@ -283,7 +283,7 @@ A hotel ballroom in a Manila five-star hotel set up for a corporate event. A wid
 ## Segment 2 [~11s]
 
 ### Image Prompt
-The projector screen showing a bold game interface - five large hand-drawn icons arranged in a pentagon: a rock, a sheet of paper, scissors, a lizard, and a Vulcan hand salute. The title reading "Rock Paper Scissors Lizard Spock." Attendees' phones in the foreground showing a Microsoft Teams adaptive card with the five icons as tappable buttons, each icon custom-illustrated. The stage screen flashing "Player 1: Rock vs AI: Spock - You Lose!" People laughing and standing up from their chairs.
+A large projector screen on a stage showing a colourful game interface with five illustrated icons arranged in a circle. The title reading "RPSLS Challenge" in bold text. In the foreground, several smartphones held up showing a chat interface with tappable icon buttons. The stage screen displaying a playful scoreboard. People in business attire standing and smiling in a brightly lit Manila hotel ballroom.
 
 ### Avatar Script
 "I designed the entire UI - every icon, every image, and the adaptive cards that show up right in Microsoft Teams. Within sixty seconds, the whole room was competing and laughing."
@@ -303,7 +303,7 @@ Wide shot of the Manila hotel ballroom - everyone standing, holding phones, talk
 ## Segment 1 [~10s]
 
 ### Image Prompt
-A smartphone screen showing the Telegram app with a chat titled "How To Train Your AI Dragon." A character selection menu with three dragon portraits in illustrated card format stacked vertically. "Toothless" - a sleek black dragon with narrowed green eyes, labelled "Loyal but guarded." "Stormfly" - a bright blue-and-yellow dragon with wide curious eyes, labelled "Energetic and curious." "Hookfang" - a red dragon with a scowl, labelled "Stubborn and proud." A thumb hovering over Hookfang.
+A smartphone screen showing a messaging app with a chat titled "AI Companion." A character selection menu with three colourful illustrated creature portraits in card format stacked vertically. Each card has a unique personality label beneath it. A thumb hovering over the bottom card. Warm lighting on a wooden desk in a Manila apartment.
 
 ### Avatar Script
 "How To Train Your AI Dragon. I designed all the dragon art, built the UI, and set up each bot through Telegram's BotFather. You pick a personality - loyal, curious, stubborn. Each one responds differently to everything you say."
@@ -311,7 +311,7 @@ A smartphone screen showing the Telegram app with a chat titled "How To Train Yo
 ## Segment 2 [~9s]
 
 ### Image Prompt
-Split screen showing two Telegram chat windows side by side. Left chat: the player's message "Let's go flying" to Hookfang with the dragon's reply "I don't fly with strangers. Come back when you've earned it." and a small angry-face emoji. Right chat: the same message "Let's go flying" to Stormfly with the reply "Where to? I've been wanting to explore the mountains!" and a sparkle emoji. Both chats visible simultaneously.
+Split screen showing two chat windows side by side on a desktop monitor. Left chat shows a short dismissive reply with a frowning emoji. Right chat shows an enthusiastic long reply with a sparkle emoji. Both chats have the same user message at the top. The monitor sits on a clean desk with warm ambient lighting.
 
 ### Avatar Script
 "Same message, completely different reactions. The stubborn one rejects you. The curious one can't wait. These aren't scripted replies - each dragon responds in character."
@@ -319,7 +319,7 @@ Split screen showing two Telegram chat windows side by side. Left chat: the play
 ## Segment 3 [~9s]
 
 ### Image Prompt
-The Telegram chat with Hookfang showing a message history over several days. Multiple gentle messages from the player: "Hey Hookfang," "I brought you some fish," "Just checking in." Hookfang's earlier short, dismissive replies visible. At the bottom, Hookfang's latest reply: "...You came back. Fine. Let's fly." A trust meter bar at the top of the chat filled from red to full green. A small heart emoji beside the message.
+A chat window on a smartphone showing a long message history. Several kind messages from the user visible scrolling up. At the bottom, a warm reply from the AI companion. A progress bar at the top of the chat filled from red to green labelled "Trust Level." A small heart icon beside the latest message. Cosy evening lighting.
 
 ### Avatar Script
 "Days later, you come back. The stubborn one finally says yes - not because you found a cheat code, but because you kept showing up. The bond is earned through conversation."
@@ -331,7 +331,7 @@ The Telegram chat with Hookfang showing a message history over several days. Mul
 ## Segment 1 [~11s]
 
 ### Image Prompt
-A laptop screen in a Manila apartment showing a Devpost hackathon page for "r/factchecker" - a misinformation detection tool. A late-night video call with team members on a separate screen. A video editor open on another screen with screen recordings on the timeline. A text document with a script outline visible. A browser tab showing the Amazon Polly console with an audio waveform. Late night ambience with desk lamp lighting.
+A laptop screen in a Manila apartment showing a hackathon submission page. A late-night video call with team members on a separate monitor. A video editor open on another screen with clips on the timeline. A text document with a script outline visible. Late night ambience with warm desk lamp lighting and a coffee cup.
 
 ### Avatar Script
 "Across several hackathons, the team built the code - r/factchecker for misinformation, RecruitBolt for hiring, SpecSync for keeping specs in sync. But at a hackathon, judges don't read code. They watch the pitch. That's where I came in."
@@ -339,7 +339,7 @@ A laptop screen in a Manila apartment showing a Devpost hackathon page for "r/fa
 ## Segment 2 [~10s]
 
 ### Image Prompt
-Close-up of a video editing timeline. Screen recording clips arranged in sequence. An Amazon Polly audio waveform dragged beneath the video track, aligned to the cuts. The preview window showing a polished demo video with a clean title card reading "r/factchecker" and smooth transitions between feature screenshots. A second project tab labelled "RecruitBolt" visible.
+Close-up of a video editing timeline on a monitor. Screen recording clips arranged in sequence on the timeline. An audio waveform track beneath the video track aligned to the cuts. The preview window showing a polished demo video with a clean title card and smooth transitions. A second project tab visible in the editor.
 
 ### Avatar Script
 "For every hackathon, I created the presentations and demo videos from scratch. I wrote the scripts, generated the narration with Amazon Polly, edited the screen recordings, and delivered polished videos - one project at a time."
@@ -347,7 +347,7 @@ Close-up of a video editing timeline. Screen recording clips arranged in sequenc
 ## Segment 3 [~8s]
 
 ### Image Prompt
-A Devpost submission page showing a polished thumbnail for "SpecSync" with a sync architecture diagram. A green "Submitted" badge visible. Above it, two other completed submissions - "r/factchecker" and "RecruitBolt" - both showing green "Submitted" badges and rising view counters. Comment notifications on each. All three thumbnails clean and professional with custom title cards.
+A web page showing three project submission cards arranged vertically. Each card has a polished thumbnail, a green "Submitted" badge, and a view counter. The thumbnails are clean and professional with custom title cards and architecture diagrams. Comment notification icons beside each submission. A bright modern browser window.
 
 ### Avatar Script
 "Three hackathons. Three presentations. Three demo videos. Each one delivered before the deadline. The projects spoke for themselves - because the videos made people believe in them."
