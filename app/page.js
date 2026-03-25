@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { ASSET_CONFIG } from '@/lib/assets';
 
 const PROJECTS = [
@@ -30,6 +30,58 @@ const PROJECT_SEGMENTS = {
     labels: ['The System', 'The Team', 'Miguel Joins', 'Calendar View', 'The Impact'],
   },
 };
+
+function TechTags({ tech, maxVisible = 2 }) {
+  const [open, setOpen] = useState(false);
+  const btnRef = useRef(null);
+  const [pos, setPos] = useState(null);
+  const visible = tech.slice(0, maxVisible);
+  const hidden = tech.slice(maxVisible);
+
+  useEffect(() => {
+    if (open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      setPos({ top: rect.bottom + 6, left: rect.left });
+    }
+  }, [open]);
+
+  return (
+    <div className="flex items-center gap-1">
+      {visible.map((t) => (
+        <span key={t} className="shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-gray-100 text-gray-600">
+          {t}
+        </span>
+      ))}
+      {hidden.length > 0 && (
+        <>
+          <button
+            ref={btnRef}
+            onMouseEnter={() => setOpen(true)}
+            onMouseLeave={() => setOpen(false)}
+            onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); }}
+            className="shrink-0 px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-blue-50 text-blue-500 hover:bg-blue-100 transition-colors"
+          >
+            +{hidden.length} more
+          </button>
+          {open && pos && (
+            <div
+              onMouseEnter={() => setOpen(true)}
+              onMouseLeave={() => setOpen(false)}
+              style={{ position: 'fixed', top: pos.top, left: pos.left }}
+              className="z-50 flex flex-wrap gap-1 p-2 bg-white rounded-lg shadow-lg border border-gray-200 min-w-max"
+            >
+              {hidden.map((t) => (
+                <span key={t} className="px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-gray-100 text-gray-600">
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
 
 export default function Home() {
   const videoRef = useRef(null);
@@ -107,7 +159,7 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-4 py-4">
         {/* Video Header */}
         <div className="relative bg-black rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
           <div className="w-full" style={{ aspectRatio: '1173/640' }}>
@@ -152,13 +204,13 @@ export default function Home() {
         </div>
 
         {/* Projects Section */}
-        <div className="mt-8 mb-8">
+        <div className="mt-4 mb-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {PROJECTS.map((project) => (
               <div
                 key={project.title}
                 onClick={() => handleCardClick(project.title)}
-                className={`bg-white rounded-xl p-3 border transition-all duration-200 ${
+                className={`bg-white rounded-xl p-3 border transition-all duration-200 overflow-visible ${
                   PROJECT_SEGMENTS[project.title]
                     ? 'border-blue-300 hover:border-blue-500 hover:shadow-lg cursor-pointer ring-1 ring-blue-100'
                     : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
@@ -177,13 +229,7 @@ export default function Home() {
                   )}
                 </h5>
                 <p className="text-[10px] text-gray-500 leading-snug mb-2">{project.description}</p>
-                <div className="flex flex-wrap gap-1">
-                  {project.tech.map((t) => (
-                    <span key={t} className="px-1.5 py-0.5 rounded-full text-[9px] font-medium bg-gray-100 text-gray-600">
-                      {t}
-                    </span>
-                  ))}
-                </div>
+                <TechTags tech={project.tech} />
               </div>
             ))}
           </div>
