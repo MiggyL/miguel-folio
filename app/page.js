@@ -110,7 +110,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Video Header */}
         <div className="relative bg-black rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="aspect-video w-full">
+          <div className="w-full" style={{ aspectRatio: '1173/640' }}>
             <video
               ref={videoRef}
               autoPlay
