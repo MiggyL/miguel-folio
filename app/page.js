@@ -90,6 +90,7 @@ export default function Home() {
   const [currentSegment, setCurrentSegment] = useState(-1);
   const [activeProject, setActiveProject] = useState(null);
   const [isMuted, setIsMuted] = useState(true);
+  const [language, setLanguage] = useState('EN');
 
   const toggleAudio = () => {
     const audio = audioRef.current;
@@ -187,6 +188,53 @@ export default function Home() {
               src={`${ASSET_CONFIG.basePath}/idle_banner.mp4`}
             />
           </div>
+
+          {/* Top-left: EN|DE toggle + Play intro */}
+          <div className="absolute top-3 left-3 z-[6] flex items-center gap-2">
+            <div className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md opacity-50 hover:opacity-100 transition-all">
+              <button onClick={() => setLanguage('EN')} className={`text-[11px] sm:text-xs font-medium tracking-wide cursor-pointer transition-colors ${language === 'EN' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}>
+                EN
+              </button>
+              <span className="text-white/30 text-[11px]">|</span>
+              <button onClick={() => setLanguage('DE')} className={`text-[11px] sm:text-xs font-medium tracking-wide cursor-pointer transition-colors ${language === 'DE' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}>
+                DE
+              </button>
+            </div>
+            <button className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer" aria-label="Play intro">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none">
+                <polygon points="6 3 20 12 6 21 6 3" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Name overlay */}
+          <div className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none">
+            <div className="text-center -mt-4 flex flex-col items-center">
+              <h1 className="text-white text-3xl sm:text-4xl font-bold tracking-tight drop-shadow-lg">
+                Miguel Lacanienta
+              </h1>
+              <p className="text-white/80 text-sm sm:text-base font-light mt-1.5 tracking-wide drop-shadow-md">
+                BS Computer Science · AI Specialization · Mapúa University '25
+              </p>
+              {/* Resume section nav */}
+              <div className="mt-2 flex items-center gap-1.5 pointer-events-auto">
+                {['Objective', 'Skills', 'Certifications', 'Applied Skills', 'Projects'].map((section) => (
+                  <button
+                    key={section}
+                    className="px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md text-white/70 text-[11px] sm:text-xs font-medium tracking-wide hover:text-white hover:bg-white/20 transition-all cursor-pointer"
+                  >
+                    {section}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom-left: Resume button */}
+          <a href="https://drive.google.com/file/d/1RyQRN930zeyjLZe2o_J52zWEB1kWyWQF" target="_blank" rel="noopener noreferrer" className="absolute bottom-3 left-3 z-[6] px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md text-white/70 text-[11px] sm:text-xs font-medium tracking-wide hover:text-white hover:bg-white/20 transition-all cursor-pointer opacity-50 hover:opacity-100 no-underline">
+            CV
+          </a>
+
 
           {/* Audio toggle button */}
           <button
