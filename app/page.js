@@ -85,9 +85,22 @@ function TechTags({ tech, maxVisible = 2 }) {
 
 export default function Home() {
   const videoRef = useRef(null);
+  const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState(-1);
   const [activeProject, setActiveProject] = useState(null);
+  const [isMuted, setIsMuted] = useState(true);
+
+  const toggleAudio = () => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isMuted) {
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+    }
+    setIsMuted(!isMuted);
+  };
 
   const playSegments = useCallback(async (projectTitle) => {
     const config = PROJECT_SEGMENTS[projectTitle];
@@ -135,7 +148,7 @@ export default function Home() {
     <div className="min-h-screen bg-[#F0F4F8] text-[#1f1f1f] overflow-x-hidden">
       {/* Top Bar */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center bg-gray-100 rounded-full p-0.5">
               <a
@@ -162,6 +175,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4 py-4">
         {/* Video Header */}
         <div className="relative bg-black rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+          <audio ref={audioRef} loop src={`${ASSET_CONFIG.basePath}/MUSCLoop-relaxing_ambient_bac-Elevenlabs.mp3`} />
           <div className="w-full" style={{ aspectRatio: '1173/640' }}>
             <video
               ref={videoRef}
@@ -173,6 +187,27 @@ export default function Home() {
               src={`${ASSET_CONFIG.basePath}/idle_banner.mp4`}
             />
           </div>
+
+          {/* Audio toggle button */}
+          <button
+            onClick={toggleAudio}
+            className="absolute top-3 right-3 z-10 opacity-50 hover:opacity-80 transition-opacity cursor-pointer"
+            aria-label={isMuted ? 'Unmute background music' : 'Mute background music'}
+          >
+            {isMuted ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <line x1="22" y1="9" x2="16" y2="15" />
+                <line x1="16" y1="9" x2="22" y2="15" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+              </svg>
+            )}
+          </button>
 
           {/* Segment indicator overlay */}
           {isPlaying && currentSegment >= 0 && activeProject && (
