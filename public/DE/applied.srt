@@ -1,0 +1,8 @@
+1
+00:00:00,000 --> 00:00:08,760
+Ich habe Microsoft Applied Skills Zertifizierungen in den Bereichen Erstellung und Verwaltung automatisierter Prozesse mit Power Automate,
+
+2
+00:00:08,760 --> 00:00:17,400
+Entwicklung und Verwaltung von Canvas Apps mit Power Apps, sowie Entwicklung modellgesteuerter Apps mit Power Apps und Dataverse erworben.
+

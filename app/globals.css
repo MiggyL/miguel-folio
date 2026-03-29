@@ -21,3 +21,21 @@ body {
   width: max-content;
   animation: scroll 20s linear infinite;
 }
+
+@keyframes bannerFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bannerFadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(-8px); }
+}
+
+.banner-fade-in {
+  animation: bannerFadeIn 0.6s ease-out forwards;
+}
+
+.banner-fade-out {
+  animation: bannerFadeOut 0.4s ease-in forwards;
+}

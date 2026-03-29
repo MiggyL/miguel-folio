@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
-import { ASSET_CONFIG } from '@/lib/assets';
+import { useState, useRef, useEffect } from 'react';
+import Banner, { PROJECT_SEGMENTS } from './components/Banner';
 
 const PROJECTS = [
   { title: 'DTR System', description: 'POC for a daily time record system with calendar view. Solo-built, no docs.', tech: ['Node.js', 'Express.js', 'MongoDB', 'AngularJS'] },
@@ -17,19 +17,6 @@ const PROJECTS = [
   { title: 'Genie Game', description: 'Voice generation & lip-sync for the Genie character at Inspire.', tech: ['ElevenLabs', 'CapCut'] },
 ];
 
-// Each project with storyboard videos gets a segments config.
-// segments: array of mp4 filenames in public/
-// labels: matching array of overlay labels shown during playback
-const PROJECT_SEGMENTS = {
-  'Interactive Resume': {
-    segments: ['seg1_intro.mp4', 'seg2_skills.mp4', 'seg3_experience.mp4', 'seg4_certs.mp4', 'seg5_contact.mp4'],
-    labels: ['Intro', 'Skills', 'Experience', 'Certifications', 'Contact'],
-  },
-  'DTR System': {
-    segments: ['dtr_seg1.mp4', 'dtr_seg2.mp4', 'dtr_seg3.mp4', 'dtr_seg4.mp4', 'dtr_seg5.mp4'],
-    labels: ['The System', 'The Team', 'Miguel Joins', 'Calendar View', 'The Impact'],
-  },
-};
 
 function TechTags({ tech, maxVisible = 2 }) {
   const [open, setOpen] = useState(false);
@@ -84,64 +71,9 @@ function TechTags({ tech, maxVisible = 2 }) {
 }
 
 export default function Home() {
-  const videoRef = useRef(null);
-  const audioRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentSegment, setCurrentSegment] = useState(-1);
-  const [activeProject, setActiveProject] = useState(null);
-  const [isMuted, setIsMuted] = useState(true);
-  const [language, setLanguage] = useState('EN');
-
-  const toggleAudio = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (isMuted) {
-      audio.play().catch(() => {});
-    } else {
-      audio.pause();
-    }
-    setIsMuted(!isMuted);
-  };
-
-  const playSegments = useCallback(async (projectTitle) => {
-    const config = PROJECT_SEGMENTS[projectTitle];
-    if (!config || isPlaying) return;
-    setIsPlaying(true);
-    setActiveProject(projectTitle);
-
-    const video = videoRef.current;
-    if (!video) return;
-
-    video.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-    for (let i = 0; i < config.segments.length; i++) {
-      setCurrentSegment(i);
-      video.loop = false;
-      video.src = `${ASSET_CONFIG.basePath}/${config.segments[i]}`;
-      video.load();
-
-      await new Promise((resolve) => {
-        video.oncanplay = () => {
-          video.play().catch(() => {});
-        };
-        video.onended = resolve;
-        video.onerror = resolve;
-      });
-    }
-
-    // Return to idle banner
-    setCurrentSegment(-1);
-    setIsPlaying(false);
-    setActiveProject(null);
-    video.loop = true;
-    video.src = `${ASSET_CONFIG.basePath}/idle_banner.mp4`;
-    video.load();
-    video.play().catch(() => {});
-  }, [isPlaying]);
-
   const handleCardClick = (title) => {
     if (PROJECT_SEGMENTS[title]) {
-      playSegments(title);
+      // TODO: wire to Banner's playSegments via ref/callback
     }
   };
 
@@ -175,116 +107,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-4">
         {/* Video Header */}
-        <div className="relative bg-black rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-          <audio ref={audioRef} loop src={`${ASSET_CONFIG.basePath}/MUSCLoop-relaxing_ambient_bac-Elevenlabs.mp3`} />
-          <div className="w-full" style={{ aspectRatio: '1173/640' }}>
-            <video
-              ref={videoRef}
-              autoPlay
-              loop
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-              src={`${ASSET_CONFIG.basePath}/idle_banner.mp4`}
-            />
-          </div>
-
-          {/* Top-left: EN|DE toggle + Play intro */}
-          <div className="absolute top-3 left-3 z-[6] flex items-center gap-2">
-            <div className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md opacity-50 hover:opacity-100 transition-all">
-              <button onClick={() => setLanguage('EN')} className={`text-[11px] sm:text-xs font-medium tracking-wide cursor-pointer transition-colors ${language === 'EN' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}>
-                EN
-              </button>
-              <span className="text-white/30 text-[11px]">|</span>
-              <button onClick={() => setLanguage('DE')} className={`text-[11px] sm:text-xs font-medium tracking-wide cursor-pointer transition-colors ${language === 'DE' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}>
-                DE
-              </button>
-            </div>
-            <button className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer" aria-label="Play intro">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none">
-                <polygon points="6 3 20 12 6 21 6 3" />
-              </svg>
-            </button>
-          </div>
-
-          {/* Name overlay */}
-          <div className="absolute inset-0 flex items-center justify-center z-[5] pointer-events-none">
-            <div className="text-center -mt-4 flex flex-col items-center">
-              <h1 className="text-white text-3xl sm:text-4xl font-bold tracking-tight drop-shadow-lg">
-                Miguel Lacanienta
-              </h1>
-              <p className="text-white/80 text-sm sm:text-base font-light mt-1.5 tracking-wide drop-shadow-md">
-                BS Computer Science · AI Specialization · Mapúa University '25
-              </p>
-              {/* Resume section nav */}
-              <div className="mt-2 flex items-center gap-1.5 pointer-events-auto">
-                {['Objective', 'Skills', 'Certifications', 'Applied Skills', 'Projects'].map((section) => (
-                  <button
-                    key={section}
-                    className="px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md text-white/70 text-[11px] sm:text-xs font-medium tracking-wide hover:text-white hover:bg-white/20 transition-all cursor-pointer"
-                  >
-                    {section}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom-left: Resume button */}
-          <a href="https://drive.google.com/file/d/1RyQRN930zeyjLZe2o_J52zWEB1kWyWQF" target="_blank" rel="noopener noreferrer" className="absolute bottom-3 left-3 z-[6] px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md text-white/70 text-[11px] sm:text-xs font-medium tracking-wide hover:text-white hover:bg-white/20 transition-all cursor-pointer opacity-50 hover:opacity-100 no-underline">
-            CV
-          </a>
-
-
-          {/* Audio toggle button */}
-          <button
-            onClick={toggleAudio}
-            className="absolute top-3 right-3 z-10 opacity-50 hover:opacity-80 transition-opacity cursor-pointer"
-            aria-label={isMuted ? 'Unmute background music' : 'Mute background music'}
-          >
-            {isMuted ? (
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                <line x1="22" y1="9" x2="16" y2="15" />
-                <line x1="16" y1="9" x2="22" y2="15" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-              </svg>
-            )}
-          </button>
-
-          {/* Segment indicator overlay */}
-          {isPlaying && currentSegment >= 0 && activeProject && (
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent px-4 py-3">
-              <div className="flex items-center gap-2">
-                {PROJECT_SEGMENTS[activeProject].labels.map((label, i) => (
-                  <div key={label} className="flex items-center gap-1.5">
-                    <div
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        i === currentSegment
-                          ? 'w-8 bg-blue-400'
-                          : i < currentSegment
-                          ? 'w-4 bg-blue-400/50'
-                          : 'w-4 bg-white/30'
-                      }`}
-                    />
-                    <span
-                      className={`text-[10px] font-medium transition-colors ${
-                        i === currentSegment ? 'text-blue-300' : 'text-white/40'
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
+        <Banner />
 
         {/* Projects Section */}
         <div className="mt-4 mb-4">
@@ -297,18 +120,12 @@ export default function Home() {
                   PROJECT_SEGMENTS[project.title]
                     ? 'border-blue-300 hover:border-blue-500 hover:shadow-lg cursor-pointer ring-1 ring-blue-100'
                     : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
-                } ${
-                  activeProject === project.title
-                    ? 'animate-pulse border-blue-500 ring-2 ring-blue-300'
-                    : ''
                 }`}
               >
                 <h5 className="text-xs font-semibold text-gray-900 mb-1">
                   {project.title}
                   {PROJECT_SEGMENTS[project.title] && (
-                    <span className="ml-1 text-[9px] text-blue-500 font-normal">
-                      {activeProject === project.title ? '▶ Playing...' : '▶ Click to play'}
-                    </span>
+                    <span className="ml-1 text-[9px] text-blue-500 font-normal">▶ Click to play</span>
                   )}
                 </h5>
                 <p className="text-[10px] text-gray-500 leading-snug mb-2">{project.description}</p>

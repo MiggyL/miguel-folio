@@ -1,0 +1,24 @@
+1
+00:00:00,000 --> 00:00:03,240
+Hallo, ich bin Miguel Lacanienta.
+
+2
+00:00:03,240 --> 00:00:10,500
+Mit dieser interaktiven Lebenslauf-App können Sie mein Profil über die Schaltflächen neben meinem Avatar erkunden.
+
+3
+00:00:10,500 --> 00:00:19,500
+Dort finden Sie Informationen zu meinen Zielen, Fähigkeiten, Zertifizierungen, praktischen Fertigkeiten und Projekten.
+
+4
+00:00:19,500 --> 00:00:24,780
+Der interaktive Chat ist auf den unten aufgeführten Mirror-Servern verfügbar.
+
+5
+00:00:24,780 --> 00:00:30,080
+Cloudflare wird empfohlen, da es die zuverlässigste Leistung und Bandbreite bietet.
+
+6
+00:00:30,080 --> 00:00:37,280
+Andere Mirror-Server sind möglicherweise vorübergehend nicht erreichbar, wenn Sie Ihr kostenloses Nutzungslimit überschreiten.
+

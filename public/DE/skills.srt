@@ -1,0 +1,12 @@
+1
+00:00:00,000 --> 00:00:08,800
+Zu meinen technischen Kompetenzen zählt die Microsoft Power Platform mit praktischer Erfahrung in Power Automate, Power Apps und Dataverse.
+
+2
+00:00:08,800 --> 00:00:14,940
+Ich verfüge außerdem über Programmiererfahrungen mit Python, JavaScript und KI Technologien.
+
+3
+00:00:14,940 --> 00:00:21,140
+Darüber hinaus arbeite ich mit Cloud-Plattformen wie Microsoft Azure und Oracle Cloud Infrastructure.
+

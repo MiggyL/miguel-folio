@@ -1,0 +1,20 @@
+1
+00:00:00,000 --> 00:00:03,000
+Hi, I'm Miguel Lacanienta.
+
+2
+00:00:03,000 --> 00:00:13,000
+This interactive resume app lets you explore my profile using the buttons beside my avatar covering my objective, skills, certifications, applied skills and projects.
+
+3
+00:00:13,000 --> 00:00:17,000
+The interactive chat is available on the mirror sites listed below.
+
+4
+00:00:17,000 --> 00:00:23,000
+Cloudflare is recommended as it provides the most reliable performance and bandwidth.
+
+5
+00:00:23,000 --> 00:00:28,000
+Other mirrors may be temporarily unavailable if they exceed their free usage limits.
+

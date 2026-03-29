@@ -1,0 +1,44 @@
+1
+00:00:00,000 --> 00:00:04,440
+I hold multiple industry certifications across Microsoft and Oracle.
+
+2
+00:00:04,440 --> 00:00:09,880
+I hold Microsoft certified credentials with a strong focus on cloud and AI technologies,
+
+3
+00:00:09,880 --> 00:00:14,360
+including Azure AI Fundamentals, Azure AI Engineer Associate,
+
+4
+00:00:14,360 --> 00:00:18,760
+Azure Administrator Associate, and Power Platform Fundamentals.
+
+5
+00:00:18,760 --> 00:00:22,240
+I am also certified in Oracle Cloud Infrastructure,
+
+6
+00:00:22,240 --> 00:00:25,680
+covering architect associate, multi-cloud architecture,
+
+7
+00:00:25,680 --> 00:00:29,760
+generative AI, AI Foundations, Cloud Foundations,
+
+8
+00:00:29,760 --> 00:00:34,120
+Data Management Foundations, and the Sunbird Ed Specialty.
+
+9
+00:00:34,120 --> 00:00:39,520
+At the foundational level, I hold programming certifications in Python and JavaScript,
+
+10
+00:00:39,520 --> 00:00:42,640
+along with Neo4j Professional Certifications,
+
+11
+00:00:42,640 --> 00:00:46,160
+including Graph Data Science and Certified Professional.
+

@@ -1,0 +1,40 @@
+1
+00:00:00,000 --> 00:00:05,200
+Ich besitze mehrere Branchenzertifizierungen von Microsoft und Oracle.
+
+2
+00:00:05,200 --> 00:00:10,500
+Meine Microsoft Zertifizierungen konzentrieren sich auf Cloud- und KI-Technologien
+
+3
+00:00:10,500 --> 00:00:15,800
+und umfassen Azure AI Fundamentals, Azure AI Engineer Associate,
+
+4
+00:00:15,800 --> 00:00:20,800
+Azure Administrator Associate und Power Platform Fundamentals.
+
+5
+00:00:20,800 --> 00:00:25,000
+Darüber hinaus bin ich in Oracle Cloud Infrastructure zertifiziert
+
+6
+00:00:25,000 --> 00:00:29,400
+und besitze Zertifizierungen in den Bereichen Architect Associate,
+
+7
+00:00:29,400 --> 00:00:34,400
+Multi-Cloud Architecture, Generative AI, AI Foundations,
+
+8
+00:00:34,400 --> 00:00:41,000
+Cloud Foundations, Data Management Foundations sowie die Sunbird at Specialty.
+
+9
+00:00:41,000 --> 00:00:47,300
+Im Bereich der Grundlagenprogrammierung verfüge ich über Zertifizierungen in Python und JavaScript
+
+10
+00:00:47,300 --> 00:00:53,300
+sowie über Neo4j Zertifizierungen, darunter Graph Data Science und Certified Professional.
+
