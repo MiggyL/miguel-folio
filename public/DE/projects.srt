@@ -1,40 +1,20 @@
 1
-00:00:00,000 --> 00:00:08,000
-Meine Projekterfahrung umfasst die Entwicklung eines CCTV-Systems zur Überwachung persönlicher Schutzausrüstung, PSA.
+00:00:00,000 --> 00:00:19,260
+Meine Projekterfahrung umfasst die Entwicklung eines CCTV-Systems zur Überwachung persönlicher Schutzausrüstung, PSA. Eine Computer-Vision-Lösung mit convolutional neural networks, CNNs, zur Echtzeit PSA Erkennung, entwickelt mit Python, YOLOv9 und Google Colab.
 
 2
-00:00:08,000 --> 00:00:17,000
-Eine Computer-Vision-Lösung mit convolutional neural networks, CNNs, zur Echtzeit PSA Erkennung, entwickelt mit Python,
+00:00:20,260 --> 00:00:35,180
+Außerdem entwickelte ich die Chrome Erweiterung für die ALOPA Corporation, die den Datentransfer von Google Sheets zu Webformularen, mit Hilfe von Python, Selenium, Flask und einer benutzerdefinierten Chrome Erweiterung automatisiert.
 
 3
-00:00:17,000 --> 00:00:20,000
-YOLOv9 und Google Colab.
+00:00:35,700 --> 00:00:48,260
+Zusätzlich arbeitete ich an einem Projekt zur prädiktiven Analytik mit dem Schwerpunkt auf der Prognose von Lebensmittelpreisen durch Zeitreihenanalyse mit Orange Data-Mining und dem ARIMA-Modell.
 
 4
-00:00:20,000 --> 00:00:28,000
-Außerdem entwickelte ich die Chrome Erweiterung für die ALOPA Corporation, die den Datentransfer von Google Sheets zu webformularen,
+00:00:48,840 --> 00:00:59,160
+Zu meinen KI-Projekten gehören eine Anwendung zur lokalen Sprachgenerierung, entwickelt mit Python, LangChain und dem Hugging-Face-Mistral 7B-Modell,
 
 5
-00:00:28,000 --> 00:00:35,000
-mit Hilfe von Python, Selenium, Flask und einer benutzerdefinierten Chrome Erweiterung automatisiert.
-
-6
-00:00:35,000 --> 00:00:43,000
-Zusätzlich arbeitete ich an einem Projekt zur prädiktiven Analytik mit dem Schwerpunkt auf der Prognose von Lebensmittelpreisen
-
-7
-00:00:43,000 --> 00:00:48,000
-durch Zeitreihenanalyse mit Orange Data-Mining und dem Arima-Modell.
-
-8
-00:00:48,000 --> 00:00:56,000
-Zu meinen KI-Projekten gehören eine Anwendung zur lokale Sprachgenerierung, entwickelt mit Python, LangChain
-
-9
-00:00:56,000 --> 00:01:05,000
-und dem Hugging-Face-Mistral 7B-Modell sowie eine Auto-GPT-Anwendung zur Extraktion von YouTube-Videotranskripten
-
-10
-00:01:05,000 --> 00:01:08,000
-und zur Beantwortung inhaltsbezogener Fragen.
+00:00:59,480 --> 00:01:07,740
+sowie eine AutoGPT-Anwendung zur Extraktion von YouTube-Videotranskripten und zur Beantwortung inhaltsbezogener Fragen.
 

@@ -23,12 +23,13 @@ function parseSRT(text) {
   return cues;
 }
 
-export default function Subtitles({ videoRef, language, section }) {
+export default function Subtitles({ videoRef, language, section, onCueChange }) {
   const [cues, setCues] = useState([]);
   const [currentText, setCurrentText] = useState('');
   const animFrameRef = useRef(null);
 
   const srtMap = {
+    'Intro': 'intro',
     'Objective': 'objective',
     'Skills': 'skills',
     'Certifications': 'certifications',
@@ -59,8 +60,9 @@ export default function Subtitles({ videoRef, language, section }) {
 
     const update = () => {
       const t = videoRef.current?.currentTime ?? 0;
-      const cue = cues.find((c) => t >= c.start && t < c.end);
-      setCurrentText(cue?.text ?? '');
+      const idx = cues.findIndex((c) => t >= c.start && t < c.end);
+      setCurrentText(idx >= 0 ? cues[idx].text : '');
+      onCueChange?.(idx, cues);
       animFrameRef.current = requestAnimationFrame(update);
     };
 

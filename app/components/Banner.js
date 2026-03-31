@@ -5,6 +5,50 @@ import { ASSET_CONFIG } from '@/lib/assets';
 import IdleOverlay from './IdleOverlay';
 import Subtitles from './Subtitles';
 
+// Maps section → cue index → image filename(s) shown during that cue
+const SECTION_IMAGES = {
+  'Objective': [
+    ['objective-1.png'],                                                           // cue 0: programming / DevOps
+    ['objective-2.png', 'objective-3.png', 'objective-4.png'],                    // cue 1: Power Platform, Python, JavaScript
+    ['objective-5.png'],                                                          // cue 2: Azure & OCI
+  ],
+  'Skills': [
+    ['skills-1.png', 'skills-2.png', 'skills-3.png', 'skills-4.png'],             // cue 0: Power Platform, Automate, Apps, Dataverse
+    ['skills-5.png', 'skills-6.png', 'skills-7.png'],                            // cue 1: Python, JavaScript, AI
+    ['skills-8.png'],                                                             // cue 2: Azure & OCI
+  ],
+  'Applied Skills': [
+    ['applied-skills-1.png'],                                                     // ms-applied-power-automate
+    ['applied-skills-2.png', 'applied-skills-3.png'],                             // ms-applied-power-apps-canvas, dataverse
+  ],
+  'Projects': [
+    ['projects-1.png'],                                                           // cue 0: PPE CCTV
+    ['projects-2.png'],                                                           // cue 1: ALOPA Chrome Extension
+    ['projects-3.png'],                                                           // cue 2: Food Price Forecasting
+    ['projects-4.png'],                                                           // cue 3: Local LLM (Mistral 7B)
+    ['projects-5.png'],                                                           // cue 4: YouTube Q&A
+  ],
+  'Certifications': [
+    [],                                                                           // cue 0: general intro
+    [],                                                                           // cue 1: general Microsoft intro
+    ['certifications-01.png', 'certifications-02.png'],                           // cue 2: ms-azure-ai-fundamentals, ai-engineer
+    ['certifications-03.png', 'certifications-04.png'],                           // cue 3: ms-azure-administrator, power-platform
+    [],                                                                           // cue 4: general OCI intro
+    ['certifications-05.png', 'certifications-06.png'],                           // cue 5: oci-architect-associate, multicloud
+    ['certifications-07.png', 'certifications-08.png', 'certifications-09.png'],  // cue 6: oci-genai, ai-foundations, foundations
+    ['certifications-10.png', 'certifications-11.png'],                           // cue 7: oci-data-management, specialty
+    ['certifications-12.png', 'certifications-13.png'],                           // cue 8: pcep-python, jse-javascript
+    ['certifications-14.png'],                                                    // cue 9: neo4j-certified-professional
+    ['certifications-15.png', 'certifications-14.png'],                           // cue 10: neo4j-graph-data-science, certified-professional
+  ],
+};
+
+// Maps Intro cue index → section button to highlight (per language, since cue counts differ)
+const INTRO_HIGHLIGHTS = {
+  EN: { 2: 'Objective', 3: 'Skills', 4: 'Certifications', 5: 'Applied Skills', 6: 'Projects' },
+  DE: { 3: 'Objective', 4: 'Skills', 5: 'Certifications', 6: 'Applied Skills', 7: 'Projects' },
+};
+
 // Map section button labels to video filenames in EN/ and DE/
 const SECTION_VIDEO_MAP = {
   'Intro': 'intro.mp4',
@@ -40,6 +84,9 @@ export default function Banner() {
   const [overlayVisible, setOverlayVisible] = useState(true);
   const [sectionVisible, setSectionVisible] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
+  const [currentImage, setCurrentImage] = useState(null);
+  const [highlightedSection, setHighlightedSection] = useState(null);
+  const cuesRef = useRef([]);
 
   const toggleAudio = () => {
     const audio = audioRef.current;
@@ -110,11 +157,15 @@ export default function Banner() {
     sectionVideo.onended = () => {
       setSectionVisible(false);
       setActiveSection(null);
+      setCurrentImage(null);
+      setHighlightedSection(null);
       setOverlayVisible(true);
     };
     sectionVideo.onerror = () => {
       setSectionVisible(false);
       setActiveSection(null);
+      setCurrentImage(null);
+      setHighlightedSection(null);
       setOverlayVisible(true);
     };
   };
@@ -141,7 +192,7 @@ export default function Banner() {
         muted
         playsInline
         className="absolute bottom-0 right-0 object-cover rounded-br-2xl"
-        style={{ height: '35%', aspectRatio: '1/1', zIndex: 1 }}
+        style={{ height: '35%', aspectRatio: '1/1', zIndex: 5 }}
         src={`${ASSET_CONFIG.basePath}/idle.mp4`}
       />
 
@@ -153,7 +204,7 @@ export default function Banner() {
         style={{
           height: '35%',
           aspectRatio: '1/1',
-          zIndex: 3,
+          zIndex: 7,
           opacity: sectionVisible ? 1 : 0,
           pointerEvents: sectionVisible ? 'auto' : 'none',
         }}
@@ -161,7 +212,46 @@ export default function Banner() {
 
 
       {/* Subtitles — displayed beside the avatar during section playback */}
-      <Subtitles videoRef={sectionVideoRef} language={language} section={activeSection} />
+      <Subtitles
+        videoRef={sectionVideoRef}
+        language={language}
+        section={activeSection}
+        onCueChange={(idx, cues) => {
+          cuesRef.current = cues || [];
+
+          // Intro: highlight buttons instead of showing images
+          if (activeSection === 'Intro') {
+            const highlights = INTRO_HIGHLIGHTS[language] || {};
+            setHighlightedSection(highlights[idx] || null);
+            return;
+          }
+
+          const images = SECTION_IMAGES[activeSection]?.[idx];
+          if (!images || images.length === 0) { setCurrentImage(null); return; }
+          if (images.length === 1) { setCurrentImage(images[0]); return; }
+          // Split cue duration evenly across images
+          const cue = cuesRef.current[idx];
+          if (!cue) { setCurrentImage(images[0]); return; }
+          const t = sectionVideoRef.current?.currentTime ?? 0;
+          const progress = (t - cue.start) / (cue.end - cue.start);
+          const imgIdx = Math.min(Math.floor(progress * images.length), images.length - 1);
+          setCurrentImage(images[imgIdx]);
+        }}
+      />
+
+      {/* Slideshow image — top center, width = banner - 2*avatar, synced to SRT cues */}
+      {/* Avatar is 35% of banner height, 1:1 aspect. Avatar width as % of banner width = 35% * (640/1173) ≈ 19.1% */}
+      {currentImage && (
+        <div className="absolute inset-0 z-[4] flex items-center justify-center pointer-events-none">
+          <img
+            key={currentImage}
+            src={`${ASSET_CONFIG.basePath}/images/${currentImage}`}
+            alt=""
+            className="rounded-md shadow-lg object-contain"
+            style={{ width: '61.8%', maxHeight: '80%' }}
+          />
+        </div>
+      )}
 
       {/* Top-left: EN|DE toggle + Play intro */}
       <div className="absolute top-3 left-3 z-[6] flex items-center gap-2">
@@ -183,6 +273,34 @@ export default function Banner() {
 
       {/* Idle overlay: name, title, section buttons */}
       <IdleOverlay visible={overlayVisible} onSectionClick={handleSectionClick} />
+
+      {/* Intro highlight overlay — non-interactive replica of IdleOverlay with glow on mentioned buttons */}
+      {activeSection === 'Intro' && (
+        <div className="absolute inset-0 flex items-center justify-center z-[6] pointer-events-none">
+          <div className="text-center -mt-4 flex flex-col items-center">
+            <h1 className="text-white text-3xl sm:text-4xl font-bold tracking-tight drop-shadow-lg">
+              Miguel Lacanienta
+            </h1>
+            <p className="text-white/80 text-sm sm:text-base font-light mt-1.5 tracking-wide drop-shadow-md">
+              BS Computer Science · AI Specialization · Mapúa University &apos;25
+            </p>
+            <div className="mt-2 flex items-center gap-1.5">
+              {['Objective', 'Skills', 'Certifications', 'Applied Skills', 'Projects'].map((section) => (
+                <span
+                  key={section}
+                  className={`px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium tracking-wide transition-all duration-300 border ${
+                    highlightedSection === section
+                      ? 'text-white bg-white/25 border-white/60 shadow-[0_0_14px_rgba(255,255,255,0.5)] scale-110'
+                      : 'text-white/70 bg-white/10 border-white/15'
+                  }`}
+                >
+                  {section}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bottom-left: Resume button */}
       <a href="https://drive.google.com/file/d/1RyQRN930zeyjLZe2o_J52zWEB1kWyWQF" target="_blank" rel="noopener noreferrer" className="absolute bottom-3 left-3 z-[6] px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md text-white/70 text-[11px] sm:text-xs font-medium tracking-wide hover:text-white hover:bg-white/20 transition-all cursor-pointer opacity-50 hover:opacity-100 no-underline">

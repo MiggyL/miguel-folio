@@ -1,12 +1,12 @@
 1
-00:00:00,000 --> 00:00:05,740
+00:00:00,000 --> 00:00:05,320
 Mein Karriereziel ist es, eine Position im Bereich Programmierung oder DevOps zu übernehmen
 
 2
-00:00:05,740 --> 00:00:13,500
+00:00:05,320 --> 00:00:13,260
 und dabei meine Expertise in der Power Platform, Python, JavaScript und Cloud Technologien wie Microsoft Azure
 
 3
-00:00:13,500 --> 00:00:16,300
+00:00:13,260 --> 00:00:16,040
 und Oracle Cloud Infrastructure einzusetzen.
 

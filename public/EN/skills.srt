@@ -1,12 +1,12 @@
 1
-00:00:00,000 --> 00:00:08,400
-My technical skills include the Microsoft Power Platform with hands-on experience in Power Automate, Power Apps, and Dataverse.
+00:00:00,000 --> 00:00:07,740
+My technical skills include the Microsoft Power Platform with hands-on experience in Power Automate, Power Apps and Dataverse.
 
 2
-00:00:08,400 --> 00:00:14,600
-I also have programming experience using Python, JavaScript, and AI-related technologies.
+00:00:08,400 --> 00:00:14,120
+I also have programming experience using Python, JavaScript and AI-related technologies.
 
 3
-00:00:14,600 --> 00:00:20,800
+00:00:14,720 --> 00:00:20,200
 In addition, I work with cloud platforms such as Microsoft Azure and Oracle Cloud Infrastructure.
 

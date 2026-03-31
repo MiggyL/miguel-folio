@@ -1,40 +1,20 @@
 1
-00:00:00,000 --> 00:00:06,120
-My project experience includes the development of a personal protective equipment or PPE,
+00:00:00,000 --> 00:00:16,020
+My project experience includes the development of a personal protective equipment or PPE, CCTV system, a computer vision solution using convolutional neural networks for real-time PPE detection built with Python, YOLOv9, and Google Colab.
 
 2
-00:00:06,120 --> 00:00:11,380
-CCTV system, a computer vision solution using convolutional neural networks for real-time
+00:00:16,460 --> 00:00:27,760
+I also developed the ALOPA Corporation Chrome extension, which automates data transfer from Google Sheets to web forms using Python, Selenium, Flask, and a custom Chrome extension.
 
 3
-00:00:11,380 --> 00:00:16,820
-PPE detection built with Python, YOLOv9, and Google Colab.
+00:00:28,320 --> 00:00:37,680
+Additionally, I worked on a predictive analytics project focused on forecasting food prices through time series analysis using Orange Data Mining and the ARIMA model.
 
 4
-00:00:16,820 --> 00:00:21,660
-I also developed the ALOPA Corporation Chrome extension, which automates data transfer
+00:00:38,740 --> 00:00:50,380
+My AI projects include a local language generation application built with Python, LangChain, the Hugging Face Mistral 7B model,
 
 5
-00:00:21,660 --> 00:00:28,260
-from Google Sheets to web forms using Python, Selenium, Flask, and a custom Chrome extension.
-
-6
-00:00:28,260 --> 00:00:33,460
-Additionally, I worked on a predictive analytics project focused on forecasting food prices
-
-7
-00:00:33,460 --> 00:00:38,860
-through time series analysis using Orange Data Mining and the ARIMA model.
-
-8
-00:00:38,860 --> 00:00:44,940
-My AI projects include a local language generation application built with Python, LangChain,
-
-9
-00:00:44,940 --> 00:00:50,820
-the Hugging Face Mistral 7B model, as well as an AutoGPT application designed to extract
-
-10
-00:00:50,820 --> 00:00:54,620
-YouTube video transcripts and answer content-related questions.
+00:00:50,380 --> 00:00:54,340
+as well as an AutoGPT application designed to extract YouTube video transcripts and answer content-related questions.
 

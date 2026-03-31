@@ -1,4 +1,12 @@
 1
-00:00:00,000 --> 00:00:14,000
-My career objective is to pursue a role in programming or DevOps, leveraging expertise in the Power Platform, Python, JavaScript, and Cloud technologies, including Microsoft Azure and Oracle Cloud Infrastructure.
+00:00:00,000 --> 00:00:04,240
+My career objective is to pursue a role in programming or DevOps,
+
+2
+00:00:04,800 --> 00:00:10,040
+leveraging expertise in the Power Platform, Python, JavaScript, and Cloud technologies,
+
+3
+00:00:10,300 --> 00:00:13,440
+including Microsoft Azure and Oracle Cloud Infrastructure.
 

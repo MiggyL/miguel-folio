@@ -21,10 +21,22 @@ TARGET_TP=-1.5
 # Ambient music target: much quieter so it sits under speech
 AMBIENT_I=-24
 
+TODAY=$(date +%Y-%m-%d)
+
 echo "=== Audio Normalization ==="
 echo "Source: $RAW"
 echo "Output: $PUBLIC"
+echo "Only processing files modified today ($TODAY)"
 echo ""
+
+# Check if a file was modified today (by its date stamp)
+modified_today() {
+  local file="$1"
+  local file_date
+  file_date=$(stat -f '%Sm' -t '%Y-%m-%d' "$file" 2>/dev/null \
+           || date -r "$(stat -c '%Y' "$file")" +%Y-%m-%d 2>/dev/null)
+  [ "$file_date" = "$TODAY" ]
+}
 
 # Verify raw/ exists
 if [ ! -d "$RAW" ]; then
@@ -87,13 +99,17 @@ for lang in EN DE; do
   for f in "$RAW/$lang"/*.mp4; do
     [ -f "$f" ] || continue
     name="$(basename "$f")"
+    if ! modified_today "$f"; then
+      echo "  [$lang/$name] not modified today, skipping"
+      continue
+    fi
     normalize_video "$f" "$PUBLIC/$lang/$name" "$lang/$name" "$TARGET_I"
   done
 done
 echo ""
 
 # --- Ambient music: normalize quieter ---
-if [ -f "$RAW/ambient.mp3" ]; then
+if [ -f "$RAW/ambient.mp3" ] && modified_today "$RAW/ambient.mp3"; then
   echo "Normalizing ambient.mp3 to I=$AMBIENT_I (sits under speech)..."
 
   stats=$(ffmpeg -hide_banner -nostdin -i "$RAW/ambient.mp3" \
