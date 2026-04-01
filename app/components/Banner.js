@@ -305,8 +305,8 @@ export default function Banner() {
         </div>
       )}
 
-      {/* Top-left: EN|DE toggle + Play intro */}
-      <div className="absolute top-3 left-3 z-[6] flex items-center gap-2">
+      {/* Top-left: EN|DE toggle + Play intro — hidden during section playback */}
+      <div className={`absolute top-3 left-3 z-[6] flex items-center gap-2 transition-opacity duration-300 ${overlayVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
         <div className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md opacity-50 hover:opacity-100 transition-all">
           <button onClick={() => setLanguage('EN')} className={`text-[11px] sm:text-xs font-medium tracking-wide cursor-pointer transition-colors ${language === 'EN' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}>
             EN
