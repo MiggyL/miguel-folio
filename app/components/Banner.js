@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { ASSET_CONFIG } from '@/lib/assets';
 import IdleOverlay from './IdleOverlay';
 import Subtitles from './Subtitles';
@@ -8,39 +8,48 @@ import Subtitles from './Subtitles';
 // Maps section → cue index → image filename(s) shown during that cue
 const SECTION_IMAGES = {
   'Objective': [
-    ['objective-1.png'],                                                           // cue 0: programming / DevOps
-    ['objective-2.png', 'objective-3.png', 'objective-4.png'],                    // cue 1: Power Platform, Python, JavaScript
-    ['objective-5.png'],                                                          // cue 2: Azure & OCI
+    ['objective-1-1.png'],                                                                    // cue 1: programming / DevOps
+    ['objective-2-1.png', 'objective-2-2.png', 'objective-2-3.png', 'objective-2-4.png'],    // cue 2: Power Platform, Python, JavaScript, Cloud
+    ['objective-3-1.png', 'objective-3-2.png'],                                              // cue 3: Azure & OCI
   ],
   'Skills': [
-    ['skills-1.png', 'skills-2.png', 'skills-3.png', 'skills-4.png'],             // cue 0: Power Platform, Automate, Apps, Dataverse
-    ['skills-5.png', 'skills-6.png', 'skills-7.png'],                            // cue 1: Python, JavaScript, AI
-    ['skills-8.png'],                                                             // cue 2: Azure & OCI
+    ['skills-1-1.png', 'skills-1-2.png', 'skills-1-3.png', 'skills-1-4.png'],               // cue 1: Power Platform, Automate, Apps, Dataverse
+    ['skills-2-1.png', 'skills-2-2.png', 'skills-2-3.png'],                                 // cue 2: Python, JavaScript, AI
+    ['skills-3-1.png', 'skills-3-2.png'],                                                    // cue 3: Azure & OCI
   ],
   'Applied Skills': [
-    ['applied-skills-1.png'],                                                     // ms-applied-power-automate
-    ['applied-skills-2.png', 'applied-skills-3.png'],                             // ms-applied-power-apps-canvas, dataverse
+    ['applied-skills-1-1.png'],                                                              // cue 1: ms-applied-power-automate
+    ['applied-skills-2-1.png', 'applied-skills-2-2.png'],                                   // cue 2: ms-applied-power-apps-canvas, dataverse
   ],
   'Projects': [
-    ['projects-1.png'],                                                           // cue 0: PPE CCTV
-    ['projects-2.png'],                                                           // cue 1: ALOPA Chrome Extension
-    ['projects-3.png'],                                                           // cue 2: Food Price Forecasting
-    ['projects-4.png'],                                                           // cue 3: Local LLM (Mistral 7B)
-    ['projects-5.png'],                                                           // cue 4: YouTube Q&A
+    ['projects-1-1.png'],                                                                    // cue 1: PPE CCTV
+    ['projects-2-1.png'],                                                                    // cue 2: ALOPA Chrome Extension
+    ['projects-3-1.png'],                                                                    // cue 3: Food Price Forecasting
+    ['projects-4-1.png'],                                                                    // cue 4: Local LLM (Mistral 7B)
+    ['projects-5-1.png'],                                                                    // cue 5: YouTube Q&A
   ],
   'Certifications': [
-    [],                                                                           // cue 0: general intro
-    [],                                                                           // cue 1: general Microsoft intro
-    ['certifications-01.png', 'certifications-02.png'],                           // cue 2: ms-azure-ai-fundamentals, ai-engineer
-    ['certifications-03.png', 'certifications-04.png'],                           // cue 3: ms-azure-administrator, power-platform
-    [],                                                                           // cue 4: general OCI intro
-    ['certifications-05.png', 'certifications-06.png'],                           // cue 5: oci-architect-associate, multicloud
-    ['certifications-07.png', 'certifications-08.png', 'certifications-09.png'],  // cue 6: oci-genai, ai-foundations, foundations
-    ['certifications-10.png', 'certifications-11.png'],                           // cue 7: oci-data-management, specialty
-    ['certifications-12.png', 'certifications-13.png'],                           // cue 8: pcep-python, jse-javascript
-    ['certifications-14.png'],                                                    // cue 9: neo4j-certified-professional
-    ['certifications-15.png', 'certifications-14.png'],                           // cue 10: neo4j-graph-data-science, certified-professional
+    ['certifications-02-1.png', 'certifications-02-2.png'],                                  // cue 01: general intro — MS & Oracle logos
+    ['certifications-02-1.png', 'certifications-02-2.png'],                                  // cue 02: Microsoft & Oracle logos
+    ['certifications-03-1.png', 'certifications-03-2.png'],                                  // cue 03: ms-azure-ai-fundamentals, ai-engineer
+    ['certifications-04-1.png', 'certifications-04-2.png'],                                  // cue 04: ms-azure-administrator, power-platform
+    ['certifications-05-1.png'],                                                             // cue 05: oci-logo
+    ['certifications-06-1.png', 'certifications-06-2.png'],                                  // cue 06: oci-architect-associate, multicloud
+    ['certifications-07-1.png', 'certifications-07-2.png', 'certifications-07-3.png'],       // cue 07: oci-genai, ai-foundations, foundations
+    ['certifications-08-1.png', 'certifications-08-2.png'],                                  // cue 08: oci-data-management, specialty
+    ['certifications-09-1.png', 'certifications-09-2.png'],                                  // cue 09: pcep-python, jse-javascript
+    ['certifications-10-1.png'],                                                             // cue 10: neo4j-certified-professional
+    ['certifications-11-1.png', 'certifications-11-2.png'],                                  // cue 11: neo4j-graph-data-science, certified-professional
   ],
+};
+
+// Sections that cycle images one at a time (with interval in ms)
+const SINGLE_IMAGE_SECTIONS = new Set(['Certifications', 'Applied Skills']);
+const CYCLE_INTERVAL = 2000;
+
+// Cue indices (0-based) that show logos side-by-side instead of cycling
+const LOGO_CUES = {
+  'Certifications': new Set([0, 1]), // cues 1 & 2 are MS/Oracle logos, not certificates
 };
 
 // Maps Intro cue index → section button to highlight (per language, since cue counts differ)
@@ -84,9 +93,23 @@ export default function Banner() {
   const [overlayVisible, setOverlayVisible] = useState(true);
   const [sectionVisible, setSectionVisible] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
-  const [currentImage, setCurrentImage] = useState(null);
+  const [currentImages, setCurrentImages] = useState([]);
   const [highlightedSection, setHighlightedSection] = useState(null);
   const cuesRef = useRef([]);
+  const [cycleImages, setCycleImages] = useState([]);  // full image list for cycling sections
+
+  // Cycle through images one at a time for Certifications / Applied Skills
+  useEffect(() => {
+    if (cycleImages.length <= 1) return;
+    setCurrentImages([cycleImages[0]]);
+    let idx = 0;
+    const id = setInterval(() => {
+      idx = idx + 1;
+      if (idx >= cycleImages.length) { clearInterval(id); return; }
+      setCurrentImages([cycleImages[idx]]);
+    }, CYCLE_INTERVAL);
+    return () => clearInterval(id);
+  }, [cycleImages]);
 
   const toggleAudio = () => {
     const audio = audioRef.current;
@@ -157,14 +180,16 @@ export default function Banner() {
     sectionVideo.onended = () => {
       setSectionVisible(false);
       setActiveSection(null);
-      setCurrentImage(null);
+      setCurrentImages([]);
+      setCycleImages([]);
       setHighlightedSection(null);
       setOverlayVisible(true);
     };
     sectionVideo.onerror = () => {
       setSectionVisible(false);
       setActiveSection(null);
-      setCurrentImage(null);
+      setCurrentImages([]);
+      setCycleImages([]);
       setHighlightedSection(null);
       setOverlayVisible(true);
     };
@@ -227,29 +252,56 @@ export default function Banner() {
           }
 
           const images = SECTION_IMAGES[activeSection]?.[idx];
-          if (!images || images.length === 0) { setCurrentImage(null); return; }
-          if (images.length === 1) { setCurrentImage(images[0]); return; }
-          // Split cue duration evenly across images
-          const cue = cuesRef.current[idx];
-          if (!cue) { setCurrentImage(images[0]); return; }
-          const t = sectionVideoRef.current?.currentTime ?? 0;
-          const progress = (t - cue.start) / (cue.end - cue.start);
-          const imgIdx = Math.min(Math.floor(progress * images.length), images.length - 1);
-          setCurrentImage(images[imgIdx]);
+          if (!images || images.length === 0) {
+            setCurrentImages([]);
+            setCycleImages([]);
+            return;
+          }
+
+          const isLogoCue = LOGO_CUES[activeSection]?.has(idx);
+          if (!isLogoCue && SINGLE_IMAGE_SECTIONS.has(activeSection) && images.length > 1) {
+            // Cycle one at a time — store full list, effect handles the rest
+            setCycleImages(images);
+          } else {
+            setCycleImages([]);
+            setCurrentImages(images);
+          }
         }}
       />
 
-      {/* Slideshow image — top center, width = banner - 2*avatar, synced to SRT cues */}
-      {/* Avatar is 35% of banner height, 1:1 aspect. Avatar width as % of banner width = 35% * (640/1173) ≈ 19.1% */}
-      {currentImage && (
-        <div className="absolute inset-0 z-[4] flex items-center justify-center pointer-events-none">
-          <img
-            key={currentImage}
-            src={`${ASSET_CONFIG.basePath}/images/${currentImage}`}
-            alt=""
-            className="rounded-md shadow-lg object-contain"
-            style={{ width: '61.8%', maxHeight: '80%' }}
-          />
+      {/* Slideshow images — synced to SRT cues; 2x2 grid for 3-4 items, row for 1-2 */}
+      {currentImages.length > 0 && (
+        <div className="absolute inset-0 z-[4] flex items-center justify-center pointer-events-none" style={{ paddingBottom: currentImages.length >= 3 ? '12%' : '0' }}>
+          {currentImages.length >= 3 ? (
+            <div className="grid grid-cols-2 gap-3 items-center justify-items-center" style={{ width: '65%', maxHeight: '70%' }}>
+              {currentImages.map((img) => (
+                <img
+                  key={img}
+                  src={`${ASSET_CONFIG.basePath}/images/${img}`}
+                  alt=""
+                  className="rounded-md shadow-lg object-contain"
+                  style={{ maxWidth: '100%', maxHeight: '32vh' }}
+                />
+              ))}
+              {/* Empty cell to fill 2x2 when only 3 items */}
+              {currentImages.length === 3 && <div />}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center gap-3" style={{ width: '65%', maxHeight: '80%' }}>
+              {currentImages.map((img) => (
+                <img
+                  key={img}
+                  src={`${ASSET_CONFIG.basePath}/images/${img}`}
+                  alt=""
+                  className="rounded-md shadow-lg object-contain"
+                  style={{
+                    maxWidth: currentImages.length === 1 ? '100%' : `${Math.floor(90 / currentImages.length)}%`,
+                    maxHeight: '80%',
+                  }}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
