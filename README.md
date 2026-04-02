@@ -1,104 +1,87 @@
 # Miguel Lacanienta - Portfolio
 
-Interactive portfolio website featuring an animated avatar with video presentations about Miguel's professional profile.
+Interactive portfolio website featuring a digital avatar that presents Miguel's professional profile through narrated video sections with synced image slideshows and subtitles, available in English and German.
 
-## 🚀 GitHub Pages Deployment
+## Local Development
 
-### Prerequisites
-- Node.js 18+ installed
-- GitHub account
+**Prerequisites:** Node.js 18+
 
-### Local Development
+```bash
+npm install
+npm run dev
+```
 
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+Open [http://localhost:3000/portfolio](http://localhost:3000/portfolio) in your browser.
 
-2. **Run development server:**
-   ```bash
-   npm run dev
-   ```
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
+**Build for production:**
 
-3. **Build for production:**
-   ```bash
-   npm run build
-   ```
-   The static site will be generated in the `out/` directory.
+```bash
+npm run build
+```
 
-### Deploy to GitHub Pages
+Static site is generated in the `out/` directory.
 
-1. **Create a new GitHub repository**
+## Deploy to GitHub Pages
 
-2. **Initialize and push:**
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit: Portfolio site"
-   git branch -M main
-   git remote add origin <your-repo-url>
-   git push -u origin main
-   ```
+1. Push to `main` branch
+2. Go to repository Settings > Pages > Source: "GitHub Actions"
+3. The workflow deploys automatically on push
+4. Site available at: `https://<username>.github.io/<repo-name>/`
 
-3. **Enable GitHub Pages:**
-   - Go to your repository Settings → Pages
-   - Under "Source", select "GitHub Actions"
-   - The workflow will automatically deploy on push to main branch
-
-4. **Access your site:**
-   - Your site will be available at: `https://<username>.github.io/<repo-name>/`
-
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Framework:** Next.js 15 (App Router) with static export
 - **Styling:** Tailwind CSS
 - **Deployment:** GitHub Pages via GitHub Actions
-- **Video:** Interactive avatar with section videos
 
-## 📝 Features
+## Features
 
-- Interactive animated avatar
-- Video presentations for:
-  - Objective
-  - Skills
-  - Certifications
-  - Applied Skills
-  - Projects
-- QR code for easy sharing
+- Digital avatar with idle animation and section-specific narration videos
+- EN/DE language toggle with full subtitle support (SRT)
+- Video sections: Objective, Skills, Certifications, Applied Skills, Projects
+- Image slideshows synced to SRT cues (2x2 grid for 3-4 images, cycling for certifications)
+- Intro playback with section button highlights
+- Project demo video segments (DTR System, Interactive Resume)
 - Mobile-responsive design
 - Fully static site (no backend required)
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── app/
 │   ├── components/
-│   │   ├── Avatar.js       # Animated avatar component
-│   │   └── QRCode.js       # QR code display
-│   ├── page.js             # Main page
-│   ├── layout.js           # Root layout
-│   └── globals.css         # Global styles
+│   │   ├── Banner.js          # Main banner with video player, slideshow, and controls
+│   │   ├── IdleOverlay.js     # Idle state overlay with name, title, and section buttons
+│   │   └── Subtitles.js       # SRT parser and subtitle display synced to video
+│   ├── page.js                # Main page with project cards
+│   ├── layout.js              # Root layout
+│   └── globals.css            # Global styles
 ├── public/
-│   ├── *.mp4              # Video files
-│   ├── Avatar.png         # Avatar image
-│   └── QRcode.png         # QR code image
+│   ├── EN/                    # English video segments and SRT subtitles
+│   ├── DE/                    # German video segments and SRT subtitles
+│   ├── images/                # Slideshow images (section-cue-position.png)
+│   ├── bg.mp4                 # Background loop video
+│   ├── idle.mp4               # Idle avatar animation
+│   └── ambient.mp3            # Background music
+├── lib/
+│   └── assets.js              # Asset path configuration
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml     # GitHub Actions deployment
-└── next.config.js         # Next.js configuration
+│       └── deploy.yml         # GitHub Actions deployment
+└── next.config.js             # Next.js configuration
 ```
 
-## 🎬 Adding New Videos
+### Image Naming Convention
 
-To add new video sections:
+Images follow the pattern: `{section}-{cue}-{position}.png`
 
-1. Add your video file to the `public/` directory
-2. Update the video buttons in `app/page.js`
-3. Add a button with `onClick={() => playVideo('YourVideoName')}`
+- **section:** objective, skills, certifications, applied-skills, projects
+- **cue:** 1-based, matching SRT cue number (zero-padded if section has 10+ cues)
+- **position:** 1-based display order within the cue
 
-## 📚 Scripts
+Examples: `objective-2-3.png`, `certifications-07-2.png`
+
+## Scripts
 
 - `npm run dev` - Start development server
 - `npm run build` - Build static site for production
-- `npm run export` - Same as build (creates static export)

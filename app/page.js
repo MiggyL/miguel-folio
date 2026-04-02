@@ -116,17 +116,12 @@ export default function Home() {
               <div
                 key={project.title}
                 onClick={() => handleCardClick(project.title)}
-                className={`bg-white rounded-xl p-3 border transition-all duration-200 overflow-visible ${
-                  PROJECT_SEGMENTS[project.title]
-                    ? 'border-blue-300 hover:border-blue-500 hover:shadow-lg cursor-pointer ring-1 ring-blue-100'
-                    : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
+                className={`bg-white rounded-xl p-3 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-visible ${
+                  PROJECT_SEGMENTS[project.title] ? 'cursor-pointer' : ''
                 }`}
               >
                 <h5 className="text-xs font-semibold text-gray-900 mb-1">
                   {project.title}
-                  {PROJECT_SEGMENTS[project.title] && (
-                    <span className="ml-1 text-[9px] text-blue-500 font-normal">▶ Click to play</span>
-                  )}
                 </h5>
                 <p className="text-[10px] text-gray-500 leading-snug mb-2">{project.description}</p>
                 <TechTags tech={project.tech} />
