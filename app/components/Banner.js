@@ -79,11 +79,28 @@ const PROJECT_SEGMENTS = {
   },
 };
 
-export { PROJECT_SEGMENTS };
+// Genie Game config — state machine driven video experience
+const GENIE_CONFIG = {
+  basePath: 'genie',
+  enter: 'enter.mp4',
+  greet: 'greet.mp4',
+  idle: 'idle.mp4',
+  actions: [
+    { label: 'Wish', video: 'wish.mp4' },
+    { label: 'Lose 1', video: 'lose1.mp4' },
+    { label: 'Lose 2', video: 'lose2.mp4' },
+    { label: 'Win 1', video: 'win1.mp4' },
+    { label: 'Win 2', video: 'win2.mp4' },
+    { label: 'Warn 2', video: 'warn2.mp4' },
+  ],
+};
+
+export { PROJECT_SEGMENTS, GENIE_CONFIG };
 
 export default function Banner() {
   const videoRef = useRef(null);
   const sectionVideoRef = useRef(null);
+  const genieVideoRef = useRef(null);
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState(-1);
@@ -98,6 +115,10 @@ export default function Banner() {
   const cuesRef = useRef([]);
   const [cycleImages, setCycleImages] = useState([]);  // full image list for cycling sections
 
+  // Genie Game state: null | 'start' | 'entering' | 'idle' | 'action'
+  const [genieState, setGenieState] = useState(null);
+  const [genieButtonsEnabled, setGenieButtonsEnabled] = useState(false);
+
   // Cycle through images one at a time for Certifications / Applied Skills
   useEffect(() => {
     if (cycleImages.length <= 1) return;
@@ -110,6 +131,74 @@ export default function Banner() {
     }, CYCLE_INTERVAL);
     return () => clearInterval(id);
   }, [cycleImages]);
+
+  // Helper: play a genie video, return promise that resolves when ended
+  const playGenieVideo = useCallback((filename, { loop = false, muted = false } = {}) => {
+    const v = genieVideoRef.current;
+    if (!v) return Promise.resolve();
+    return new Promise((resolve) => {
+      v.src = `${ASSET_CONFIG.basePath}/${GENIE_CONFIG.basePath}/${filename}`;
+      v.loop = loop;
+      v.muted = muted;
+      v.load();
+      let started = false;
+      v.oncanplay = () => { if (!started) { started = true; v.play().catch(() => {}); } };
+      if (loop) { resolve(); } else { v.onended = resolve; v.onerror = resolve; }
+    });
+  }, []);
+
+  // Activate genie game — called from outside via window event
+  const activateGenie = useCallback(() => {
+    if (genieState) return;
+    setOverlayVisible(false);
+    setGenieState('entering');
+  }, [genieState]);
+
+  // Run enter → greet → idle sequence once genieState becomes 'entering'
+  useEffect(() => {
+    if (genieState !== 'entering') return;
+    let cancelled = false;
+    (async () => {
+      await playGenieVideo(GENIE_CONFIG.enter);
+      if (cancelled) return;
+      await playGenieVideo(GENIE_CONFIG.greet);
+      if (cancelled) return;
+      setGenieState('idle');
+      setGenieButtonsEnabled(true);
+      playGenieVideo(GENIE_CONFIG.idle, { loop: true });
+    })();
+    return () => { cancelled = true; };
+  }, [genieState, playGenieVideo]);
+
+  // Listen for genie activation from page.js
+  useEffect(() => {
+    const handler = () => activateGenie();
+    window.addEventListener('activate-genie', handler);
+    return () => window.removeEventListener('activate-genie', handler);
+  }, [activateGenie]);
+
+  // Handle genie action button click
+  const handleGenieAction = useCallback(async (actionVideo) => {
+    if (genieState !== 'idle' || !genieButtonsEnabled) return;
+    setGenieButtonsEnabled(false);
+    setGenieState('action');
+
+    await playGenieVideo(actionVideo);
+
+    // Return to idle
+    setGenieState('idle');
+    setGenieButtonsEnabled(true);
+    playGenieVideo(GENIE_CONFIG.idle, { loop: true });
+  }, [genieState, genieButtonsEnabled, playGenieVideo]);
+
+  // Exit genie mode
+  const exitGenie = useCallback(() => {
+    const v = genieVideoRef.current;
+    if (v) { v.pause(); v.src = ''; }
+    setGenieState(null);
+    setGenieButtonsEnabled(false);
+    setOverlayVisible(true);
+  }, []);
 
   const toggleAudio = () => {
     const audio = audioRef.current;
@@ -379,6 +468,46 @@ export default function Banner() {
           </svg>
         )}
       </button>
+
+      {/* Genie video — always rendered so ref is available, hidden when inactive */}
+      <video
+        ref={genieVideoRef}
+        playsInline
+        className="absolute z-[6] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-h-full max-w-full object-contain transition-opacity duration-300"
+        style={{ opacity: genieState ? 1 : 0, pointerEvents: genieState ? 'auto' : 'none' }}
+      />
+
+      {/* Genie Game UI — close button and action buttons */}
+      {genieState && (
+        <div className="absolute inset-0 z-[7] pointer-events-none">
+          {/* Close button */}
+          <button
+            onClick={exitGenie}
+            className="absolute top-3 left-3 pointer-events-auto text-white/60 hover:text-white transition-colors cursor-pointer"
+            aria-label="Close Genie Game"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          {/* Genie action buttons — styled like section nav buttons */}
+          {genieState === 'idle' && (
+            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 px-4 pointer-events-auto">
+              {GENIE_CONFIG.actions.map((action) => (
+                <button
+                  key={action.label}
+                  onClick={() => handleGenieAction(action.video)}
+                  disabled={!genieButtonsEnabled}
+                  className="px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium tracking-wide border cursor-pointer transition-all bg-white/10 backdrop-blur-sm border-white/15 text-white/70 hover:text-white hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Segment indicator overlay */}
       {isPlaying && currentSegment >= 0 && activeProject && (

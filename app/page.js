@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Banner, { PROJECT_SEGMENTS } from './components/Banner';
+import Banner, { PROJECT_SEGMENTS, GENIE_CONFIG } from './components/Banner';
 
 const PROJECTS = [
   { title: 'DTR System', description: 'POC for a daily time record system with calendar view. Solo-built, no docs.', tech: ['Node.js', 'Express.js', 'MongoDB', 'AngularJS'] },
@@ -72,7 +72,9 @@ function TechTags({ tech, maxVisible = 2 }) {
 
 export default function Home() {
   const handleCardClick = (title) => {
-    if (PROJECT_SEGMENTS[title]) {
+    if (title === 'Genie Game') {
+      window.dispatchEvent(new Event('activate-genie'));
+    } else if (PROJECT_SEGMENTS[title]) {
       // TODO: wire to Banner's playSegments via ref/callback
     }
   };
