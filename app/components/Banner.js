@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { ASSET_CONFIG } from '@/lib/assets';
 import IdleOverlay from './IdleOverlay';
 import Subtitles from './Subtitles';
@@ -69,10 +69,6 @@ const SECTION_VIDEO_MAP = {
 };
 
 const PROJECT_SEGMENTS = {
-  'Interactive Resume': {
-    segments: ['seg1_intro.mp4', 'seg2_skills.mp4', 'seg3_experience.mp4', 'seg4_certs.mp4', 'seg5_contact.mp4'],
-    labels: ['Intro', 'Skills', 'Experience', 'Certifications', 'Contact'],
-  },
   'DTR System': {
     segments: ['dtr_seg1.mp4', 'dtr_seg2.mp4', 'dtr_seg3.mp4', 'dtr_seg4.mp4', 'dtr_seg5.mp4'],
     labels: ['The System', 'The Team', 'Miguel Joins', 'Calendar View', 'The Impact'],
@@ -95,12 +91,96 @@ const GENIE_CONFIG = {
   ],
 };
 
-export { PROJECT_SEGMENTS, GENIE_CONFIG };
+// Hackathon Videos config — simple video picker (no idle/enter sequence)
+const HACKATHON_CONFIG = {
+  basePath: 'hackathon',
+  videos: [
+    { label: 'RecruitBolt', video: 'recruit-bolt.mp4', thumb: 'recruit-bolt.jpg' },
+    { label: 'SpecSync', video: 'specsync.mp4', thumb: 'specsync.jpg' },
+    { label: 'r/factchecker', video: 'r-factchecker.mp4', thumb: 'r-factchecker.jpg' },
+  ],
+};
 
-export default function Banner() {
+// Project showcase — lightweight overlay with hero image + credibility bullets
+const PROJECT_SHOWCASE = {
+  'DTR System': {
+    images: ['dtr/1.png', 'dtr/2.png', 'dtr/3.png'],
+    subtitles: [
+      'A DTR system maintained by 5 people. Miguel built a solo POC to prove AI can cut that cost.',
+      'Full-stack solo build — Express REST API, MongoDB, AngularJS. One dev. No docs. No onboarding.',
+      'The POC proved it. AI-assisted development can dramatically reduce labor cost.',
+    ],
+    bullets: [
+      'Solo-built full-stack POC: Node.js + Express REST API, MongoDB persistence, AngularJS SPA',
+      'Implemented calendar-view attendance with date-range queries and aggregation pipelines',
+      'Delivered without documentation or onboarding — reverse-engineered legacy requirements',
+    ],
+  },
+  'PPE Detection (Thesis)': {
+    image: 'projects-1-1.png',
+    bullets: [
+      'Fine-tuned YOLOv9 on custom PPE dataset (hardhat, vest, goggles) achieving 92%+ mAP',
+      'Real-time CCTV inference pipeline with Telegram alerts to site managers on violations',
+      'Thesis defense: presented model architecture, training curves, and inference benchmarks',
+    ],
+  },
+  'Sheets-to-Form Automation': {
+    image: 'projects-2-1.png',
+    bullets: [
+      'Chrome extension + Flask backend automating Google Sheets row-to-web-form data entry',
+      'Selenium WebDriver for headless form submission with error recovery and retry logic',
+      'Eliminated hours of manual data entry for a real administrative workflow',
+    ],
+  },
+  'Food Price Forecasting': {
+    image: 'projects-3-1.png',
+    bullets: [
+      'ARIMA time-series model forecasting Philippine food commodity prices',
+      'Feature engineering: seasonal decomposition, stationarity tests (ADF), differencing',
+      'Built in Orange Data Mining with custom Python scripting nodes',
+    ],
+  },
+  'Local LLM App': {
+    image: 'projects-4-1.png',
+    bullets: [
+      'LangChain orchestration with Mistral-7B running fully local — no API dependency',
+      'Hugging Face Transformers quantized inference on consumer GPU',
+      'Prompt engineering with retrieval-augmented generation (RAG) pipeline',
+    ],
+  },
+  'YouTube Q&A Tool': {
+    image: 'projects-5-1.png',
+    bullets: [
+      'Auto-GPT agent extracting YouTube transcripts via YouTube Data API v3',
+      'LLM-powered Q&A: parses transcript into chunks, embeds, and retrieves answers',
+      'End-to-end pipeline from URL input to conversational answers over video content',
+    ],
+  },
+  'RPSLS Game': {
+    image: null,
+    bullets: [
+      'Rock Paper Scissors Lizard Spock built on Microsoft Bot Framework (Adaptive Cards)',
+      'Deployed as RonnieAI chatbot for Accenture Digital Data Day event',
+      'Game logic with win/loss/draw state machine and animated card responses',
+    ],
+  },
+  'HTTYD Telegram Bots': {
+    image: null,
+    bullets: [
+      'Multiple Telegram bots with distinct dragon character personalities',
+      'Built with BotFather API for "How To Train Your AI Dragon" interactive game',
+      'Persona-driven conversational AI with context-aware dialogue',
+    ],
+  },
+};
+
+export { PROJECT_SEGMENTS, GENIE_CONFIG, HACKATHON_CONFIG, PROJECT_SHOWCASE };
+
+const Banner = forwardRef(function Banner(props, ref) {
   const videoRef = useRef(null);
   const sectionVideoRef = useRef(null);
-  const genieVideoRef = useRef(null);
+  const genieIdleRef = useRef(null);   // always-looping idle layer (muted, underneath)
+  const genieActionRef = useRef(null); // action/sequence layer (on top, shown during non-idle)
   const audioRef = useRef(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSegment, setCurrentSegment] = useState(-1);
@@ -113,11 +193,20 @@ export default function Banner() {
   const [currentImages, setCurrentImages] = useState([]);
   const [highlightedSection, setHighlightedSection] = useState(null);
   const cuesRef = useRef([]);
+  const sectionActiveRef = useRef(false);
   const [cycleImages, setCycleImages] = useState([]);  // full image list for cycling sections
 
-  // Genie Game state: null | 'start' | 'entering' | 'idle' | 'action'
+  // Genie Game state: null | 'entering' | 'idle' | 'action'
   const [genieState, setGenieState] = useState(null);
   const [genieButtonsEnabled, setGenieButtonsEnabled] = useState(false);
+
+  // Hackathon Videos state: null | 'picking' | 'playing'
+  const hackathonVideoRef = useRef(null);
+  const [hackathonState, setHackathonState] = useState(null);
+
+  // Project showcase state
+  const [showcaseProject, setShowcaseProject] = useState(null);
+  const [showcaseImageIdx, setShowcaseImageIdx] = useState(0);
 
   // Cycle through images one at a time for Certifications / Applied Skills
   useEffect(() => {
@@ -132,72 +221,158 @@ export default function Banner() {
     return () => clearInterval(id);
   }, [cycleImages]);
 
-  // Helper: play a genie video, return promise that resolves when ended
-  const playGenieVideo = useCallback((filename, { loop = false, muted = false } = {}) => {
-    const v = genieVideoRef.current;
-    if (!v) return Promise.resolve();
-    return new Promise((resolve) => {
-      v.src = `${ASSET_CONFIG.basePath}/${GENIE_CONFIG.basePath}/${filename}`;
-      v.loop = loop;
-      v.muted = muted;
-      v.load();
-      let started = false;
-      v.oncanplay = () => { if (!started) { started = true; v.play().catch(() => {}); } };
-      if (loop) { resolve(); } else { v.onended = resolve; v.onerror = resolve; }
-    });
+  // Cycle showcase images for projects with multiple images (e.g. DTR)
+  useEffect(() => {
+    if (!showcaseProject) return;
+    const cfg = PROJECT_SHOWCASE[showcaseProject];
+    if (!cfg?.images || cfg.images.length <= 1) return;
+    setShowcaseImageIdx(0);
+    const id = setInterval(() => {
+      setShowcaseImageIdx((prev) => (prev + 1) % cfg.images.length);
+    }, 3000);
+    return () => clearInterval(id);
+  }, [showcaseProject]);
+
+  // Preload all genie videos into blob URLs for instant playback
+  const genieBlobsRef = useRef({});
+  const preloadGenie = useCallback(async () => {
+    const base = `${ASSET_CONFIG.basePath}/${GENIE_CONFIG.basePath}`;
+    const files = [GENIE_CONFIG.enter, GENIE_CONFIG.greet, GENIE_CONFIG.idle,
+      ...GENIE_CONFIG.actions.map(a => a.video)];
+    await Promise.all(files.map(async (f) => {
+      if (genieBlobsRef.current[f]) return;
+      try {
+        const res = await fetch(`${base}/${f}`);
+        const blob = await res.blob();
+        genieBlobsRef.current[f] = URL.createObjectURL(blob);
+      } catch {}
+    }));
   }, []);
 
-  // Activate genie game — called from outside via window event
-  const activateGenie = useCallback(() => {
-    if (genieState) return;
-    setOverlayVisible(false);
-    setGenieState('entering');
-  }, [genieState]);
+  // Helper: get blob URL for a genie video (falls back to network)
+  const genieUrl = useCallback((filename) => {
+    return genieBlobsRef.current[filename] || `${ASSET_CONFIG.basePath}/${GENIE_CONFIG.basePath}/${filename}`;
+  }, []);
+
+  // Play a video on a given element, return promise that resolves when ended
+  const playVideo = useCallback((el, filename, { loop = false, muted = false } = {}) => {
+    if (!el) return Promise.resolve();
+    return new Promise((resolve) => {
+      el.src = genieUrl(filename);
+      el.loop = loop;
+      el.muted = muted;
+      el.load();
+      let started = false;
+      el.oncanplay = () => { if (!started) { started = true; el.play().catch(() => {}); } };
+      if (loop) { resolve(); } else { el.onended = resolve; el.onerror = resolve; }
+    });
+  }, [genieUrl]);
+
+  // Start background idle (muted, always looping underneath as flicker safety net)
+  const startBgIdle = useCallback(() => {
+    playVideo(genieIdleRef.current, GENIE_CONFIG.idle, { loop: true, muted: true });
+  }, [playVideo]);
+
+  // Start foreground idle (with sound, looping on top)
+  const startFgIdle = useCallback(() => {
+    playVideo(genieActionRef.current, GENIE_CONFIG.idle, { loop: true, muted: false });
+  }, [playVideo]);
 
   // Run enter → greet → idle sequence once genieState becomes 'entering'
   useEffect(() => {
     if (genieState !== 'entering') return;
     let cancelled = false;
     (async () => {
-      await playGenieVideo(GENIE_CONFIG.enter);
+      const preloadPromise = preloadGenie();
+      await playVideo(genieActionRef.current, GENIE_CONFIG.enter, { muted: false });
       if (cancelled) return;
-      await playGenieVideo(GENIE_CONFIG.greet);
+      await preloadPromise;
+      await playVideo(genieActionRef.current, GENIE_CONFIG.greet, { muted: false });
       if (cancelled) return;
+      startBgIdle();
+      startFgIdle();
       setGenieState('idle');
       setGenieButtonsEnabled(true);
-      playGenieVideo(GENIE_CONFIG.idle, { loop: true });
     })();
     return () => { cancelled = true; };
-  }, [genieState, playGenieVideo]);
+  }, [genieState, playVideo, startBgIdle, startFgIdle, preloadGenie]);
 
-  // Listen for genie activation from page.js
-  useEffect(() => {
-    const handler = () => activateGenie();
-    window.addEventListener('activate-genie', handler);
-    return () => window.removeEventListener('activate-genie', handler);
-  }, [activateGenie]);
-
-  // Handle genie action button click
+  // Handle genie action button click — play action on foreground with sound, bg idle continues
   const handleGenieAction = useCallback(async (actionVideo) => {
     if (genieState !== 'idle' || !genieButtonsEnabled) return;
     setGenieButtonsEnabled(false);
     setGenieState('action');
 
-    await playGenieVideo(actionVideo);
+    // Play action on foreground (bg idle still looping muted underneath)
+    await playVideo(genieActionRef.current, actionVideo, { muted: false });
 
-    // Return to idle
+    // Return to idle on foreground (with sound), bg idle still running
+    startFgIdle();
     setGenieState('idle');
     setGenieButtonsEnabled(true);
-    playGenieVideo(GENIE_CONFIG.idle, { loop: true });
-  }, [genieState, genieButtonsEnabled, playGenieVideo]);
+  }, [genieState, genieButtonsEnabled, playVideo, startFgIdle]);
 
-  // Exit genie mode
-  const exitGenie = useCallback(() => {
-    const v = genieVideoRef.current;
-    if (v) { v.pause(); v.src = ''; }
+  // Universal close — resets all overlay state
+  const exitOverlay = useCallback(() => {
+    // Genie cleanup
+    const iv = genieIdleRef.current;
+    const av = genieActionRef.current;
+    if (iv) { iv.pause(); iv.src = ''; }
+    if (av) { av.pause(); av.src = ''; }
     setGenieState(null);
     setGenieButtonsEnabled(false);
+    // Hackathon cleanup
+    const hv = hackathonVideoRef.current;
+    if (hv) { hv.onended = null; hv.onerror = null; hv.pause(); hv.src = ''; }
+    setHackathonState(null);
+    // Showcase cleanup
+    setShowcaseProject(null);
+    setShowcaseImageIdx(0);
+    // Section cleanup
+    sectionActiveRef.current = false;
+    const sv = sectionVideoRef.current;
+    if (sv) { sv.onended = null; sv.onerror = null; sv.oncanplay = null; sv.pause(); sv.removeAttribute('src'); sv.load(); }
+    setSectionVisible(false);
+    setActiveSection(null);
+    setCurrentImages([]);
+    setCycleImages([]);
+    setHighlightedSection(null);
     setOverlayVisible(true);
+  }, []);
+
+  // Expose simple methods to parent via ref
+  useImperativeHandle(ref, () => ({
+    exitOverlay,
+    activateGenie() {
+      exitOverlay();
+      setOverlayVisible(false);
+      setGenieState('entering');
+    },
+    activateHackathon() {
+      exitOverlay();
+      setOverlayVisible(false);
+      setHackathonState('picking');
+    },
+    activateShowcase(title) {
+      exitOverlay();
+      setOverlayVisible(false);
+      setShowcaseProject(title);
+    },
+  }), [exitOverlay]);
+
+  // Play a hackathon video
+  const playHackathonVideo = useCallback((videoFile) => {
+    const v = hackathonVideoRef.current;
+    if (!v) return;
+    setHackathonState('playing');
+    v.src = `${ASSET_CONFIG.basePath}/${HACKATHON_CONFIG.basePath}/${videoFile}`;
+    v.muted = false;
+    v.loop = false;
+    v.load();
+    let started = false;
+    v.oncanplay = () => { if (!started) { started = true; v.play().catch(() => {}); } };
+    v.onended = () => setHackathonState('picking');
+    v.onerror = () => setHackathonState('picking');
   }, []);
 
   const toggleAudio = () => {
@@ -250,38 +425,26 @@ export default function Banner() {
     const filename = SECTION_VIDEO_MAP[section];
     if (!filename) return;
 
+    exitOverlay();
+
     const sectionVideo = sectionVideoRef.current;
     if (!sectionVideo) return;
 
+    sectionActiveRef.current = true;
     setOverlayVisible(false);
     setActiveSection(section);
 
-    // Load and play section video
     let started = false;
     sectionVideo.src = `${ASSET_CONFIG.basePath}/${language}/${filename}`;
     sectionVideo.load();
     sectionVideo.oncanplay = () => {
-      if (started) return;
+      if (started || !sectionActiveRef.current) return;
       started = true;
       setSectionVisible(true);
       sectionVideo.play().catch(() => {});
     };
-    sectionVideo.onended = () => {
-      setSectionVisible(false);
-      setActiveSection(null);
-      setCurrentImages([]);
-      setCycleImages([]);
-      setHighlightedSection(null);
-      setOverlayVisible(true);
-    };
-    sectionVideo.onerror = () => {
-      setSectionVisible(false);
-      setActiveSection(null);
-      setCurrentImages([]);
-      setCycleImages([]);
-      setHighlightedSection(null);
-      setOverlayVisible(true);
-    };
+    sectionVideo.onended = () => exitOverlay();
+    sectionVideo.onerror = () => exitOverlay();
   };
 
   return (
@@ -331,6 +494,7 @@ export default function Banner() {
         language={language}
         section={activeSection}
         onCueChange={(idx, cues) => {
+          if (!sectionActiveRef.current) return;
           cuesRef.current = cues || [];
 
           // Intro: highlight buttons instead of showing images
@@ -357,6 +521,11 @@ export default function Banner() {
           }
         }}
       />
+
+      {/* Blur backdrop — behind images, subtitles, and avatar during section playback */}
+      {sectionVisible && (
+        <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-sm transition-opacity duration-300" />
+      )}
 
       {/* Slideshow images — synced to SRT cues; 2x2 grid for 3-4 items, row for 1-2 */}
       {currentImages.length > 0 && (
@@ -443,6 +612,7 @@ export default function Banner() {
         </div>
       )}
 
+
       {/* Bottom-left: Resume button */}
       <a href="https://drive.google.com/file/d/1RyQRN930zeyjLZe2o_J52zWEB1kWyWQF" target="_blank" rel="noopener noreferrer" className="absolute bottom-3 left-3 z-[6] px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md text-white/70 text-[11px] sm:text-xs font-medium tracking-wide hover:text-white hover:bg-white/20 transition-all cursor-pointer opacity-50 hover:opacity-100 no-underline">
         CV
@@ -469,44 +639,131 @@ export default function Banner() {
         )}
       </button>
 
-      {/* Genie video — always rendered so ref is available, hidden when inactive */}
+      {/* Genie background layer — muted idle loop, flicker safety net */}
       <video
-        ref={genieVideoRef}
+        ref={genieIdleRef}
         playsInline
-        className="absolute z-[6] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-h-full max-w-full object-contain transition-opacity duration-300"
-        style={{ opacity: genieState ? 1 : 0, pointerEvents: genieState ? 'auto' : 'none' }}
+        className="absolute z-[6] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-h-full max-w-full object-contain"
+        style={{ opacity: genieState ? 1 : 0, pointerEvents: 'none' }}
+      />
+      {/* Genie foreground layer — current video with sound, always on top */}
+      <video
+        ref={genieActionRef}
+        playsInline
+        className="absolute z-[6] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-h-full max-w-full object-contain"
+        style={{ opacity: genieState ? 1 : 0, pointerEvents: 'none' }}
       />
 
-      {/* Genie Game UI — close button and action buttons */}
-      {genieState && (
-        <div className="absolute inset-0 z-[7] pointer-events-none">
-          {/* Close button */}
-          <button
-            onClick={exitGenie}
-            className="absolute top-3 left-3 pointer-events-auto text-white/60 hover:text-white transition-colors cursor-pointer"
-            aria-label="Close Genie Game"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-
-          {/* Genie action buttons — styled like section nav buttons */}
-          {genieState === 'idle' && (
-            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 px-4 pointer-events-auto">
-              {GENIE_CONFIG.actions.map((action) => (
-                <button
-                  key={action.label}
-                  onClick={() => handleGenieAction(action.video)}
-                  disabled={!genieButtonsEnabled}
-                  className="px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium tracking-wide border cursor-pointer transition-all bg-white/10 backdrop-blur-sm border-white/15 text-white/70 hover:text-white hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  {action.label}
-                </button>
-              ))}
-            </div>
-          )}
+      {/* Genie action buttons */}
+      {genieState === 'idle' && (
+        <div className="absolute bottom-3 left-0 right-0 z-[7] flex justify-center gap-1.5 px-4">
+          {GENIE_CONFIG.actions.map((action) => (
+            <button
+              key={action.label}
+              onClick={() => handleGenieAction(action.video)}
+              disabled={!genieButtonsEnabled}
+              className="px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium tracking-wide border cursor-pointer transition-all bg-white/10 backdrop-blur-sm border-white/15 text-white/70 hover:text-white hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              {action.label}
+            </button>
+          ))}
         </div>
+      )}
+
+      {/* Hackathon video — centered, width = banner - 2×avatar width */}
+      <video
+        ref={hackathonVideoRef}
+        playsInline
+        className="absolute z-[6] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 object-contain"
+        style={{ opacity: hackathonState === 'playing' ? 1 : 0, pointerEvents: 'none', maxHeight: '100%', maxWidth: '62%' }}
+      />
+
+      {/* Hackathon thumbnail picker — vertical, hidden during playback */}
+      {hackathonState === 'picking' && (
+        <div className="absolute inset-0 z-[7] flex flex-col items-center justify-evenly py-2 px-3 pointer-events-none">
+          {HACKATHON_CONFIG.videos.map((item) => (
+            <button
+              key={item.label}
+              onClick={() => playHackathonVideo(item.video)}
+              className="pointer-events-auto group relative rounded-lg overflow-hidden border-2 border-white/20 hover:border-white/60 transition-all cursor-pointer shadow-lg hover:shadow-xl hover:scale-105 flex-1 min-h-0"
+            >
+              <img
+                src={`${ASSET_CONFIG.basePath}/${HACKATHON_CONFIG.basePath}/${item.thumb}`}
+                alt={item.label}
+                className="h-full object-contain"
+              />
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors" />
+              <span className="absolute bottom-0 left-0 right-0 text-[10px] sm:text-xs font-medium text-white text-center py-0.5 bg-black/50 backdrop-blur-sm">
+                {item.label}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Project showcase overlay */}
+      {showcaseProject && PROJECT_SHOWCASE[showcaseProject] && (() => {
+        const cfg = PROJECT_SHOWCASE[showcaseProject];
+        const subtitle = cfg.subtitles?.[showcaseImageIdx];
+        return (
+          <div className="absolute inset-0 z-[4] flex flex-col bg-black/60 backdrop-blur-sm">
+            {/* Image — vertically centered, width constrained to avoid avatar */}
+            <div className="flex-1 flex items-center justify-center" style={{ maxWidth: '62%', margin: '0 auto' }}>
+              {cfg.images ? (
+                <img
+                  key={showcaseImageIdx}
+                  src={`${ASSET_CONFIG.basePath}/${cfg.images[showcaseImageIdx]}`}
+                  alt={`${showcaseProject} ${showcaseImageIdx + 1}`}
+                  className="rounded-lg shadow-xl object-contain transition-opacity duration-500"
+                  style={{ maxHeight: '80%', maxWidth: '100%' }}
+                />
+              ) : cfg.image ? (
+                <img
+                  src={`${ASSET_CONFIG.basePath}/images/${cfg.image}`}
+                  alt={showcaseProject}
+                  className="rounded-lg shadow-xl object-contain"
+                  style={{ maxHeight: '80%', maxWidth: '100%' }}
+                />
+              ) : (
+                <div className="flex flex-col items-center gap-3 text-center px-4">
+                  <h2 className="text-white text-lg sm:text-xl font-bold tracking-tight drop-shadow-lg">
+                    {showcaseProject}
+                  </h2>
+                  <ul className="text-left space-y-1.5">
+                    {cfg.bullets.map((b, i) => (
+                      <li key={i} className="text-white/90 text-[10px] sm:text-xs leading-snug flex items-start gap-1.5">
+                        <span className="text-blue-400 mt-0.5">&#x2022;</span>
+                        <span>{b}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            {/* Subtitle — bottom center, matching existing subtitle style */}
+            {subtitle && (
+              <div className="absolute bottom-2 left-0 right-0 z-[6] flex justify-center pointer-events-none">
+                <p className="text-white text-[9px] sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[60%]"
+                   style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
+                  {subtitle}
+                </p>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
+      {/* Universal close button — shown for any overlay (genie, hackathon, showcase) */}
+      {(genieState || hackathonState || showcaseProject) && (
+        <button
+          onClick={exitOverlay}
+          className="absolute top-3 left-3 z-[8] text-white/60 hover:text-white transition-colors cursor-pointer"
+          aria-label="Close overlay"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
       )}
 
       {/* Segment indicator overlay */}
@@ -538,4 +795,6 @@ export default function Banner() {
       )}
     </div>
   );
-}
+});
+
+export default Banner;

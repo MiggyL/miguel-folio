@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import Banner, { PROJECT_SEGMENTS, GENIE_CONFIG } from './components/Banner';
+import Banner, { PROJECT_SEGMENTS, PROJECT_SHOWCASE } from './components/Banner';
 
 const PROJECTS = [
   { title: 'DTR System', description: 'POC for a daily time record system with calendar view. Solo-built, no docs.', tech: ['Node.js', 'Express.js', 'MongoDB', 'AngularJS'] },
-  { title: 'Interactive Resume', description: 'AI chat with Llama, Gemma & Mistral APIs. Lip-sync avatars in EN/DE.', tech: ['Next.js', 'Kiro', 'ChatGPT', 'Claude', 'ElevenLabs', 'Sora 2'] },
   { title: 'PPE Detection (Thesis)', description: 'Real-time PPE monitoring via YOLOv9. Alerts managers on Telegram.', tech: ['Python', 'YOLOv9', 'Google Colab'] },
   { title: 'Sheets-to-Form Automation', description: 'Chrome extension automating Google Sheets to web form data entry.', tech: ['Python', 'Flask', 'Selenium'] },
   { title: 'Food Price Forecasting', description: 'Time-series forecasting for food prices using ARIMA.', tech: ['Orange Data Mining', 'ARIMA'] },
@@ -71,11 +70,15 @@ function TechTags({ tech, maxVisible = 2 }) {
 }
 
 export default function Home() {
+  const bannerRef = useRef(null);
+
   const handleCardClick = (title) => {
     if (title === 'Genie Game') {
-      window.dispatchEvent(new Event('activate-genie'));
-    } else if (PROJECT_SEGMENTS[title]) {
-      // TODO: wire to Banner's playSegments via ref/callback
+      bannerRef.current?.activateGenie();
+    } else if (title === 'Hackathon Videos') {
+      bannerRef.current?.activateHackathon();
+    } else if (PROJECT_SHOWCASE[title]) {
+      bannerRef.current?.activateShowcase(title);
     }
   };
 
@@ -109,7 +112,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-4">
         {/* Video Header */}
-        <Banner />
+        <Banner ref={bannerRef} />
 
         {/* Projects Section */}
         <div className="mt-4 mb-4">
@@ -118,9 +121,7 @@ export default function Home() {
               <div
                 key={project.title}
                 onClick={() => handleCardClick(project.title)}
-                className={`bg-white rounded-xl p-3 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-visible ${
-                  PROJECT_SEGMENTS[project.title] ? 'cursor-pointer' : ''
-                }`}
+                className="bg-white rounded-xl p-3 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-visible cursor-pointer"
               >
                 <h5 className="text-xs font-semibold text-gray-900 mb-1">
                   {project.title}

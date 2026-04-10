@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:03,000
+A DTR system maintained by 5 people. Miguel built a solo POC to prove AI can cut that cost.
+
+2
+00:00:03,000 --> 00:00:06,000
+Full-stack solo build — Express REST API, MongoDB, AngularJS. One dev. No docs. No onboarding.
+
+3
+00:00:06,000 --> 00:00:09,000
+The POC proved it. AI-assisted development can dramatically reduce labor cost.
