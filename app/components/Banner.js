@@ -106,7 +106,7 @@ const PROJECT_SHOWCASE = {
   'DTR System': {
     images: ['dtr/1.png', 'dtr/2.png', 'dtr/3.png'],
     subtitles: [
-      'A DTR system maintained by 5 people. Miguel built a solo POC to prove AI can cut that cost.',
+      'A DTR system maintained by 5 people. I built a solo POC to prove AI can cut that cost.',
       'Full-stack solo build — Express REST API, MongoDB, AngularJS. One dev. No docs. No onboarding.',
       'The POC proved it. AI-assisted development can dramatically reduce labor cost.',
     ],
@@ -117,7 +117,12 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'PPE Detection (Thesis)': {
-    image: 'projects-1-1.png',
+    media: ['ppe/1.mp4', 'ppe/2.jpg', 'ppe/3.png'],
+    subtitles: [
+      'Construction sites are dangerous. I built an AI that watches.',
+      'I fine-tuned YOLOv9 on a custom dataset — 92%+ mAP on hardhat, vest, and goggle detection.',
+      'Violations trigger instant Telegram alerts to site managers. Real-time.',
+    ],
     bullets: [
       'Fine-tuned YOLOv9 on custom PPE dataset (hardhat, vest, goggles) achieving 92%+ mAP',
       'Real-time CCTV inference pipeline with Telegram alerts to site managers on violations',
@@ -125,23 +130,38 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'Sheets-to-Form Automation': {
-    image: 'projects-2-1.png',
+    images: ['sheets-to-form/1.png', 'sheets-to-form/2.png', 'sheets-to-form/3.png'],
+    subtitles: [
+      'Hundreds of rows. One web form. Hours of copy-paste. I said no.',
+      'Chrome extension + Flask + Selenium — reads the sheet, fills the forms, handles errors.',
+      'From manual copy-paste to automatic form fill-up. One click, entire form filled.',
+    ],
     bullets: [
-      'Chrome extension + Flask backend automating Google Sheets row-to-web-form data entry',
+      'Chrome extension + Flask backend automating bulk digital asset uploads from Google Sheets',
       'Selenium WebDriver for headless form submission with error recovery and retry logic',
-      'Eliminated hours of manual data entry for a real administrative workflow',
+      'Eliminated hours of manual data entry for stock photos, greeting cards, and digital assets',
     ],
   },
   'Food Price Forecasting': {
-    image: 'projects-3-1.png',
+    images: ['price-forecasting/1.png', 'price-forecasting/2.png', 'price-forecasting/3.png'],
+    subtitles: [
+      'Food prices in the Philippines are unpredictable. Using WFP data, I built a model to forecast them.',
+      'ARIMA time-series model built in Orange Data Mining — import, filter, transform, forecast, evaluate.',
+      'Forecasts for maize, rice, beans, fish, and sugar — evaluated with RMSE, MAE, MAPE, and R².',
+    ],
     bullets: [
-      'ARIMA time-series model forecasting Philippine food commodity prices',
-      'Feature engineering: seasonal decomposition, stationarity tests (ADF), differencing',
-      'Built in Orange Data Mining with custom Python scripting nodes',
+      'ARIMA time-series forecasting using World Food Programme price data (2019+)',
+      'Orange Data Mining pipeline: data filtering, time-series transformation, ARIMA with confidence intervals',
+      'Evaluated with RMSE, MAE, MAPE, R² and cross-validation across Philippine regional markets',
     ],
   },
   'Local LLM App': {
-    image: 'projects-4-1.png',
+    images: ['local-llm/1.png', 'local-llm/2.png', 'local-llm/3.png'],
+    subtitles: [
+      'No API keys. No cloud. I run a 7B parameter LLM on a single GPU.',
+      'LangChain orchestration + RAG pipeline + quantized Mistral-7B inference.',
+      'A fully local AI assistant. Private, fast, and surprisingly capable.',
+    ],
     bullets: [
       'LangChain orchestration with Mistral-7B running fully local — no API dependency',
       'Hugging Face Transformers quantized inference on consumer GPU',
@@ -149,27 +169,42 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'YouTube Q&A Tool': {
-    image: 'projects-5-1.png',
+    media: ['youtube/1.mp4', 'youtube/2.png', 'youtube/3.mp4'],
+    subtitles: [
+      'A 2-hour YouTube video. You have one question. I built a Google Colab notebook for that.',
+      'LangChain extracts transcripts, chunks text, embeds vectors into FAISS, and retrieves answers.',
+      'Full RAG pipeline in a notebook — from raw video to precise, sourced answers powered by Mistral-7B.',
+    ],
     bullets: [
-      'Auto-GPT agent extracting YouTube transcripts via YouTube Data API v3',
-      'LLM-powered Q&A: parses transcript into chunks, embeds, and retrieves answers',
-      'End-to-end pipeline from URL input to conversational answers over video content',
+      'Google Colab notebook: paste a YouTube URL, ask any question about the video',
+      'RAG pipeline: transcript extraction, text chunking, FAISS vector search, Mistral-7B inference',
+      'Built with LangChain, HuggingFace Embeddings, and 4-bit quantized local LLM',
     ],
   },
   'RPSLS Game': {
-    image: null,
+    images: ['rpsls/1.png', 'rpsls/2.png', 'rpsls/3.png'],
+    subtitles: [
+      'Rock Paper Scissors Lizard Spock — I built this for Digital Data Day in Manila.',
+      'Street Fighter-style UI with face avatars and hand moves. Deployed as RonnieAI on Microsoft Bot Framework.',
+      'Hundreds of players in a packed room. Knockout rounds on their phones. One champion. It was wild.',
+    ],
     bullets: [
       'Rock Paper Scissors Lizard Spock built on Microsoft Bot Framework (Adaptive Cards)',
-      'Deployed as RonnieAI chatbot for Accenture Digital Data Day event',
-      'Game logic with win/loss/draw state machine and animated card responses',
+      'Deployed as RonnieAI — hundreds of players in a knockout tournament at Digital Data Day Manila',
+      'Packed room, mobile-based play, bracket elimination rounds until one champion remains',
     ],
   },
   'HTTYD Telegram Bots': {
-    image: null,
+    images: ['httyd/1.png', 'httyd/2.png', 'httyd/3.png'],
+    subtitles: [
+      'What if you could chat with dragons? I built the Telegram bots for that.',
+      'Players prompt the AI dragons through n8n workflows. Each dragon thinks and reacts differently.',
+      'Played at Cambridge University Press & Assessment\'s Digital Data Day — both Manila and UK.',
+    ],
     bullets: [
       'Multiple Telegram bots with distinct dragon character personalities',
-      'Built with BotFather API for "How To Train Your AI Dragon" interactive game',
-      'Persona-driven conversational AI with context-aware dialogue',
+      'n8n workflow automation with player-driven AI dragon prompts',
+      'Played at Digital Data Day — Cambridge University Press & Assessment Manila and UK',
     ],
   },
 };
@@ -221,17 +256,33 @@ const Banner = forwardRef(function Banner(props, ref) {
     return () => clearInterval(id);
   }, [cycleImages]);
 
-  // Cycle showcase images for projects with multiple images (e.g. DTR)
+  // Cycle showcase media (images cycle on 3s timer; videos advance on ended)
+  const showcaseVideoRef = useRef(null);
+  const showcaseTimerRef = useRef(null);
+
+  // Get the media list for the current showcase project
+  const showcaseMedia = showcaseProject
+    ? PROJECT_SHOWCASE[showcaseProject]?.media || PROJECT_SHOWCASE[showcaseProject]?.images
+    : null;
+
+  const advanceShowcase = useCallback(() => {
+    if (!showcaseMedia || showcaseMedia.length <= 1) return;
+    setShowcaseImageIdx((prev) => (prev + 1) % showcaseMedia.length);
+  }, [showcaseMedia]);
+
+  // Schedule next advance based on current media type
   useEffect(() => {
-    if (!showcaseProject) return;
-    const cfg = PROJECT_SHOWCASE[showcaseProject];
-    if (!cfg?.images || cfg.images.length <= 1) return;
-    setShowcaseImageIdx(0);
-    const id = setInterval(() => {
-      setShowcaseImageIdx((prev) => (prev + 1) % cfg.images.length);
-    }, 3000);
-    return () => clearInterval(id);
-  }, [showcaseProject]);
+    if (!showcaseProject || !showcaseMedia || showcaseMedia.length <= 1) return;
+    const current = showcaseMedia[showcaseImageIdx];
+    const isVideo = current?.endsWith('.mp4');
+
+    if (!isVideo) {
+      // Image: advance after 3 seconds
+      showcaseTimerRef.current = setTimeout(advanceShowcase, 3000);
+      return () => clearTimeout(showcaseTimerRef.current);
+    }
+    // Video: wait for onEnded (handled in JSX)
+  }, [showcaseProject, showcaseImageIdx, showcaseMedia, advanceShowcase]);
 
   // Preload all genie videos into blob URLs for instant playback
   const genieBlobsRef = useRef({});
@@ -326,6 +377,9 @@ const Banner = forwardRef(function Banner(props, ref) {
     if (hv) { hv.onended = null; hv.onerror = null; hv.pause(); hv.src = ''; }
     setHackathonState(null);
     // Showcase cleanup
+    const scv = showcaseVideoRef.current;
+    if (scv) { scv.pause(); scv.removeAttribute('src'); scv.load(); }
+    if (showcaseTimerRef.current) clearTimeout(showcaseTimerRef.current);
     setShowcaseProject(null);
     setShowcaseImageIdx(0);
     // Section cleanup
@@ -639,6 +693,11 @@ const Banner = forwardRef(function Banner(props, ref) {
         )}
       </button>
 
+      {/* Blur backdrop — behind genie videos during Genie Game */}
+      {genieState && (
+        <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-sm transition-opacity duration-300" />
+      )}
+
       {/* Genie background layer — muted idle loop, flicker safety net */}
       <video
         ref={genieIdleRef}
@@ -668,6 +727,11 @@ const Banner = forwardRef(function Banner(props, ref) {
             </button>
           ))}
         </div>
+      )}
+
+      {/* Blur backdrop — behind hackathon videos */}
+      {hackathonState && (
+        <div className="absolute inset-0 z-[3] bg-black/60 backdrop-blur-sm transition-opacity duration-300" />
       )}
 
       {/* Hackathon video — centered, width = banner - 2×avatar width */}
@@ -704,25 +768,40 @@ const Banner = forwardRef(function Banner(props, ref) {
       {/* Project showcase overlay */}
       {showcaseProject && PROJECT_SHOWCASE[showcaseProject] && (() => {
         const cfg = PROJECT_SHOWCASE[showcaseProject];
+        const mediaList = cfg.media || cfg.images;
+        const currentMedia = mediaList?.[showcaseImageIdx];
+        const isVideo = currentMedia?.endsWith('.mp4');
         const subtitle = cfg.subtitles?.[showcaseImageIdx];
         return (
           <div className="absolute inset-0 z-[4] flex flex-col bg-black/60 backdrop-blur-sm">
-            {/* Image — vertically centered, width constrained to avoid avatar */}
-            <div className="flex-1 flex items-center justify-center" style={{ maxWidth: '62%', margin: '0 auto' }}>
-              {cfg.images ? (
+            {/* Media — vertically centered, constrained to avoid avatar and subtitle */}
+            <div className="flex-1 flex items-center justify-center" style={{ margin: '0 auto', paddingTop: '8px', paddingBottom: '32px', minHeight: 0, maxWidth: '62%' }}>
+              {currentMedia && isVideo ? (
+                <video
+                  key={showcaseImageIdx}
+                  ref={showcaseVideoRef}
+                  src={`${ASSET_CONFIG.basePath}/${currentMedia}`}
+                  autoPlay
+                  muted
+                  playsInline
+                  onEnded={advanceShowcase}
+                  className="rounded-lg shadow-xl"
+                  style={{ maxHeight: '100%', maxWidth: '100%' }}
+                />
+              ) : currentMedia ? (
                 <img
                   key={showcaseImageIdx}
-                  src={`${ASSET_CONFIG.basePath}/${cfg.images[showcaseImageIdx]}`}
+                  src={`${ASSET_CONFIG.basePath}/${currentMedia}`}
                   alt={`${showcaseProject} ${showcaseImageIdx + 1}`}
-                  className="rounded-lg shadow-xl object-contain transition-opacity duration-500"
-                  style={{ maxHeight: '80%', maxWidth: '100%' }}
+                  className="rounded-lg shadow-xl transition-opacity duration-500"
+                  style={{ maxHeight: '100%', maxWidth: '100%' }}
                 />
               ) : cfg.image ? (
                 <img
                   src={`${ASSET_CONFIG.basePath}/images/${cfg.image}`}
                   alt={showcaseProject}
-                  className="rounded-lg shadow-xl object-contain"
-                  style={{ maxHeight: '80%', maxWidth: '100%' }}
+                  className="rounded-lg shadow-xl"
+                  style={{ maxHeight: '100%', maxWidth: '100%' }}
                 />
               ) : (
                 <div className="flex flex-col items-center gap-3 text-center px-4">

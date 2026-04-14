@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:03,000
+Food prices in the Philippines are unpredictable. Using WFP data, I built a model to forecast them.
+
+2
+00:00:03,000 --> 00:00:06,000
+ARIMA time-series model built in Orange Data Mining — import, filter, transform, forecast, evaluate.
+
+3
+00:00:06,000 --> 00:00:09,000
+Forecasts for maize, rice, beans, fish, and sugar — evaluated with RMSE, MAE, MAPE, and R².

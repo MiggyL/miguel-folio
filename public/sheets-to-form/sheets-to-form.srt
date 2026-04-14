@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:03,000
+Hundreds of rows. One web form. Hours of copy-paste. I said no.
+
+2
+00:00:03,000 --> 00:00:06,000
+Chrome extension + Flask + Selenium — reads the sheet, fills the forms, handles errors.
+
+3
+00:00:06,000 --> 00:00:09,000
+From manual copy-paste to automatic form fill-up. One click, entire form filled.

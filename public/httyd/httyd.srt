@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:03,000
+What if you could chat with dragons? I built the Telegram bots for that.
+
+2
+00:00:03,000 --> 00:00:06,000
+Players prompt the AI dragons through n8n workflows. Each dragon thinks and reacts differently.
+
+3
+00:00:06,000 --> 00:00:09,000
+Played at Cambridge University Press & Assessment's Digital Data Day — both Manila and UK.
