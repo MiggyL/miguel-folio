@@ -8,38 +8,38 @@ import Subtitles from './Subtitles';
 // Maps section → cue index → image filename(s) shown during that cue
 const SECTION_IMAGES = {
   'Objective': [
-    ['objective-1-1.png'],                                                                    // cue 1: programming / DevOps
-    ['objective-2-1.png', 'objective-2-2.png', 'objective-2-3.png', 'objective-2-4.png'],    // cue 2: Power Platform, Python, JavaScript, Cloud
-    ['objective-3-1.png', 'objective-3-2.png'],                                              // cue 3: Azure & OCI
+    ['objective-1-1.webp'],                                                                    // cue 1: programming / DevOps
+    ['objective-2-1.webp', 'objective-2-2.webp', 'objective-2-3.webp', 'objective-2-4.webp'],    // cue 2: Power Platform, Python, JavaScript, Cloud
+    ['objective-3-1.webp', 'objective-3-2.webp'],                                              // cue 3: Azure & OCI
   ],
   'Skills': [
-    ['skills-1-1.png', 'skills-1-2.png', 'skills-1-3.png', 'skills-1-4.png'],               // cue 1: Power Platform, Automate, Apps, Dataverse
-    ['skills-2-1.png', 'skills-2-2.png', 'skills-2-3.png'],                                 // cue 2: Python, JavaScript, AI
-    ['skills-3-1.png', 'skills-3-2.png'],                                                    // cue 3: Azure & OCI
+    ['skills-1-1.webp', 'skills-1-2.webp', 'skills-1-3.webp', 'skills-1-4.webp'],               // cue 1: Power Platform, Automate, Apps, Dataverse
+    ['skills-2-1.webp', 'skills-2-2.webp', 'skills-2-3.webp'],                                 // cue 2: Python, JavaScript, AI
+    ['skills-3-1.webp', 'skills-3-2.webp'],                                                    // cue 3: Azure & OCI
   ],
   'Applied Skills': [
-    ['applied-skills-1-1.png'],                                                              // cue 1: ms-applied-power-automate
-    ['applied-skills-2-1.png', 'applied-skills-2-2.png'],                                   // cue 2: ms-applied-power-apps-canvas, dataverse
+    ['applied-skills-1-1.webp'],                                                              // cue 1: ms-applied-power-automate
+    ['applied-skills-2-1.webp', 'applied-skills-2-2.webp'],                                   // cue 2: ms-applied-power-apps-canvas, dataverse
   ],
   'Projects': [
-    ['projects-1-1.png'],                                                                    // cue 1: PPE CCTV
-    ['projects-2-1.png'],                                                                    // cue 2: ALOPA Chrome Extension
-    ['projects-3-1.png'],                                                                    // cue 3: Food Price Forecasting
-    ['projects-4-1.png'],                                                                    // cue 4: Local LLM (Mistral 7B)
-    ['projects-5-1.png'],                                                                    // cue 5: YouTube Q&A
+    ['projects-1-1.webp'],                                                                    // cue 1: PPE CCTV
+    ['projects-2-1.webp'],                                                                    // cue 2: ALOPA Chrome Extension
+    ['projects-3-1.webp'],                                                                    // cue 3: Food Price Forecasting
+    ['projects-4-1.webp'],                                                                    // cue 4: Local LLM (Mistral 7B)
+    ['projects-5-1.webp'],                                                                    // cue 5: YouTube Q&A
   ],
   'Certifications': [
-    ['certifications-02-1.png', 'certifications-02-2.png'],                                  // cue 01: general intro — MS & Oracle logos
-    ['certifications-02-1.png', 'certifications-02-2.png'],                                  // cue 02: Microsoft & Oracle logos
-    ['certifications-03-1.png', 'certifications-03-2.png'],                                  // cue 03: ms-azure-ai-fundamentals, ai-engineer
-    ['certifications-04-1.png', 'certifications-04-2.png'],                                  // cue 04: ms-azure-administrator, power-platform
-    ['certifications-05-1.png'],                                                             // cue 05: oci-logo
-    ['certifications-06-1.png', 'certifications-06-2.png'],                                  // cue 06: oci-architect-associate, multicloud
-    ['certifications-07-1.png', 'certifications-07-2.png', 'certifications-07-3.png'],       // cue 07: oci-genai, ai-foundations, foundations
-    ['certifications-08-1.png', 'certifications-08-2.png'],                                  // cue 08: oci-data-management, specialty
-    ['certifications-09-1.png', 'certifications-09-2.png'],                                  // cue 09: pcep-python, jse-javascript
-    ['certifications-10-1.png'],                                                             // cue 10: neo4j-certified-professional
-    ['certifications-11-1.png', 'certifications-11-2.png'],                                  // cue 11: neo4j-graph-data-science, certified-professional
+    ['certifications-02-1.webp', 'certifications-02-2.webp'],                                  // cue 01: general intro — MS & Oracle logos
+    ['certifications-02-1.webp', 'certifications-02-2.webp'],                                  // cue 02: Microsoft & Oracle logos
+    ['certifications-03-1.webp', 'certifications-03-2.webp'],                                  // cue 03: ms-azure-ai-fundamentals, ai-engineer
+    ['certifications-04-1.webp', 'certifications-04-2.webp'],                                  // cue 04: ms-azure-administrator, power-platform
+    ['certifications-05-1.webp'],                                                             // cue 05: oci-logo
+    ['certifications-06-1.webp', 'certifications-06-2.webp'],                                  // cue 06: oci-architect-associate, multicloud
+    ['certifications-07-1.webp', 'certifications-07-2.webp', 'certifications-07-3.webp'],       // cue 07: oci-genai, ai-foundations, foundations
+    ['certifications-08-1.webp', 'certifications-08-2.webp'],                                  // cue 08: oci-data-management, specialty
+    ['certifications-09-1.webp', 'certifications-09-2.webp'],                                  // cue 09: pcep-python, jse-javascript
+    ['certifications-10-1.webp'],                                                             // cue 10: neo4j-certified-professional
+    ['certifications-11-1.webp', 'certifications-11-2.webp'],                                  // cue 11: neo4j-graph-data-science, certified-professional
   ],
 };
 
@@ -95,16 +95,16 @@ const GENIE_CONFIG = {
 const HACKATHON_CONFIG = {
   basePath: 'hackathon',
   videos: [
-    { label: 'RecruitBolt', video: 'recruit-bolt.mp4', thumb: 'recruit-bolt.jpg' },
-    { label: 'SpecSync', video: 'specsync.mp4', thumb: 'specsync.jpg' },
-    { label: 'r/factchecker', video: 'r-factchecker.mp4', thumb: 'r-factchecker.jpg' },
+    { label: 'RecruitBolt', video: 'recruit-bolt.mp4', thumb: 'recruit-bolt.webp' },
+    { label: 'SpecSync', video: 'specsync.mp4', thumb: 'specsync.webp' },
+    { label: 'r/factchecker', video: 'r-factchecker.mp4', thumb: 'r-factchecker.webp' },
   ],
 };
 
 // Project showcase — lightweight overlay with hero image + credibility bullets
 const PROJECT_SHOWCASE = {
   'DTR System': {
-    images: ['dtr/1.png', 'dtr/2.png', 'dtr/3.png'],
+    images: ['dtr/1.webp', 'dtr/2.webp', 'dtr/3.webp'],
     subtitles: [
       'A DTR system maintained by 5 people. I built a solo POC to prove AI can cut that cost.',
       'Full-stack solo build — Express REST API, MongoDB, AngularJS. One dev. No docs. No onboarding.',
@@ -117,7 +117,7 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'PPE Detection (Thesis)': {
-    media: ['ppe/1.mp4', 'ppe/2.jpg', 'ppe/3.png'],
+    media: ['ppe/1.mp4', 'ppe/2.webp', 'ppe/3.webp'],
     subtitles: [
       'Construction sites are dangerous. I built an AI that watches.',
       'I fine-tuned YOLOv9 on a custom dataset — 92%+ mAP on hardhat, vest, and goggle detection.',
@@ -130,7 +130,7 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'Sheets-to-Form Automation': {
-    images: ['sheets-to-form/1.png', 'sheets-to-form/2.png', 'sheets-to-form/3.png'],
+    images: ['sheets-to-form/1.webp', 'sheets-to-form/2.webp', 'sheets-to-form/3.webp'],
     subtitles: [
       'Hundreds of rows. One web form. Hours of copy-paste. I said no.',
       'Chrome extension + Flask + Selenium — reads the sheet, fills the forms, handles errors.',
@@ -143,7 +143,7 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'Food Price Forecasting': {
-    images: ['price-forecasting/1.png', 'price-forecasting/2.png', 'price-forecasting/3.png'],
+    images: ['price-forecasting/1.webp', 'price-forecasting/2.webp', 'price-forecasting/3.webp'],
     subtitles: [
       'Food prices in the Philippines are unpredictable. Using WFP data, I built a model to forecast them.',
       'ARIMA time-series model built in Orange Data Mining — import, filter, transform, forecast, evaluate.',
@@ -156,7 +156,7 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'Local LLM App': {
-    images: ['local-llm/1.png', 'local-llm/2.png', 'local-llm/3.png'],
+    images: ['local-llm/1.webp', 'local-llm/2.webp', 'local-llm/3.webp'],
     subtitles: [
       'No API keys. No cloud. I run a 7B parameter LLM on a single GPU.',
       'LangChain orchestration + RAG pipeline + quantized Mistral-7B inference.',
@@ -169,7 +169,7 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'YouTube Q&A Tool': {
-    media: ['youtube/1.mp4', 'youtube/2.png', 'youtube/3.mp4'],
+    media: ['youtube/1.mp4', 'youtube/2.webp', 'youtube/3.mp4'],
     subtitles: [
       'A 2-hour YouTube video. You have one question. I built a Google Colab notebook for that.',
       'LangChain extracts transcripts, chunks text, embeds vectors into FAISS, and retrieves answers.',
@@ -182,7 +182,7 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'RPSLS Game': {
-    images: ['rpsls/1.png', 'rpsls/2.png', 'rpsls/3.png'],
+    images: ['rpsls/1.webp', 'rpsls/2.webp', 'rpsls/3.webp'],
     subtitles: [
       'Rock Paper Scissors Lizard Spock — I built this for Digital Data Day in Manila.',
       'Street Fighter-style UI with face avatars and hand moves. Deployed as RonnieAI on Microsoft Bot Framework.',
@@ -195,7 +195,7 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'HTTYD Telegram Bots': {
-    images: ['httyd/1.png', 'httyd/2.png', 'httyd/3.png'],
+    images: ['httyd/1.webp', 'httyd/2.webp', 'httyd/3.webp'],
     subtitles: [
       'What if you could chat with dragons? I built the Telegram bots for that.',
       'Players prompt the AI dragons through n8n workflows. Each dragon thinks and reacts differently.',

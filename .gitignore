@@ -36,5 +36,8 @@ yarn-error.log*
 .open-next/
 wrangler.toml.local
 
+# Raw/backup assets
+raw/
+
 # Claude
 .claude/settings.local.json
