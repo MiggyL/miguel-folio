@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:10,760
+Ein DTR-System, das von fünf Personen gewartet wird. Ich habe einen Solo-Prototyp entwickelt, um zu beweisen, dass KI diese Kosten senken kann.
+
+2
+00:00:10,760 --> 00:00:21,880
+Full-Stack Solo-Entwicklung — Express REST API, MongoDB, AngularJS. Ein Entwickler. Keine Dokumentation. Kein Onboarding.
+
+3
+00:00:21,880 --> 00:00:28,360
+Der Proof of Concept hat es bewiesen. KI-gestützte Entwicklung kann die Arbeitskosten drastisch senken.

@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:07,600
+Ein zweistündiges YouTube-Video. Sie haben eine Frage. Dafür habe ich ein Google Colab Notebook erstellt.
+
+2
+00:00:07,600 --> 00:00:17,100
+LangChain extrahiert Transkripte, unterteilt den Text in Blöcke, bettet Vektoren in FAISS ein und ruft die Antworten ab.
+
+3
+00:00:17,100 --> 00:00:27,000
+Die komplette RAG-Pipeline in einem Notebook — vom Rohvideo bis zu präzisen, quellenbasierten Antworten, unterstützt von Mistral-7B.

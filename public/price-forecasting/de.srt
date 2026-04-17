@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:11,620
+Die Lebensmittelpreise auf den Philippinen sind unberechenbar. Mit Hilfe von Daten des Welternährungsprogramms habe ich ein Modell zur Prognose dieser Preise entwickelt.
+
+2
+00:00:11,620 --> 00:00:21,660
+ARIMA-Zeitreihenmodell erstellt in Orange Data Mining — Importieren, Filtern, Transformieren, Prognostizieren, Auswerten.
+
+3
+00:00:21,660 --> 00:00:31,800
+Prognosen für Mais, Reis, Bohnen, Fisch und Zucker — bewertet mit RMSE, MAE, MAPE und R².

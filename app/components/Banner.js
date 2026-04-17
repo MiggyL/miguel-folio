@@ -94,6 +94,8 @@ const GENIE_CONFIG = {
 // Hackathon Videos config — simple video picker (no idle/enter sequence)
 const HACKATHON_CONFIG = {
   basePath: 'hackathon',
+  avatar: { EN: 'hackathon/en.mp4', DE: 'hackathon/de.mp4' },
+  srt: { EN: 'hackathon/en.srt', DE: 'hackathon/de.srt' },
   videos: [
     { label: 'RecruitBolt', video: 'recruit-bolt.mp4', thumb: 'recruit-bolt.webp' },
     { label: 'SpecSync', video: 'specsync.mp4', thumb: 'specsync.webp' },
@@ -104,6 +106,8 @@ const HACKATHON_CONFIG = {
 // Project showcase — lightweight overlay with hero image + credibility bullets
 const PROJECT_SHOWCASE = {
   'DTR System': {
+    avatar: { EN: 'dtr/en.mp4', DE: 'dtr/de.mp4' },
+    srt: { EN: 'dtr/en.srt', DE: 'dtr/de.srt' },
     images: ['dtr/1.webp', 'dtr/2.webp', 'dtr/3.webp'],
     subtitles: [
       'A DTR system maintained by 5 people. I built a solo POC to prove AI can cut that cost.',
@@ -117,6 +121,8 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'PPE Detection (Thesis)': {
+    avatar: { EN: 'ppe/en.mp4', DE: 'ppe/de.mp4' },
+    srt: { EN: 'ppe/en.srt', DE: 'ppe/de.srt' },
     media: ['ppe/1.mp4', 'ppe/2.webp', 'ppe/3.webp'],
     subtitles: [
       'Construction sites are dangerous. I built an AI that watches.',
@@ -130,6 +136,8 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'Sheets-to-Form Automation': {
+    avatar: { EN: 'sheets-to-form/en.mp4', DE: 'sheets-to-form/de.mp4' },
+    srt: { EN: 'sheets-to-form/en.srt', DE: 'sheets-to-form/de.srt' },
     images: ['sheets-to-form/1.webp', 'sheets-to-form/2.webp', 'sheets-to-form/3.webp'],
     subtitles: [
       'Hundreds of rows. One web form. Hours of copy-paste. I said no.',
@@ -143,6 +151,8 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'Food Price Forecasting': {
+    avatar: { EN: 'price-forecasting/en.mp4', DE: 'price-forecasting/de.mp4' },
+    srt: { EN: 'price-forecasting/en.srt', DE: 'price-forecasting/de.srt' },
     images: ['price-forecasting/1.webp', 'price-forecasting/2.webp', 'price-forecasting/3.webp'],
     subtitles: [
       'Food prices in the Philippines are unpredictable. Using WFP data, I built a model to forecast them.',
@@ -156,6 +166,8 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'Local LLM App': {
+    avatar: { EN: 'local-llm/en.mp4', DE: 'local-llm/de.mp4' },
+    srt: { EN: 'local-llm/en.srt', DE: 'local-llm/de.srt' },
     images: ['local-llm/1.webp', 'local-llm/2.webp', 'local-llm/3.webp'],
     subtitles: [
       'No API keys. No cloud. I run a 7B parameter LLM on a single GPU.',
@@ -169,6 +181,8 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'YouTube Q&A Tool': {
+    avatar: { EN: 'youtube/en.mp4', DE: 'youtube/de.mp4' },
+    srt: { EN: 'youtube/en.srt', DE: 'youtube/de.srt' },
     media: ['youtube/1.mp4', 'youtube/2.webp', 'youtube/3.mp4'],
     subtitles: [
       'A 2-hour YouTube video. You have one question. I built a Google Colab notebook for that.',
@@ -182,6 +196,8 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'RPSLS Game': {
+    avatar: { EN: 'rpsls/en.mp4', DE: 'rpsls/de.mp4' },
+    srt: { EN: 'rpsls/en.srt', DE: 'rpsls/de.srt' },
     images: ['rpsls/1.webp', 'rpsls/2.webp', 'rpsls/3.webp'],
     subtitles: [
       'Rock Paper Scissors Lizard Spock — I built this for Digital Data Day in Manila.',
@@ -195,6 +211,8 @@ const PROJECT_SHOWCASE = {
     ],
   },
   'HTTYD Telegram Bots': {
+    avatar: { EN: 'httyd/en.mp4', DE: 'httyd/de.mp4' },
+    srt: { EN: 'httyd/en.srt', DE: 'httyd/de.srt' },
     images: ['httyd/1.webp', 'httyd/2.webp', 'httyd/3.webp'],
     subtitles: [
       'What if you could chat with dragons? I built the Telegram bots for that.',
@@ -229,6 +247,7 @@ const Banner = forwardRef(function Banner(props, ref) {
   const [highlightedSection, setHighlightedSection] = useState(null);
   const cuesRef = useRef([]);
   const sectionActiveRef = useRef(false);
+  const exitOverlayRef = useRef(null);
   const [cycleImages, setCycleImages] = useState([]);  // full image list for cycling sections
 
   // Genie Game state: null | 'entering' | 'idle' | 'action'
@@ -242,6 +261,9 @@ const Banner = forwardRef(function Banner(props, ref) {
   // Project showcase state
   const [showcaseProject, setShowcaseProject] = useState(null);
   const [showcaseImageIdx, setShowcaseImageIdx] = useState(0);
+  const [showcaseSubtitle, setShowcaseSubtitle] = useState('');
+  const showcaseCuesRef = useRef([]);
+  const showcaseSyncRef = useRef(null);
 
   // Cycle through images one at a time for Certifications / Applied Skills
   useEffect(() => {
@@ -270,9 +292,188 @@ const Banner = forwardRef(function Banner(props, ref) {
     setShowcaseImageIdx((prev) => (prev + 1) % showcaseMedia.length);
   }, [showcaseMedia]);
 
-  // Schedule next advance based on current media type
+  // Play showcase avatar video (e.g. DTR) in the bottom-right avatar slot
+  useEffect(() => {
+    if (!showcaseProject) return;
+    const avatarMap = PROJECT_SHOWCASE[showcaseProject]?.avatar;
+    if (!avatarMap) return;
+    const avatarSrc = avatarMap[language] || avatarMap.EN || avatarMap.DE;
+    if (!avatarSrc) return;
+
+    const sv = sectionVideoRef.current;
+    if (!sv) return;
+
+    sectionActiveRef.current = true;
+    sv.src = `${ASSET_CONFIG.basePath}/${avatarSrc}`;
+    sv.loop = false;
+    sv.muted = false;
+    sv.load();
+    let started = false;
+    sv.oncanplay = () => {
+      if (!started) {
+        started = true;
+        setSectionVisible(true);
+        sv.play().catch(() => {});
+      }
+    };
+    // When avatar finishes, close overlay and return to main banner
+    sv.onended = () => exitOverlayRef.current?.();
+
+    return () => {
+      sv.oncanplay = null;
+      sv.onended = null;
+    };
+  }, [showcaseProject, language]);
+
+  // Play hackathon avatar video (intro) in the bottom-right slot; pause during feature playback
+  useEffect(() => {
+    if (!hackathonState) return;
+    const sv = sectionVideoRef.current;
+    if (!sv) return;
+
+    if (hackathonState === 'playing') {
+      // Mute/pause the avatar while a hackathon feature video plays
+      sv.pause();
+      return;
+    }
+
+    // 'picking' — load (if needed) and play the avatar intro
+    const avatarSrc = HACKATHON_CONFIG.avatar?.[language] || HACKATHON_CONFIG.avatar?.EN;
+    if (!avatarSrc) return;
+    const fullSrc = `${ASSET_CONFIG.basePath}/${avatarSrc}`;
+
+    sectionActiveRef.current = true;
+    // Only reload if the source changed (avoids restarting on state toggles)
+    if (!sv.src.endsWith(avatarSrc)) {
+      sv.src = fullSrc;
+      sv.loop = false;
+      sv.muted = false;
+      sv.load();
+      let started = false;
+      sv.oncanplay = () => {
+        if (!started) {
+          started = true;
+          setSectionVisible(true);
+          sv.play().catch(() => {});
+        }
+      };
+      // When avatar finishes, close overlay and return to main banner
+      sv.onended = () => exitOverlayRef.current?.();
+    }
+    // Don't restart on re-enter (state toggles) — dialog plays once per open
+
+    return () => {
+      sv.oncanplay = null;
+      sv.onended = null;
+    };
+  }, [hackathonState, language]);
+
+  // Load SRT and sync subtitles for hackathon avatar
+  useEffect(() => {
+    if (!hackathonState) return;
+    const srtMap = HACKATHON_CONFIG.srt;
+    if (!srtMap) return;
+    const srtPath = srtMap[language] || srtMap.EN;
+    if (!srtPath) return;
+
+    let cancelled = false;
+    fetch(`${ASSET_CONFIG.basePath}/${srtPath}`)
+      .then(r => r.text())
+      .then(text => {
+        if (cancelled) return;
+        const cues = [];
+        const blocks = text.trim().split(/\n\n+/);
+        for (const block of blocks) {
+          const lines = block.split('\n');
+          if (lines.length < 3) continue;
+          const m = lines[1].match(/(\d{2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})[,.](\d{3})/);
+          if (!m) continue;
+          const start = +m[1]*3600 + +m[2]*60 + +m[3] + +m[4]/1000;
+          const end = +m[5]*3600 + +m[6]*60 + +m[7] + +m[8]/1000;
+          cues.push({ start, end, text: lines.slice(2).join(' ').trim() });
+        }
+        showcaseCuesRef.current = cues;
+
+        const sync = () => {
+          if (cancelled) return;
+          const sv = sectionVideoRef.current;
+          const t = sv?.currentTime ?? 0;
+          const idx = cues.findIndex(c => t >= c.start && t < c.end);
+          setShowcaseSubtitle(idx >= 0 ? cues[idx].text : '');
+          showcaseSyncRef.current = requestAnimationFrame(sync);
+        };
+        showcaseSyncRef.current = requestAnimationFrame(sync);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+      if (showcaseSyncRef.current) cancelAnimationFrame(showcaseSyncRef.current);
+      setShowcaseSubtitle('');
+    };
+  }, [hackathonState, language]);
+
+  // Load SRT and sync subtitles + images to showcase avatar video
+  useEffect(() => {
+    if (!showcaseProject) {
+      showcaseCuesRef.current = [];
+      setShowcaseSubtitle('');
+      if (showcaseSyncRef.current) cancelAnimationFrame(showcaseSyncRef.current);
+      return;
+    }
+    const srtMap = PROJECT_SHOWCASE[showcaseProject]?.srt;
+    if (!srtMap) return;
+    const srtPath = srtMap[language] || srtMap.EN || srtMap.DE;
+    if (!srtPath) return;
+
+    let cancelled = false;
+    fetch(`${ASSET_CONFIG.basePath}/${srtPath}`)
+      .then(r => r.text())
+      .then(text => {
+        if (cancelled) return;
+        // Parse SRT
+        const cues = [];
+        const blocks = text.trim().split(/\n\n+/);
+        for (const block of blocks) {
+          const lines = block.split('\n');
+          if (lines.length < 3) continue;
+          const m = lines[1].match(/(\d{2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})[,.](\d{3})/);
+          if (!m) continue;
+          const start = +m[1]*3600 + +m[2]*60 + +m[3] + +m[4]/1000;
+          const end = +m[5]*3600 + +m[6]*60 + +m[7] + +m[8]/1000;
+          cues.push({ start, end, text: lines.slice(2).join(' ').trim() });
+        }
+        showcaseCuesRef.current = cues;
+
+        // Animation frame loop — sync subtitle text + image index to video time
+        let lastCueIdx = -1;
+        const sync = () => {
+          if (cancelled) return;
+          const sv = sectionVideoRef.current;
+          const t = sv?.currentTime ?? 0;
+          const idx = cues.findIndex(c => t >= c.start && t < c.end);
+          setShowcaseSubtitle(idx >= 0 ? cues[idx].text : '');
+          if (idx >= 0 && idx !== lastCueIdx) {
+            lastCueIdx = idx;
+            setShowcaseImageIdx(idx % (PROJECT_SHOWCASE[showcaseProject]?.images?.length || 1));
+          }
+          showcaseSyncRef.current = requestAnimationFrame(sync);
+        };
+        showcaseSyncRef.current = requestAnimationFrame(sync);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+      if (showcaseSyncRef.current) cancelAnimationFrame(showcaseSyncRef.current);
+    };
+  }, [showcaseProject, language]);
+
+  // Schedule next advance based on current media type (skip if SRT-driven)
   useEffect(() => {
     if (!showcaseProject || !showcaseMedia || showcaseMedia.length <= 1) return;
+    // If SRT is driving image sync, don't use timer
+    if (PROJECT_SHOWCASE[showcaseProject]?.srt) return;
     const current = showcaseMedia[showcaseImageIdx];
     const isVideo = current?.endsWith('.mp4');
 
@@ -380,6 +581,9 @@ const Banner = forwardRef(function Banner(props, ref) {
     const scv = showcaseVideoRef.current;
     if (scv) { scv.pause(); scv.removeAttribute('src'); scv.load(); }
     if (showcaseTimerRef.current) clearTimeout(showcaseTimerRef.current);
+    if (showcaseSyncRef.current) cancelAnimationFrame(showcaseSyncRef.current);
+    showcaseCuesRef.current = [];
+    setShowcaseSubtitle('');
     setShowcaseProject(null);
     setShowcaseImageIdx(0);
     // Section cleanup
@@ -393,6 +597,9 @@ const Banner = forwardRef(function Banner(props, ref) {
     setHighlightedSection(null);
     setOverlayVisible(true);
   }, []);
+
+  // Keep a ref to exitOverlay so earlier effects (defined above) can call it without TDZ
+  exitOverlayRef.current = exitOverlay;
 
   // Expose simple methods to parent via ref
   useImperativeHandle(ref, () => ({
@@ -742,9 +949,19 @@ const Banner = forwardRef(function Banner(props, ref) {
         style={{ opacity: hackathonState === 'playing' ? 1 : 0, pointerEvents: 'none', maxHeight: '100%', maxWidth: '62%' }}
       />
 
+      {/* Hackathon intro subtitle */}
+      {hackathonState === 'picking' && showcaseSubtitle && (
+        <div className="absolute bottom-2 left-0 right-0 z-[6] flex justify-center pointer-events-none">
+          <p className="text-white text-[9px] sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[60%]"
+             style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
+            {showcaseSubtitle}
+          </p>
+        </div>
+      )}
+
       {/* Hackathon thumbnail picker — vertical, hidden during playback */}
       {hackathonState === 'picking' && (
-        <div className="absolute inset-0 z-[7] flex flex-col items-center justify-evenly py-2 px-3 pointer-events-none">
+        <div className="absolute inset-0 z-[7] flex flex-col items-center justify-evenly pt-2 pb-8 px-3 pointer-events-none">
           {HACKATHON_CONFIG.videos.map((item) => (
             <button
               key={item.label}
@@ -771,7 +988,7 @@ const Banner = forwardRef(function Banner(props, ref) {
         const mediaList = cfg.media || cfg.images;
         const currentMedia = mediaList?.[showcaseImageIdx];
         const isVideo = currentMedia?.endsWith('.mp4');
-        const subtitle = cfg.subtitles?.[showcaseImageIdx];
+        const subtitle = showcaseSubtitle || cfg.subtitles?.[showcaseImageIdx];
         return (
           <div className="absolute inset-0 z-[4] flex flex-col bg-black/60 backdrop-blur-sm">
             {/* Media — vertically centered, constrained to avoid avatar and subtitle */}

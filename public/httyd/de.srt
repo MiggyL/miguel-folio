@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:06,440
+Was wäre, wenn man mit Drachen chatten könnte? Genau dafür habe ich die Telegram-Bots entwickelt.
+
+2
+00:00:06,440 --> 00:00:14,080
+Die Spieler steuern die KI-Drachen über n8n Workflows. Jeder Drache denkt und reagiert anders.
+
+3
+00:00:14,080 --> 00:00:21,620
+Aufgeführt beim Digital Data Day von Cambridge University Press und Assessment — sowohl in Manila als auch in Großbritannien.

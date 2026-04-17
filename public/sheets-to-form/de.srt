@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:07,600
+Hunderte von Zeilen, ein Webformular, stundenlanges Kopieren und Einfügen. Ich habe nein gesagt.
+
+2
+00:00:07,600 --> 00:00:14,860
+Chrome-Erweiterung + Flask + Selenium — liest das Tabellenblatt, füllt die Formulare aus, behandelt Fehler.
+
+3
+00:00:14,860 --> 00:00:22,840
+Vom manuellen Kopieren und Einfügen zum automatischen Ausfüllen von Formularen. Ein Klick und das gesamte Formular ist ausgefüllt.

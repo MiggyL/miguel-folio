@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:08,760
+Keine API-Schlüssel, keine Cloud. Ich betreibe einen 7B-Parameter LLM auf einer einzelnen GPU.
+
+2
+00:00:08,760 --> 00:00:15,960
+LangChain-Orchestrierung plus RAG-Pipeline plus quantisierte Mistral-7B-Inferenz.
+
+3
+00:00:15,960 --> 00:00:21,660
+Ein vollständig lokaler KI-Assistent — privat, schnell und überraschend leistungsfähig.

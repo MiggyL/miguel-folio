@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:04,240
+Construction sites are dangerous. I built an AI that watches.
+
+2
+00:00:04,240 --> 00:00:12,240
+I fine-tuned YOLOv9 on a custom dataset — 92%+ mAP on hardhat, vest, and goggle detection.
+
+3
+00:00:12,240 --> 00:00:22,640
+Violations trigger instant Telegram alerts to site managers. Real-time. Defended and passed — my computer vision thesis, Mapua University 2025.

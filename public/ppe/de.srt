@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:05,760
+Baustellen sind gefährlich. Ich habe eine KI entwickelt, die sie überwacht.
+
+2
+00:00:05,760 --> 00:00:18,840
+Ich habe YOLOv9 anhand eines benutzerdefinierten Datensatzes fein abgestimmt — mAP über 92% bei der Erkennung von Schutzhelmen, Westen und Schutzbrillen.
+
+3
+00:00:18,840 --> 00:00:33,440
+Verstöße lösen sofortige Telegram-Benachrichtigungen an die Website-Manager aus. Echtzeit. Verteidigt und bestanden — meine Masterarbeit im Bereich Computer Vision, Mapua University 2025.

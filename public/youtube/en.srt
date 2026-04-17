@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:05,600
+A 2-hour YouTube video. You have one question. I built a Google Colab notebook for that.
+
+2
+00:00:05,600 --> 00:00:11,920
+LangChain extracts transcripts, chunks text, embeds vectors into FAISS, and retrieves answers.
+
+3
+00:00:11,920 --> 00:00:19,040
+Full RAG pipeline in a notebook — from raw video to precise, sourced answers powered by Mistral-7B.

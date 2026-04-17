@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:07,240
+Schere Stein Papier Echse Spock — ich habe das für den Digital Data Day in Manila gebaut.
+
+2
+00:00:07,240 --> 00:00:17,720
+Benutzeroberfläche im Street-Fighter-Stil mit Gesichtsavataren und Handbewegungen. Bereitgestellt als RonnieAI auf dem Microsoft Bot Framework.
+
+3
+00:00:17,720 --> 00:00:26,000
+Hunderte Spieler in einem voll besetzten Raum. K.O.-Runden auf ihren Handys. Ein Sieger. Es war der Wahnsinn.

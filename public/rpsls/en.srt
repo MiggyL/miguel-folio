@@ -1,0 +1,11 @@
+1
+00:00:00,000 --> 00:00:05,520
+Rock Paper Scissors Lizard Spock — I built this for Digital Data Day in Manila.
+
+2
+00:00:05,520 --> 00:00:12,640
+Street Fighter-style UI with face avatars and hand moves. Deployed as RonnieAI on Microsoft Bot Framework.
+
+3
+00:00:12,640 --> 00:00:18,520
+Hundreds of players in a packed room. Knockout rounds on their phones. One champion. It was wild.
