@@ -359,8 +359,8 @@ const Banner = forwardRef(function Banner(props, ref) {
           sv.play().catch(() => {});
         }
       };
-      // When avatar finishes, close overlay and return to main banner
-      sv.onended = () => exitOverlayRef.current?.();
+      // When avatar intro finishes, just hide it; picker stays until user clicks X
+      sv.onended = () => setSectionVisible(false);
     }
     // Don't restart on re-enter (state toggles) — dialog plays once per open
 
