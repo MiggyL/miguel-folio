@@ -81,6 +81,8 @@ const GENIE_CONFIG = {
   enter: 'enter.mp4',
   greet: 'greet.mp4',
   idle: 'idle.mp4',
+  avatar: { EN: 'genie/en.mp4', DE: 'genie/de.mp4' },
+  srt: { EN: 'genie/en.srt', DE: 'genie/de.srt' },
   actions: [
     { label: 'Wish', video: 'wish.mp4' },
     { label: 'Lose 1', video: 'lose1.mp4' },
@@ -413,6 +415,51 @@ const Banner = forwardRef(function Banner(props, ref) {
     };
   }, [hackathonState, language]);
 
+  // Load SRT and sync subtitles for genie avatar intro
+  useEffect(() => {
+    if (genieState !== 'idle' || !genieButtonsEnabled) return;
+    const srtMap = GENIE_CONFIG.srt;
+    if (!srtMap) return;
+    const srtPath = srtMap[language] || srtMap.EN;
+    if (!srtPath) return;
+
+    let cancelled = false;
+    fetch(`${ASSET_CONFIG.basePath}/${srtPath}`)
+      .then(r => r.text())
+      .then(text => {
+        if (cancelled) return;
+        const cues = [];
+        const blocks = text.trim().split(/\n\n+/);
+        for (const block of blocks) {
+          const lines = block.split('\n');
+          if (lines.length < 3) continue;
+          const m = lines[1].match(/(\d{2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*(\d{2}):(\d{2}):(\d{2})[,.](\d{3})/);
+          if (!m) continue;
+          const start = +m[1]*3600 + +m[2]*60 + +m[3] + +m[4]/1000;
+          const end = +m[5]*3600 + +m[6]*60 + +m[7] + +m[8]/1000;
+          cues.push({ start, end, text: lines.slice(2).join(' ').trim() });
+        }
+        showcaseCuesRef.current = cues;
+
+        const sync = () => {
+          if (cancelled) return;
+          const sv = sectionVideoRef.current;
+          const t = sv?.currentTime ?? 0;
+          const idx = cues.findIndex(c => t >= c.start && t < c.end);
+          setShowcaseSubtitle(idx >= 0 ? cues[idx].text : '');
+          showcaseSyncRef.current = requestAnimationFrame(sync);
+        };
+        showcaseSyncRef.current = requestAnimationFrame(sync);
+      })
+      .catch(() => {});
+
+    return () => {
+      cancelled = true;
+      if (showcaseSyncRef.current) cancelAnimationFrame(showcaseSyncRef.current);
+      setShowcaseSubtitle('');
+    };
+  }, [genieState, genieButtonsEnabled, language]);
+
   // Load SRT and sync subtitles + images to showcase avatar video
   useEffect(() => {
     if (!showcaseProject) {
@@ -455,7 +502,7 @@ const Banner = forwardRef(function Banner(props, ref) {
           setShowcaseSubtitle(idx >= 0 ? cues[idx].text : '');
           if (idx >= 0 && idx !== lastCueIdx) {
             lastCueIdx = idx;
-            setShowcaseImageIdx(idx % (PROJECT_SHOWCASE[showcaseProject]?.images?.length || 1));
+            setShowcaseImageIdx(idx % ((PROJECT_SHOWCASE[showcaseProject]?.media || PROJECT_SHOWCASE[showcaseProject]?.images)?.length || 1));
           }
           showcaseSyncRef.current = requestAnimationFrame(sync);
         };
@@ -543,11 +590,24 @@ const Banner = forwardRef(function Banner(props, ref) {
       if (cancelled) return;
       startBgIdle();
       startFgIdle();
+      // Start Miguel avatar intro in bottom-right slot (plays once, no loop)
+      const avatarSrc = GENIE_CONFIG.avatar?.[language] || GENIE_CONFIG.avatar?.EN;
+      const sv = sectionVideoRef.current;
+      if (avatarSrc && sv && !cancelled) {
+        sectionActiveRef.current = true;
+        sv.src = `${ASSET_CONFIG.basePath}/${avatarSrc}`;
+        sv.loop = false;
+        sv.muted = false;
+        sv.load();
+        sv.oncanplay = () => { setSectionVisible(true); sv.play().catch(() => {}); };
+        sv.onended = () => setSectionVisible(false);
+      }
+      if (cancelled) return;
       setGenieState('idle');
       setGenieButtonsEnabled(true);
     })();
     return () => { cancelled = true; };
-  }, [genieState, playVideo, startBgIdle, startFgIdle, preloadGenie]);
+  }, [genieState, playVideo, startBgIdle, startFgIdle, preloadGenie, language]);
 
   // Handle genie action button click — play action on foreground with sound, bg idle continues
   const handleGenieAction = useCallback(async (actionVideo) => {
@@ -920,6 +980,16 @@ const Banner = forwardRef(function Banner(props, ref) {
         style={{ opacity: genieState ? 1 : 0, pointerEvents: 'none' }}
       />
 
+      {/* Genie intro subtitle (Miguel avatar in bottom-right) */}
+      {genieState === 'idle' && showcaseSubtitle && (
+        <div className="absolute bottom-10 left-0 right-0 z-[8] flex justify-center pointer-events-none">
+          <p className="text-white text-[9px] sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[60%]"
+             style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
+            {showcaseSubtitle}
+          </p>
+        </div>
+      )}
+
       {/* Genie action buttons */}
       {genieState === 'idle' && (
         <div className="absolute bottom-3 left-0 right-0 z-[7] flex justify-center gap-1.5 px-4">
@@ -1001,7 +1071,7 @@ const Banner = forwardRef(function Banner(props, ref) {
                   autoPlay
                   muted
                   playsInline
-                  onEnded={advanceShowcase}
+                  onEnded={PROJECT_SHOWCASE[showcaseProject]?.srt ? undefined : advanceShowcase}
                   className="rounded-lg shadow-xl"
                   style={{ maxHeight: '100%', maxWidth: '100%' }}
                 />
