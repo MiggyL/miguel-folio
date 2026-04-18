@@ -1024,18 +1024,25 @@ const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
               BS Computer Science · AI Specialization · Mapúa University &apos;25
             </p>
             <div className="mt-2 flex items-center gap-1.5">
-              {['Objective', 'Skills', 'Certifications', 'Applied Skills', 'Projects'].map((section) => (
-                <span
-                  key={section}
-                  className={`px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium tracking-wide transition-all duration-300 border ${
-                    highlightedSections.has(section)
-                      ? 'text-white bg-white/25 border-white/60 shadow-[0_0_14px_rgba(255,255,255,0.5)] scale-110'
-                      : 'text-white/70 bg-white/10 border-white/15'
-                  }`}
-                >
-                  {section}
-                </span>
-              ))}
+              {['Objective', 'Skills', 'Certifications', 'Applied Skills', 'Projects'].map((section) => {
+                const isFocused = highlightedSections.has(section);
+                const anyFocused = highlightedSections.size > 0;
+                const isDimmed = anyFocused && !isFocused;
+                return (
+                  <span
+                    key={section}
+                    className={`px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium tracking-wide transition-all duration-300 border ${
+                      isFocused
+                        ? 'text-white bg-white/25 border-white/60 shadow-[0_0_14px_rgba(255,255,255,0.5)] scale-110'
+                        : isDimmed
+                        ? 'text-white/70 bg-white/10 border-white/15 opacity-30 blur-[1px]'
+                        : 'text-white/70 bg-white/10 border-white/15'
+                    }`}
+                  >
+                    {section}
+                  </span>
+                );
+              })}
             </div>
           </div>
         </div>
