@@ -52,15 +52,61 @@ const LOGO_CUES = {
   'Certifications': new Set([0, 1]), // cues 1 & 2 are MS/Oracle logos, not certificates
 };
 
-// Maps Intro cue index → section button to highlight (per language, since cue counts differ)
-const INTRO_HIGHLIGHTS = {
-  EN: { 2: 'Objective', 3: 'Skills', 4: 'Certifications', 5: 'Applied Skills', 6: 'Projects' },
-  DE: { 3: 'Objective', 4: 'Skills', 5: 'Certifications', 6: 'Applied Skills', 7: 'Projects' },
+// About video: keyword regex → section button / project card, matched against a
+// rolling text window of the last ~800ms from the per-word SRT (about/{en,de}-words.srt).
+// Phrase patterns (e.g. "Applied Skills") handle multi-word buttons naturally — the
+// rolling window lets them match across word boundaries.
+const ABOUT_KEYWORDS = {
+  EN: {
+    sections: [
+      { re: /Applied\s+Skills/i, value: 'Applied Skills' },
+      { re: /\bObjective\b/i, value: 'Objective' },
+      { re: /\bCertifications?\b/i, value: 'Certifications' },
+      { re: /\bProjects?\b/i, value: 'Projects' },
+      { re: /\bSkills\b/i, value: 'Skills' },
+    ],
+    cards: [
+      { re: /\bDTR\b/i, value: 'DTR System' },
+      { re: /\bPPE\b/i, value: 'PPE Detection (Thesis)' },
+      { re: /Sheets/i, value: 'Sheets-to-Form Automation' },
+      { re: /Forecasting|\bPrice\b/i, value: 'Food Price Forecasting' },
+      { re: /\bLLM\b|Mistral/i, value: 'Local LLM App' },
+      { re: /YouTube/i, value: 'YouTube Q&A Tool' },
+      { re: /RPSLS|Spock/i, value: 'RPSLS Game' },
+      { re: /HTTYD|Dragon/i, value: 'HTTYD Telegram Bots' },
+      { re: /Hackathon|Recruit|factchecker/i, value: 'Hackathon Videos' },
+      { re: /Genie|Inspire/i, value: 'Genie Game' },
+    ],
+  },
+  DE: {
+    sections: [
+      { re: /angewandten\s+F[aä]higkeiten/i, value: 'Applied Skills' },
+      { re: /Zielsetzung/i, value: 'Objective' },
+      { re: /Zertifizierungen/i, value: 'Certifications' },
+      { re: /Projekte/i, value: 'Projects' },
+      { re: /F[aä]higkeiten/i, value: 'Skills' },
+    ],
+    cards: [
+      { re: /\bDTR\b/i, value: 'DTR System' },
+      { re: /PE-Erkennung|\bPPE\b|Masterarbeit/i, value: 'PPE Detection (Thesis)' },
+      { re: /Sheets|Chrome-Erweiterung/i, value: 'Sheets-to-Form Automation' },
+      { re: /Lebensmittel|Prognose|Arima/i, value: 'Food Price Forecasting' },
+      { re: /Mistral|\bLLM\b/i, value: 'Local LLM App' },
+      { re: /YouTube/i, value: 'YouTube Q&A Tool' },
+      { re: /RP-?SLS|Schere|Stein/i, value: 'RPSLS Game' },
+      { re: /HTTYD|Drachen/i, value: 'HTTYD Telegram Bots' },
+      { re: /Hackathon|Recruit|factchecker/i, value: 'Hackathon Videos' },
+      { re: /Genie|Inspire/i, value: 'Genie Game' },
+    ],
+  },
 };
+
+// How long a button stays lit after its keyword fires (seconds). Cards stay sticky
+// until the next card keyword fires — they naturally span each project's narration.
+const ABOUT_BUTTON_AFTERGLOW = 1.5;
 
 // Map section button labels to video filenames in EN/ and DE/
 const SECTION_VIDEO_MAP = {
-  'Intro': 'intro.mp4',
   'Objective': 'objective.mp4',
   'Skills': 'skills.mp4',
   'Certifications': 'certifications.mp4',
@@ -231,7 +277,7 @@ const PROJECT_SHOWCASE = {
 
 export { PROJECT_SEGMENTS, GENIE_CONFIG, HACKATHON_CONFIG, PROJECT_SHOWCASE };
 
-const Banner = forwardRef(function Banner(props, ref) {
+const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
   const videoRef = useRef(null);
   const sectionVideoRef = useRef(null);
   const genieIdleRef = useRef(null);   // always-looping idle layer (muted, underneath)
@@ -246,7 +292,12 @@ const Banner = forwardRef(function Banner(props, ref) {
   const [sectionVisible, setSectionVisible] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
   const [currentImages, setCurrentImages] = useState([]);
-  const [highlightedSection, setHighlightedSection] = useState(null);
+  const [highlightedSections, setHighlightedSections] = useState(() => new Set());
+  // About: tracks when the last button keyword fired (video time in seconds) so the
+  // button highlight lingers for ABOUT_BUTTON_AFTERGLOW after the word ends.
+  const aboutBtnExpiryRef = useRef(0);
+  const aboutCurrentBtnRef = useRef(null);
+  const aboutCurrentCardRef = useRef(null);
   const cuesRef = useRef([]);
   const sectionActiveRef = useRef(false);
   const exitOverlayRef = useRef(null);
@@ -654,9 +705,13 @@ const Banner = forwardRef(function Banner(props, ref) {
     setActiveSection(null);
     setCurrentImages([]);
     setCycleImages([]);
-    setHighlightedSection(null);
+    setHighlightedSections(new Set());
+    aboutCurrentBtnRef.current = null;
+    aboutCurrentCardRef.current = null;
+    aboutBtnExpiryRef.current = 0;
+    onProjectHighlight?.(null);
     setOverlayVisible(true);
-  }, []);
+  }, [onProjectHighlight]);
 
   // Keep a ref to exitOverlay so earlier effects (defined above) can call it without TDZ
   exitOverlayRef.current = exitOverlay;
@@ -743,8 +798,12 @@ const Banner = forwardRef(function Banner(props, ref) {
   }, [isPlaying]);
 
   const handleSectionClick = (section) => {
-    const filename = SECTION_VIDEO_MAP[section];
-    if (!filename) return;
+    const src = section === 'About'
+      ? `${ASSET_CONFIG.basePath}/about/${language.toLowerCase()}.mp4`
+      : (SECTION_VIDEO_MAP[section]
+          ? `${ASSET_CONFIG.basePath}/${language}/${SECTION_VIDEO_MAP[section]}`
+          : null);
+    if (!src) return;
 
     exitOverlay();
 
@@ -756,7 +815,7 @@ const Banner = forwardRef(function Banner(props, ref) {
     setActiveSection(section);
 
     let started = false;
-    sectionVideo.src = `${ASSET_CONFIG.basePath}/${language}/${filename}`;
+    sectionVideo.src = src;
     sectionVideo.load();
     sectionVideo.oncanplay = () => {
       if (started || !sectionActiveRef.current) return;
@@ -778,7 +837,8 @@ const Banner = forwardRef(function Banner(props, ref) {
           loop
           muted
           playsInline
-          className="w-full h-full object-cover"
+          onClick={overlayVisible ? () => handleSectionClick('About') : undefined}
+          className={`w-full h-full object-cover ${overlayVisible ? 'cursor-pointer' : ''}`}
           src={`${ASSET_CONFIG.basePath}/bg.mp4`}
         />
       </div>
@@ -789,7 +849,8 @@ const Banner = forwardRef(function Banner(props, ref) {
         loop
         muted
         playsInline
-        className="absolute bottom-0 right-0 object-cover rounded-br-2xl"
+        onClick={overlayVisible ? () => handleSectionClick('About') : undefined}
+        className={`absolute bottom-0 right-0 object-cover rounded-br-2xl ${overlayVisible ? 'cursor-pointer' : ''}`}
         style={{ height: '35%', aspectRatio: '1/1', zIndex: 5 }}
         src={`${ASSET_CONFIG.basePath}/idle.mp4`}
       />
@@ -814,16 +875,13 @@ const Banner = forwardRef(function Banner(props, ref) {
         videoRef={sectionVideoRef}
         language={language}
         section={activeSection}
+        srtUrl={activeSection === 'About' ? `${ASSET_CONFIG.basePath}/about/${language.toLowerCase()}.srt` : undefined}
         onCueChange={(idx, cues) => {
           if (!sectionActiveRef.current) return;
           cuesRef.current = cues || [];
 
-          // Intro: highlight buttons instead of showing images
-          if (activeSection === 'Intro') {
-            const highlights = INTRO_HIGHLIGHTS[language] || {};
-            setHighlightedSection(highlights[idx] || null);
-            return;
-          }
+          // About: button + card highlights are driven by the word-level SRT below
+          if (activeSection === 'About') return;
 
           const images = SECTION_IMAGES[activeSection]?.[idx];
           if (!images || images.length === 0) {
@@ -842,6 +900,56 @@ const Banner = forwardRef(function Banner(props, ref) {
           }
         }}
       />
+
+      {/* About — silent word-level SRT drives precise per-keyword button + card highlights */}
+      {activeSection === 'About' && (
+        <Subtitles
+          silent
+          videoRef={sectionVideoRef}
+          language={language}
+          srtUrl={`${ASSET_CONFIG.basePath}/about/${language.toLowerCase()}-words.srt`}
+          onCueChange={(idx, cues) => {
+            if (!sectionActiveRef.current) return;
+            const now = sectionVideoRef.current?.currentTime ?? 0;
+            const kw = ABOUT_KEYWORDS[language];
+            if (!kw) return;
+
+            // Rolling window: words spoken within the last 1.2s — lets phrase regexes
+            // like /Applied\s+Skills/ match across adjacent per-word cues.
+            const WINDOW = 1.2;
+            const recent = cues
+              .filter((c) => c.end > now - WINDOW && c.start <= now)
+              .map((c) => c.text)
+              .join(' ');
+
+            // Buttons: pick the most recent keyword hit in the window
+            let btnMatch = null;
+            let bestEnd = -1;
+            for (const { re, value } of kw.sections) {
+              const m = recent.match(re);
+              if (m && m.index + m[0].length > bestEnd) {
+                bestEnd = m.index + m[0].length;
+                btnMatch = value;
+              }
+            }
+            if (btnMatch) {
+              aboutCurrentBtnRef.current = btnMatch;
+              aboutBtnExpiryRef.current = now + ABOUT_BUTTON_AFTERGLOW;
+              setHighlightedSections(new Set([btnMatch]));
+            } else if (aboutCurrentBtnRef.current && now > aboutBtnExpiryRef.current) {
+              aboutCurrentBtnRef.current = null;
+              setHighlightedSections(new Set());
+            }
+
+            // Cards: sticky until a different card keyword appears
+            const cardMatch = kw.cards.find((c) => c.re.test(recent));
+            if (cardMatch && cardMatch.value !== aboutCurrentCardRef.current) {
+              aboutCurrentCardRef.current = cardMatch.value;
+              onProjectHighlight?.(cardMatch.value);
+            }
+          }}
+        />
+      )}
 
       {/* Blur backdrop — behind images, subtitles, and avatar during section playback */}
       {sectionVisible && (
@@ -895,7 +1003,7 @@ const Banner = forwardRef(function Banner(props, ref) {
             DE
           </button>
         </div>
-        <button onClick={() => handleSectionClick('Intro')} className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer" aria-label="Play intro">
+        <button onClick={() => handleSectionClick('About')} className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer" aria-label="Play about">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none">
             <polygon points="6 3 20 12 6 21 6 3" />
           </svg>
@@ -905,8 +1013,8 @@ const Banner = forwardRef(function Banner(props, ref) {
       {/* Idle overlay: name, title, section buttons */}
       <IdleOverlay visible={overlayVisible} onSectionClick={handleSectionClick} />
 
-      {/* Intro highlight overlay — non-interactive replica of IdleOverlay with glow on mentioned buttons */}
-      {activeSection === 'Intro' && (
+      {/* About highlight overlay — non-interactive replica of IdleOverlay with glow on mentioned buttons */}
+      {activeSection === 'About' && (
         <div className="absolute inset-0 flex items-center justify-center z-[6] pointer-events-none">
           <div className="text-center -mt-4 flex flex-col items-center">
             <h1 className="text-white text-3xl sm:text-4xl font-bold tracking-tight drop-shadow-lg">
@@ -920,7 +1028,7 @@ const Banner = forwardRef(function Banner(props, ref) {
                 <span
                   key={section}
                   className={`px-2 py-0.5 rounded-md text-[11px] sm:text-xs font-medium tracking-wide transition-all duration-300 border ${
-                    highlightedSection === section
+                    highlightedSections.has(section)
                       ? 'text-white bg-white/25 border-white/60 shadow-[0_0_14px_rgba(255,255,255,0.5)] scale-110'
                       : 'text-white/70 bg-white/10 border-white/15'
                   }`}
@@ -945,19 +1053,12 @@ const Banner = forwardRef(function Banner(props, ref) {
         className="absolute top-3 right-3 z-10 opacity-50 hover:opacity-80 transition-opacity cursor-pointer"
         aria-label={isMuted ? 'Unmute background music' : 'Mute background music'}
       >
-        {isMuted ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-            <line x1="22" y1="9" x2="16" y2="15" />
-            <line x1="16" y1="9" x2="22" y2="15" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
-            <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
-            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-          </svg>
-        )}
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M9 18V5l12-2v13" />
+          <circle cx="6" cy="18" r="3" />
+          <circle cx="18" cy="16" r="3" />
+          {isMuted && <line x1="3" y1="3" x2="21" y2="21" />}
+        </svg>
       </button>
 
       {/* Blur backdrop — behind genie videos during Genie Game */}

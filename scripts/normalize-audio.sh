@@ -38,10 +38,9 @@ modified_today() {
   [ "$file_date" = "$TODAY" ]
 }
 
-# Verify raw/ exists
+# raw/ is optional — script also handles project-root raw/about below
 if [ ! -d "$RAW" ]; then
-  echo "ERROR: $RAW not found. Place original files there first."
-  exit 1
+  echo "NOTE: $RAW not found; skipping EN/DE section videos."
 fi
 
 # Extract a loudnorm JSON value by key from ffmpeg output
@@ -107,6 +106,20 @@ for lang in EN DE; do
   done
 done
 echo ""
+
+# --- About videos (flat layout: raw/about/{en,de}.mp4 at project root) ---
+PROJECT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+ABOUT_RAW="$PROJECT_ROOT/raw/about"
+if [ -d "$ABOUT_RAW" ]; then
+  mkdir -p "$PUBLIC/about"
+  echo "Normalizing about videos to I=$TARGET_I ..."
+  for f in "$ABOUT_RAW"/*.mp4; do
+    [ -f "$f" ] || continue
+    name="$(basename "$f")"
+    normalize_video "$f" "$PUBLIC/about/$name" "about/$name" "$TARGET_I"
+  done
+  echo ""
+fi
 
 # --- Ambient music: normalize quieter ---
 if [ -f "$RAW/ambient.mp3" ] && modified_today "$RAW/ambient.mp3"; then

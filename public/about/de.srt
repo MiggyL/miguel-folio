@@ -1,0 +1,76 @@
+1
+00:00:00,000 --> 00:00:04,200
+ Hallo, ich bin Miguel Akanienta. Willkommen in meinem Portfolio.
+
+2
+00:00:04,200 --> 00:00:10,680
+ Über die Buttons oben kannst du meine Zielsetzung, Fähigkeiten, Zertifizierungen,
+
+3
+00:00:10,680 --> 00:00:14,000
+ angewandten Fähigkeiten und Projekte durchgehen.
+
+4
+00:00:14,000 --> 00:00:16,920
+ Unten siehst du die Projekte selbst.
+
+5
+00:00:16,920 --> 00:00:20,240
+ Klicke auf eine Karte für eine vertonte Führung.
+
+6
+00:00:20,240 --> 00:00:26,240
+ DTR System, ein Full-Stack-Proof-of-Concept für die Zeiterfassung,
+
+7
+00:00:26,560 --> 00:00:30,560
+ im Alleingang gebaut, um zu zeigen, dass KI-Teamkosten senken kann.
+
+8
+00:00:30,560 --> 00:00:35,560
+ P, PE-Erkennung, meine Masterarbeit.
+
+9
+00:00:35,560 --> 00:00:41,560
+ Ein fein abgestimmtes YOLO V9 meldet Sicherheitsverstöße in Echtzeit per Telegram.
+
+10
+00:00:41,560 --> 00:00:44,960
+ Sheets to Form Automatisierung,
+
+11
+00:00:44,960 --> 00:00:50,360
+ eine Chrome-Erweiterung, die hunderte Formulare mit einem Klick aus einer Tabelle befüllt.
+
+12
+00:00:51,760 --> 00:00:59,760
+ Lebensmittelpreis Prognose, Arima-Zeit-Rein-Modelle sagen filipinische Lebensmittelpreise anhand von WFP-Daten voraus.
+
+13
+00:00:59,760 --> 00:01:09,760
+ Lokale LLM-App, Mistral 7b läuft vollständig lokal, keine API-Schlüsse, keine Cloud.
+
+14
+00:01:09,760 --> 00:01:18,760
+ YouTube Q und A-Tool, ein R-A-G-Notebook, das jede Frage zu einem zweistündigen YouTube-Video beantwortet.
+
+15
+00:01:19,760 --> 00:01:29,760
+ RP-SLS-Spiel, Schere, Stein, Papier, Exis-Bock, gebaut für hunderte Spieler beim Digital Data Day Manila.
+
+16
+00:01:29,760 --> 00:01:37,760
+ H, TT, Y, D-Telegram Bots, Drachen-Charakter-Bots für How to Train Your AI-Dragon.
+
+17
+00:01:37,760 --> 00:01:46,760
+ Hackathon-Videos, vertonte Beiträge für Recruit Bolt, Specsync und R-Factchecker auf Dev-Post.
+
+18
+00:01:47,760 --> 00:01:53,760
+ Geniespiel, Sprachgenerierung und Lippensynchronisation für den Genie-Charakter bei Inspire.
+
+19
+00:01:53,760 --> 00:01:58,760
+ Das war der Überblick. Klicke auf etwas, um einzutauchen.
+

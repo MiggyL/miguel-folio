@@ -23,7 +23,7 @@ function parseSRT(text) {
   return cues;
 }
 
-export default function Subtitles({ videoRef, language, section, onCueChange }) {
+export default function Subtitles({ videoRef, language, section, onCueChange, srtUrl, silent }) {
   const [cues, setCues] = useState([]);
   const [currentText, setCurrentText] = useState('');
   const animFrameRef = useRef(null);
@@ -38,19 +38,24 @@ export default function Subtitles({ videoRef, language, section, onCueChange }) 
   };
 
   useEffect(() => {
-    if (!section) {
+    if (!section && !srtUrl) {
       setCues([]);
       setCurrentText('');
       return;
     }
-    const name = srtMap[section];
-    if (!name) return;
+    const url = srtUrl
+      ? srtUrl
+      : (() => {
+          const name = srtMap[section];
+          return name ? `${ASSET_CONFIG.basePath}/${language}/${name}.srt` : null;
+        })();
+    if (!url) return;
 
-    fetch(`${ASSET_CONFIG.basePath}/${language}/${name}.srt`)
+    fetch(url)
       .then((r) => r.text())
       .then((srtText) => setCues(parseSRT(srtText)))
       .catch(() => setCues([]));
-  }, [section, language]);
+  }, [section, language, srtUrl]);
 
   useEffect(() => {
     if (!cues.length || !videoRef?.current) {
@@ -72,7 +77,7 @@ export default function Subtitles({ videoRef, language, section, onCueChange }) 
     };
   }, [cues, videoRef]);
 
-  if (!currentText) return null;
+  if (silent || !currentText) return null;
 
   // Positioned to fill the space left of the avatar, with equal padding on both sides.
   // Avatar is 35% height, bottom-right. Subtitles sit in the remaining left area,

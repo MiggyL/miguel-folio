@@ -71,6 +71,7 @@ function TechTags({ tech, maxVisible = 2 }) {
 
 export default function Home() {
   const bannerRef = useRef(null);
+  const [highlightedProject, setHighlightedProject] = useState(null);
 
   const handleCardClick = (title) => {
     if (title === 'Genie Game') {
@@ -112,16 +113,25 @@ export default function Home() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 py-4">
         {/* Video Header */}
-        <Banner ref={bannerRef} />
+        <Banner ref={bannerRef} onProjectHighlight={setHighlightedProject} />
 
         {/* Projects Section */}
         <div className="mt-4 mb-4">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
-            {PROJECTS.map((project) => (
+            {PROJECTS.map((project) => {
+              const isHighlighted = highlightedProject === project.title;
+              const isDimmed = highlightedProject !== null && !isHighlighted;
+              return (
               <div
                 key={project.title}
                 onClick={() => handleCardClick(project.title)}
-                className="bg-white rounded-xl p-3 border border-gray-200 hover:border-blue-300 hover:shadow-lg transition-all duration-200 overflow-visible cursor-pointer"
+                className={`bg-white rounded-xl p-3 border overflow-visible cursor-pointer transition-all duration-300 ${
+                  isHighlighted
+                    ? 'border-blue-400 ring-2 ring-blue-400 shadow-xl scale-[1.03] z-10 relative'
+                    : isDimmed
+                    ? 'border-gray-200 opacity-30 blur-[1px]'
+                    : 'border-gray-200 hover:border-blue-300 hover:shadow-lg'
+                }`}
               >
                 <h5 className="text-xs font-semibold text-gray-900 mb-1">
                   {project.title}
@@ -129,7 +139,8 @@ export default function Home() {
                 <p className="text-[10px] text-gray-500 leading-snug mb-2">{project.description}</p>
                 <TechTags tech={project.tech} />
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

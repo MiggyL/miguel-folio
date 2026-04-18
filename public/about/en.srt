@@ -1,0 +1,52 @@
+1
+00:00:00,000 --> 00:00:05,000
+ Hi. I'm Miguel Lacanienta. Welcome to my portfolio.
+
+2
+00:00:05,000 --> 00:00:13,000
+ Use the buttons above to walk through my Objective, Skills, Certifications, Applied Skills, and Projects.
+
+3
+00:00:13,000 --> 00:00:18,000
+ Below are the projects themselves. Click any card to watch a narrated walkthrough.
+
+4
+00:00:18,000 --> 00:00:25,000
+ DTR System. A full-stack daily-time record POC I built solo to prove AI can cut team cost.
+
+5
+00:00:25,000 --> 00:00:33,000
+ PPE Detection. My thesis. Fine-tuned YOLO V9 flag safety violations in real-time via telegram.
+
+6
+00:00:33,000 --> 00:00:39,000
+ Sheets to form automation. A Chrome extension that fills hundreds of web forms from a spreadsheet in one click.
+
+7
+00:00:39,000 --> 00:00:46,000
+ Food Price Forecasting. A REMA time series models predicting Philippine food prices from WFP data.
+
+8
+00:00:46,000 --> 00:00:54,000
+ Local LLM app. Mistral 7B running fully on device. No API keys. No cloud.
+
+9
+00:00:54,000 --> 00:01:00,000
+ YouTube Q&A tool. A rag notebook that answers any question about a two-hour YouTube video.
+
+10
+00:01:00,000 --> 00:01:07,000
+ RPSLS Game. Rock, Paper, Scissors, Lizard, Spock. Built for hundreds of players at Digital Day-to-day Manila.
+
+11
+00:01:07,000 --> 00:01:13,000
+ HTTYD Telegram Bots. Dragon Character Bots for how to train your AI Dragon.
+
+12
+00:01:13,000 --> 00:01:20,000
+ Hackathon Videos. Narrated entries for Recruit Bolt, Spec Sync, and R/Fact Checker on DevPost.
+
+13
+00:01:20,000 --> 00:01:28,000
+ Genie Game. Voice Generation and Lip Sync for the Genie character at Inspire. That's the tour. Click anything to dive in.
+
