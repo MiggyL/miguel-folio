@@ -82,7 +82,13 @@ export default function Subtitles({ videoRef, language, section, onCueChange, sr
   // Bottom-anchored, on top of every other banner layer (avatar, section video, backdrops).
   // z-50 > all sibling overlays so it stays visible while the avatar is speaking.
   return (
-    <div className="absolute bottom-2 left-0 right-0 z-50 flex justify-center pointer-events-none px-2">
+    <div
+      className="absolute bottom-2 left-0 right-0 z-50 flex justify-center pointer-events-none px-2"
+      // translate3d forces a compositing layer so mobile Safari stacks this above
+      // the native <video> layer — without it, long/multi-line subtitles render
+      // behind the avatar on iOS despite z-50.
+      style={{ transform: 'translate3d(0,0,0)', WebkitTransform: 'translate3d(0,0,0)' }}
+    >
       <p className="text-white text-xs sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[85%] sm:max-w-[60%]"
          style={{
            textShadow:
