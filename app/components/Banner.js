@@ -1199,11 +1199,15 @@ const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
                 </div>
               )}
             </div>
-            {/* Subtitle — shared component, stays above avatar on iOS */}
-            <SubtitleText text={subtitle} />
           </div>
         );
       })()}
+
+      {/* Project showcase subtitle — hoisted out of the z-[4] overlay so its z-50
+          wins against the avatar (z-7), otherwise it sits in a child stacking context. */}
+      {showcaseProject && PROJECT_SHOWCASE[showcaseProject] && (
+        <SubtitleText text={showcaseSubtitle || PROJECT_SHOWCASE[showcaseProject].subtitles?.[showcaseImageIdx]} />
+      )}
 
       {/* Universal close button — shown for any overlay (genie, hackathon, showcase) */}
       {(genieState || hackathonState || showcaseProject) && (
