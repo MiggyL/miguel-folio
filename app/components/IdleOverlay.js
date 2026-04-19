@@ -16,7 +16,7 @@ export default function IdleOverlay({ visible, onSectionClick }) {
         <p className="text-white/80 text-sm sm:text-base font-light mt-1.5 tracking-wide drop-shadow-md">
           BS Computer Science · AI Specialization · Mapúa University &apos;25
         </p>
-        <div className={`mt-2 flex items-center gap-1.5 ${visible ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+        <div className={`mt-2 flex flex-wrap md:flex-nowrap items-center justify-center gap-1.5 px-2 ${visible ? 'pointer-events-auto' : 'pointer-events-none'}`}>
           {SECTIONS.map((section) => (
             <button
               key={section}
