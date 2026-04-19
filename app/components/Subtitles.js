@@ -83,7 +83,7 @@ export default function Subtitles({ videoRef, language, section, onCueChange, sr
   // Avatar is 35% height, bottom-right. Subtitles sit in the remaining left area,
   // vertically centered with the avatar, with matching right margin.
   return (
-    <div className="absolute bottom-2 left-0 right-0 z-[6] flex justify-center pointer-events-none">
+    <div className="absolute bottom-2 left-0 right-0 z-30 flex justify-center pointer-events-none">
       <p className="text-white text-xs sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[85%] sm:max-w-[60%]"
          style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
         {currentText}
