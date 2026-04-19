@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import { ASSET_CONFIG } from '@/lib/assets';
 import IdleOverlay from './IdleOverlay';
-import Subtitles from './Subtitles';
+import Subtitles, { SubtitleText } from './Subtitles';
 
 // Maps section → cue index → image filename(s) shown during that cue
 const SECTION_IMAGES = {
@@ -1088,14 +1088,7 @@ const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
       />
 
       {/* Genie intro subtitle (Miguel avatar in bottom-right) */}
-      {genieState === 'idle' && showcaseSubtitle && (
-        <div className="absolute bottom-10 left-0 right-0 z-[8] flex justify-center pointer-events-none">
-          <p className="text-white text-[9px] sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[60%]"
-             style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
-            {showcaseSubtitle}
-          </p>
-        </div>
-      )}
+      {genieState === 'idle' && <SubtitleText text={showcaseSubtitle} />}
 
       {/* Genie action buttons */}
       {genieState === 'idle' && (
@@ -1127,14 +1120,7 @@ const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
       />
 
       {/* Hackathon intro subtitle */}
-      {hackathonState === 'picking' && showcaseSubtitle && (
-        <div className="absolute bottom-2 left-0 right-0 z-[6] flex justify-center pointer-events-none">
-          <p className="text-white text-[9px] sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[60%]"
-             style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
-            {showcaseSubtitle}
-          </p>
-        </div>
-      )}
+      {hackathonState === 'picking' && <SubtitleText text={showcaseSubtitle} />}
 
       {/* Hackathon thumbnail picker — vertical, hidden during playback */}
       {hackathonState === 'picking' && (
@@ -1213,15 +1199,8 @@ const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
                 </div>
               )}
             </div>
-            {/* Subtitle — bottom center, matching existing subtitle style */}
-            {subtitle && (
-              <div className="absolute bottom-2 left-0 right-0 z-[6] flex justify-center pointer-events-none">
-                <p className="text-white text-[9px] sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[60%]"
-                   style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
-                  {subtitle}
-                </p>
-              </div>
-            )}
+            {/* Subtitle — shared component, stays above avatar on iOS */}
+            <SubtitleText text={subtitle} />
           </div>
         );
       })()}
