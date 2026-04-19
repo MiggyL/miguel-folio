@@ -79,13 +79,15 @@ export default function Subtitles({ videoRef, language, section, onCueChange, sr
 
   if (silent || !currentText) return null;
 
-  // Positioned to fill the space left of the avatar, with equal padding on both sides.
-  // Avatar is 35% height, bottom-right. Subtitles sit in the remaining left area,
-  // vertically centered with the avatar, with matching right margin.
+  // Bottom-anchored, on top of every other banner layer (avatar, section video, backdrops).
+  // z-50 > all sibling overlays so it stays visible while the avatar is speaking.
   return (
-    <div className="absolute bottom-2 left-0 right-0 z-30 flex justify-center pointer-events-none">
+    <div className="absolute bottom-2 left-0 right-0 z-50 flex justify-center pointer-events-none px-2">
       <p className="text-white text-xs sm:text-[10px] leading-snug text-center font-medium tracking-wide max-w-[85%] sm:max-w-[60%]"
-         style={{ textShadow: '0 0 4px rgba(0,0,0,0.9), 0 1px 3px rgba(0,0,0,0.8)' }}>
+         style={{
+           textShadow:
+             '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 0 6px rgba(0,0,0,0.9)',
+         }}>
         {currentText}
       </p>
     </div>
