@@ -744,6 +744,7 @@ const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
     aboutBtnExpiryRef.current = 0;
     onProjectHighlight?.(null);
     setOverlayVisible(true);
+    setGameOpen(false);
   }, [onProjectHighlight]);
 
   // Keep a ref to exitOverlay so earlier effects (defined above) can call it without TDZ
@@ -831,6 +832,7 @@ const Banner = forwardRef(function Banner({ onProjectHighlight }, ref) {
   }, [isPlaying]);
 
   const handleSectionClick = (section) => {
+    setGameOpen(false);
     const src = section === 'About'
       ? `${ASSET_CONFIG.basePath}/about/${language.toLowerCase()}.mp4`
       : (SECTION_VIDEO_MAP[section]
