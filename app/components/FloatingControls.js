@@ -50,7 +50,9 @@ export default function FloatingControls({
     };
   }, [open]);
 
-  // Compass needle tracks the cursor
+  // Compass needle tracks the pointer — mouse on desktop, finger on touch.
+  // On mobile this means the needle still moves while the user scrolls, since
+  // touchmove fires for the finger that's driving the scroll.
   useEffect(() => {
     let raf = 0;
     let pending = null;
@@ -65,13 +67,22 @@ export default function FloatingControls({
       const angle = Math.atan2(pending.x - cx, -(pending.y - cy)) * (180 / Math.PI);
       needle.style.transform = `rotate(${angle}deg)`;
     };
-    const onMove = (e) => {
-      pending = { x: e.clientX, y: e.clientY };
+    const queue = (x, y) => {
+      pending = { x, y };
       if (!raf) raf = requestAnimationFrame(apply);
     };
-    window.addEventListener('mousemove', onMove);
+    const onMouse = (e) => queue(e.clientX, e.clientY);
+    const onTouch = (e) => {
+      const t = e.touches && e.touches[0];
+      if (t) queue(t.clientX, t.clientY);
+    };
+    window.addEventListener('mousemove', onMouse);
+    window.addEventListener('touchstart', onTouch, { passive: true });
+    window.addEventListener('touchmove', onTouch, { passive: true });
     return () => {
-      window.removeEventListener('mousemove', onMove);
+      window.removeEventListener('mousemove', onMouse);
+      window.removeEventListener('touchstart', onTouch);
+      window.removeEventListener('touchmove', onTouch);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
