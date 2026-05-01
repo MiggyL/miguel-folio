@@ -1,0 +1,708 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Compass FAB Mockup</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
+    /* Matches app/page.js: bg-[#F0F4F8] text-[#1f1f1f] */
+    color: #1f1f1f;
+    background: #F0F4F8;
+    overflow-x: hidden;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 56px 32px 80px;
+  }
+  h1 {
+    font-weight: 600;
+    font-size: 28px;
+    margin: 0 0 8px;
+    letter-spacing: -0.02em;
+    color: #1f1f1f;
+  }
+  .lede {
+    color: #64748b;
+    margin: 0 0 48px;
+    font-size: 14px;
+    max-width: 640px;
+    line-height: 1.6;
+  }
+  h2 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 56px 0 16px;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    align-items: flex-end;
+    margin-bottom: 24px;
+  }
+  .specimen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .label {
+    font-size: 12px;
+    color: #64748b;
+    text-align: center;
+    max-width: 160px;
+    line-height: 1.4;
+  }
+  .label strong { color: #1f1f1f; }
+  .fab {
+    background: #0f172a;
+    border-radius: 9999px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    user-select: none;
+    transition: box-shadow 200ms;
+  }
+  .fab:hover {
+    box-shadow: 0 12px 32px rgba(0,0,0,0.6), 0 0 24px rgba(34,211,238,0.18);
+  }
+  .fab svg { display: block; }
+  .gear-spin { animation: spin 15s linear infinite; transform-origin: center; }
+  @keyframes spin     { from { transform: rotate(0);    } to { transform: rotate(360deg);  } }
+  @keyframes spin-rev { from { transform: rotate(0);    } to { transform: rotate(-360deg); } }
+  .needle-wrap { transform-origin: center; transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1); }
+  /* Each watch gear rotates around its OWN local center (0,0), which the
+     parent <g transform="translate(...)"> places inside the compass face. */
+  .watch-gear-1 { animation: spin     22s linear infinite; }
+  .watch-gear-2 { animation: spin-rev 14s linear infinite; }
+  .watch-gear-3 { animation: spin     9s  linear infinite; }
+  .note {
+    margin-top: 32px;
+    padding: 16px 20px;
+    border-left: 2px solid #3b82f6;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-left: 2px solid #3b82f6;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.6;
+    border-radius: 4px;
+  }
+  .note code {
+    background: #f1f5f9;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Gear-with-compass FAB — visual mockup</h1>
+  <p class="lede">
+    Move your mouse around the page. The needle in each variation rotates to point
+    at your cursor. Pick the one you like; reply with the label.
+  </p>
+
+  <h2>Photo-realistic silver <span style="color:#64748b;font-weight:normal;text-transform:none;font-size:12px">(chrome bezel, red+blue needle)</span></h2>
+  <div class="row">
+    <div class="specimen">
+      <div class="fab variant-photo" data-style="photo" style="width:48px;height:48px;background:none;box-shadow:none"></div>
+      <div class="label"><strong>actual size</strong><br>48 px FAB</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-photo" data-style="photo" style="width:96px;height:96px;background:none;box-shadow:none"></div>
+      <div class="label"><strong>2× detail</strong></div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-photo" data-style="photo" style="width:192px;height:192px;background:none;box-shadow:none"></div>
+      <div class="label"><strong>4× hero</strong><br>inspect dial detail</div>
+    </div>
+  </div>
+
+  <h2>Recommended: cosmic cyan</h2>
+  <div class="row">
+    <div class="specimen">
+      <div class="fab variant-cosmic" data-style="cosmic" style="width:48px;height:48px"></div>
+      <div class="label"><strong>actual size</strong><br>48 px FAB</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-cosmic" data-style="cosmic" style="width:96px;height:96px"></div>
+      <div class="label"><strong>2× detail</strong><br>see proportions</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-cosmic" data-style="cosmic" style="width:192px;height:192px"></div>
+      <div class="label"><strong>4× hero</strong><br>inspect every line</div>
+    </div>
+  </div>
+
+  <h2>Refined: real compass that blends <span style="color:#64748b;font-weight:normal;text-transform:none;font-size:12px">(cream dial, classic rose, red needle)</span></h2>
+  <div class="row">
+    <div class="specimen">
+      <div class="fab variant-real" data-style="real" style="width:48px;height:48px;background:none;box-shadow:none"></div>
+      <div class="label"><strong>actual size</strong><br>48 px FAB</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-real" data-style="real" style="width:96px;height:96px;background:none;box-shadow:none"></div>
+      <div class="label"><strong>2× detail</strong></div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-real" data-style="real" style="width:192px;height:192px;background:none;box-shadow:none"></div>
+      <div class="label"><strong>4× hero</strong><br>inspect dial detail</div>
+    </div>
+  </div>
+
+  <h2>Earlier draft: cosmic with watch movement <span style="color:#64748b;font-weight:normal;text-transform:none;font-size:12px">(left for comparison)</span></h2>
+  <div class="row">
+    <div class="specimen">
+      <div class="fab variant-watch" data-style="watch" style="width:48px;height:48px"></div>
+      <div class="label">actual size</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-watch" data-style="watch" style="width:96px;height:96px"></div>
+      <div class="label">2× detail</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-watch" data-style="watch" style="width:192px;height:192px"></div>
+      <div class="label">4× hero</div>
+    </div>
+  </div>
+
+  <h2>Variation A — minimalist white</h2>
+  <div class="row">
+    <div class="specimen">
+      <div class="fab variant-mono" data-style="mono" style="width:48px;height:48px"></div>
+      <div class="label">actual size</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-mono" data-style="mono" style="width:96px;height:96px"></div>
+      <div class="label">2× detail</div>
+    </div>
+  </div>
+
+  <h2>Variation B — steampunk brass <span style="color:#94a3b8;font-weight:normal;text-transform:none;font-size:12px">(off-brand, included for contrast)</span></h2>
+  <div class="row">
+    <div class="specimen">
+      <div class="fab variant-brass" data-style="brass" style="width:48px;height:48px;background:#2a1810"></div>
+      <div class="label">actual size</div>
+    </div>
+    <div class="specimen">
+      <div class="fab variant-brass" data-style="brass" style="width:96px;height:96px;background:#2a1810"></div>
+      <div class="label">2× detail</div>
+    </div>
+  </div>
+
+  <div class="note">
+    The recommended version is what I'd ship: 12-tooth thin gear ring at 50% opacity,
+    cyan/white two-tone needle, soft cyan glow halo, gear rotates ~15s per revolution.
+    Move your mouse — the needle in every FAB above tracks the cursor with a 220ms
+    eased rotation. On click in production, the needle would freeze and the menu
+    would open above the FAB.
+  </div>
+</div>
+
+<template id="tpl-cosmic">
+  <svg viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <radialGradient id="g-face" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#0b1429" />
+        <stop offset="100%" stop-color="#020617" />
+      </radialGradient>
+      <filter id="g-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <!-- Gear ring (slow spin) -->
+    <g class="gear-spin" stroke="rgba(255,255,255,0.55)" stroke-width="1.6" fill="none">
+      <!-- 12 teeth as short radial lines -->
+      <g>
+        <line x1="50" y1="3"  x2="50" y2="9" />
+        <line x1="50" y1="91" x2="50" y2="97" />
+        <line x1="3"  y1="50" x2="9"  y2="50" />
+        <line x1="91" y1="50" x2="97" y2="50" />
+        <line x1="17" y1="17" x2="22" y2="22" />
+        <line x1="78" y1="78" x2="83" y2="83" />
+        <line x1="17" y1="83" x2="22" y2="78" />
+        <line x1="78" y1="22" x2="83" y2="17" />
+        <line x1="34" y1="6"  x2="36" y2="12" />
+        <line x1="64" y1="88" x2="66" y2="94" />
+        <line x1="6"  y1="34" x2="12" y2="36" />
+        <line x1="88" y1="64" x2="94" y2="66" />
+      </g>
+      <circle cx="50" cy="50" r="38" stroke-opacity="0.6"/>
+    </g>
+    <!-- Compass face -->
+    <circle cx="50" cy="50" r="32" fill="url(#g-face)" stroke="rgba(255,255,255,0.10)" stroke-width="1"/>
+    <!-- Cardinal ticks -->
+    <g stroke="rgba(255,255,255,0.45)" stroke-width="1">
+      <line x1="50" y1="20" x2="50" y2="25" />
+      <line x1="50" y1="75" x2="50" y2="80" />
+      <line x1="20" y1="50" x2="25" y2="50" />
+      <line x1="75" y1="50" x2="80" y2="50" />
+    </g>
+    <text x="50" y="18" text-anchor="middle" fill="rgba(255,255,255,0.55)" font-size="7" font-family="ui-sans-serif">N</text>
+    <!-- Needle -->
+    <g class="needle-wrap">
+      <!-- north half (red) -->
+      <path d="M50 22 L46 50 L54 50 Z" fill="#dc2626" filter="url(#g-glow)"/>
+      <!-- south half (white) -->
+      <path d="M50 78 L46 50 L54 50 Z" fill="#f1f5f9" opacity="0.85"/>
+      <!-- pivot dot -->
+      <circle cx="50" cy="50" r="2.6" fill="#f1f5f9" stroke="#0b1429" stroke-width="0.8"/>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-photo">
+  <svg viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <!-- Outer chrome case: lit from upper-left, dark on lower-right -->
+      <radialGradient id="p-case" cx="32%" cy="28%" r="80%">
+        <stop offset="0%"  stop-color="#f1f5f9"/>
+        <stop offset="35%" stop-color="#cbd5e1"/>
+        <stop offset="70%" stop-color="#64748b"/>
+        <stop offset="100%" stop-color="#1e293b"/>
+      </radialGradient>
+      <!-- Polished bezel ring: vertical sheen -->
+      <linearGradient id="p-bezel" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#f8fafc"/>
+        <stop offset="30%" stop-color="#cbd5e1"/>
+        <stop offset="55%" stop-color="#475569"/>
+        <stop offset="80%" stop-color="#94a3b8"/>
+        <stop offset="100%" stop-color="#e2e8f0"/>
+      </linearGradient>
+      <!-- Tiny screw head -->
+      <radialGradient id="p-screw" cx="35%" cy="30%" r="80%">
+        <stop offset="0%"  stop-color="#f1f5f9"/>
+        <stop offset="60%" stop-color="#94a3b8"/>
+        <stop offset="100%" stop-color="#334155"/>
+      </radialGradient>
+      <!-- Cream dial face -->
+      <radialGradient id="p-face" cx="40%" cy="35%" r="80%">
+        <stop offset="0%"  stop-color="#fdfaf0"/>
+        <stop offset="70%" stop-color="#f4ecd2"/>
+        <stop offset="100%" stop-color="#e6dab1"/>
+      </radialGradient>
+      <!-- Pivot pin: small chrome dome -->
+      <radialGradient id="p-pin" cx="35%" cy="30%" r="70%">
+        <stop offset="0%"  stop-color="#f8fafc"/>
+        <stop offset="60%" stop-color="#94a3b8"/>
+        <stop offset="100%" stop-color="#1e293b"/>
+      </radialGradient>
+      <!-- Glass highlight on top-left of dial -->
+      <radialGradient id="p-glass" cx="30%" cy="18%" r="65%">
+        <stop offset="0%"  stop-color="rgba(255,255,255,0.6)"/>
+        <stop offset="40%" stop-color="rgba(255,255,255,0.10)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Outer chrome case -->
+    <circle cx="50" cy="50" r="48" fill="url(#p-case)"/>
+    <!-- Polished bezel ring -->
+    <circle cx="50" cy="50" r="44" fill="none" stroke="url(#p-bezel)" stroke-width="3.2"/>
+    <!-- Inner shadow seating the dial -->
+    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="0.7"/>
+    <circle cx="50" cy="50" r="42.6" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="0.4"/>
+
+    <!-- Four screws at the bezel cardinals -->
+    <g>
+      <g transform="translate(50 5)">
+        <circle r="1.7" fill="url(#p-screw)" stroke="#1e293b" stroke-width="0.3"/>
+        <line x1="-1.1" y1="-1.1" x2="1.1" y2="1.1" stroke="#0f172a" stroke-width="0.4" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(95 50)">
+        <circle r="1.7" fill="url(#p-screw)" stroke="#1e293b" stroke-width="0.3"/>
+        <line x1="-1.1" y1="-1.1" x2="1.1" y2="1.1" stroke="#0f172a" stroke-width="0.4" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(50 95)">
+        <circle r="1.7" fill="url(#p-screw)" stroke="#1e293b" stroke-width="0.3"/>
+        <line x1="-1.1" y1="-1.1" x2="1.1" y2="1.1" stroke="#0f172a" stroke-width="0.4" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(5 50)">
+        <circle r="1.7" fill="url(#p-screw)" stroke="#1e293b" stroke-width="0.3"/>
+        <line x1="-1.1" y1="-1.1" x2="1.1" y2="1.1" stroke="#0f172a" stroke-width="0.4" stroke-linecap="round"/>
+      </g>
+    </g>
+
+    <!-- Cream dial -->
+    <circle cx="50" cy="50" r="36" fill="url(#p-face)" stroke="rgba(0,0,0,0.22)" stroke-width="0.6"/>
+
+    <!-- 8-pointed compass rose: bold cardinals, lighter intercardinals -->
+    <g fill="rgba(20,20,20,0.55)">
+      <polygon points="50,16 47,50 53,50"/>
+      <polygon points="50,84 47,50 53,50"/>
+      <polygon points="84,50 50,47 50,53"/>
+      <polygon points="16,50 50,47 50,53"/>
+    </g>
+    <g fill="rgba(20,20,20,0.18)">
+      <!-- NE -->
+      <polygon points="50,50 74,26 76,28 52,52"/>
+      <!-- SE -->
+      <polygon points="50,50 74,74 72,76 48,52"/>
+      <!-- SW -->
+      <polygon points="50,50 26,74 24,72 48,48"/>
+      <!-- NW -->
+      <polygon points="50,50 26,26 28,24 52,48"/>
+    </g>
+
+    <!-- Cardinal letters: bold serif, all black -->
+    <g font-family="'Georgia', 'Times New Roman', serif" font-weight="700" text-anchor="middle" fill="#1f1f1f">
+      <text x="50" y="29" font-size="9.5">N</text>
+      <text x="71.5" y="53" font-size="8">E</text>
+      <text x="50" y="77" font-size="8">S</text>
+      <text x="28.5" y="53" font-size="8">W</text>
+    </g>
+
+    <!-- Intercardinal labels in lighter weight -->
+    <g font-family="'Georgia', 'Times New Roman', serif" font-weight="500" text-anchor="middle" fill="rgba(31,31,31,0.6)" font-size="4.4">
+      <text x="34" y="34">NW</text>
+      <text x="66" y="34">NE</text>
+      <text x="66" y="71">SE</text>
+      <text x="34" y="71">SW</text>
+    </g>
+
+    <!-- Inner ring -->
+    <circle cx="50" cy="50" r="22" fill="none" stroke="rgba(20,20,20,0.18)" stroke-width="0.5"/>
+
+    <!-- Needle: red north / blue south, slim spear -->
+    <g class="needle-wrap">
+      <!-- North half -->
+      <polygon points="50,15 47,50 53,50" fill="#dc2626"/>
+      <polygon points="50,15 50,50 53,50" fill="#7f1d1d"/>
+      <!-- South half -->
+      <polygon points="50,85 47,50 53,50" fill="#1e40af"/>
+      <polygon points="50,85 50,50 53,50" fill="#1e3a8a"/>
+      <!-- Silver pivot pin -->
+      <circle cx="50" cy="50" r="3" fill="url(#p-pin)" stroke="#0f172a" stroke-width="0.5"/>
+      <circle cx="50" cy="50" r="0.9" fill="#0f172a"/>
+    </g>
+
+    <!-- Glass highlight overlay -->
+    <circle cx="50" cy="50" r="36" fill="url(#p-glass)" pointer-events="none"/>
+  </svg>
+</template>
+
+<template id="tpl-real">
+  <svg viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <!-- Outer case: deep slate, subtle dimensional gradient -->
+      <radialGradient id="r-case" cx="35%" cy="30%" r="80%">
+        <stop offset="0%"  stop-color="#475569"/>
+        <stop offset="60%" stop-color="#1e293b"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </radialGradient>
+      <!-- Bezel: warm brass accent against the cool case -->
+      <linearGradient id="r-bezel" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%"  stop-color="#e7d28b"/>
+        <stop offset="50%" stop-color="#b48b3a"/>
+        <stop offset="100%" stop-color="#7d5f24"/>
+      </linearGradient>
+      <!-- Cream dial face -->
+      <radialGradient id="r-face" cx="40%" cy="35%" r="80%">
+        <stop offset="0%"  stop-color="#fdf8e8"/>
+        <stop offset="70%" stop-color="#f3e8c4"/>
+        <stop offset="100%" stop-color="#e8d8a3"/>
+      </radialGradient>
+      <!-- Glass highlight: faint white arc on top -->
+      <radialGradient id="r-glass" cx="35%" cy="20%" r="60%">
+        <stop offset="0%"  stop-color="rgba(255,255,255,0.55)"/>
+        <stop offset="40%" stop-color="rgba(255,255,255,0.10)"/>
+        <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+      </radialGradient>
+    </defs>
+
+    <!-- Outer case (the FAB body itself, drawn rather than relying on parent bg) -->
+    <circle cx="50" cy="50" r="48" fill="url(#r-case)"/>
+    <!-- Brass bezel ring -->
+    <circle cx="50" cy="50" r="44" fill="none" stroke="url(#r-bezel)" stroke-width="2.4"/>
+    <circle cx="50" cy="50" r="42.5" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="0.6"/>
+
+    <!-- Degree tick marks on bezel (every 30°, longer at cardinal) -->
+    <g stroke="#e7d28b" stroke-linecap="round">
+      <line x1="50" y1="6"  x2="50" y2="11" stroke-width="1.4"/>
+      <line x1="50" y1="89" x2="50" y2="94" stroke-width="1.4"/>
+      <line x1="6"  y1="50" x2="11" y2="50" stroke-width="1.4"/>
+      <line x1="89" y1="50" x2="94" y2="50" stroke-width="1.4"/>
+      <g stroke-width="0.8" opacity="0.6">
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(30 50 50)"/>
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(60 50 50)"/>
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(120 50 50)"/>
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(150 50 50)"/>
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(210 50 50)"/>
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(240 50 50)"/>
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(300 50 50)"/>
+        <line x1="50" y1="7"  x2="50" y2="9" transform="rotate(330 50 50)"/>
+      </g>
+    </g>
+
+    <!-- Cream dial -->
+    <circle cx="50" cy="50" r="36" fill="url(#r-face)" stroke="rgba(0,0,0,0.18)" stroke-width="0.6"/>
+
+    <!-- 8-pointed compass rose, faded into the dial -->
+    <g fill="rgba(45,32,8,0.18)">
+      <!-- N ↑ point -->
+      <polygon points="50,18 47.5,50 52.5,50"/>
+      <!-- S ↓ point -->
+      <polygon points="50,82 47.5,50 52.5,50"/>
+      <!-- E → point -->
+      <polygon points="82,50 50,47.5 50,52.5"/>
+      <!-- W ← point -->
+      <polygon points="18,50 50,47.5 50,52.5"/>
+    </g>
+    <g fill="rgba(45,32,8,0.10)">
+      <!-- NE / SE / SW / NW diagonal points -->
+      <polygon points="50,50 73,27 75,29 52,52" transform="rotate(0 50 50)"/>
+      <polygon points="50,50 73,73 71,75 48,52"/>
+      <polygon points="50,50 27,73 25,71 48,48"/>
+      <polygon points="50,50 27,27 29,25 52,48"/>
+    </g>
+
+    <!-- Cardinal letters: N is red, others are dark brown, classic serif feel -->
+    <g font-family="'Georgia', 'Times New Roman', serif" font-weight="700" text-anchor="middle">
+      <text x="50" y="29" fill="#b91c1c" font-size="9">N</text>
+      <text x="71" y="53" fill="#3d2c10" font-size="7.5">E</text>
+      <text x="50" y="77" fill="#3d2c10" font-size="7.5">S</text>
+      <text x="29" y="53" fill="#3d2c10" font-size="7.5">W</text>
+    </g>
+
+    <!-- Inner ring on dial -->
+    <circle cx="50" cy="50" r="22" fill="none" stroke="rgba(45,32,8,0.18)" stroke-width="0.6"/>
+
+    <!-- Needle — classic compass spear: red north / charcoal south -->
+    <g class="needle-wrap">
+      <!-- North half: red, longer/sharper -->
+      <polygon points="50,16 46.5,50 53.5,50" fill="#b91c1c"/>
+      <polygon points="50,16 50,50 53.5,50" fill="#7f1d1d"/>
+      <!-- South half: charcoal -->
+      <polygon points="50,84 46.5,50 53.5,50" fill="#334155"/>
+      <polygon points="50,84 50,50 53.5,50" fill="#1e293b"/>
+      <!-- Brass center pin -->
+      <circle cx="50" cy="50" r="3" fill="url(#r-bezel)" stroke="#3d2c10" stroke-width="0.6"/>
+      <circle cx="50" cy="50" r="1" fill="#3d2c10"/>
+    </g>
+
+    <!-- Glass highlight overlay -->
+    <circle cx="50" cy="50" r="36" fill="url(#r-glass)" pointer-events="none"/>
+  </svg>
+</template>
+
+<template id="tpl-watch">
+  <svg viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <!-- Compass face: very translucent so the gears below come through clearly.
+           Edges are slightly more opaque to suggest "glass dome" depth. -->
+      <radialGradient id="w-face" cx="50%" cy="50%" r="50%">
+        <stop offset="0%"  stop-color="rgba(11,20,41,0.05)" />
+        <stop offset="70%" stop-color="rgba(11,20,41,0.20)" />
+        <stop offset="100%" stop-color="rgba(2,6,23,0.55)" />
+      </radialGradient>
+      <filter id="w-glow" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="1.5" result="b"/>
+        <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+      </filter>
+      <!-- One reusable gear shape: solid dark-teal body, bright cyan teeth.
+           Reads clearly even at 48 px because of high contrast + thick edges. -->
+      <symbol id="gear-shape" overflow="visible">
+        <!-- Solid gear body (filled) -->
+        <circle r="11" fill="#0e3a52" stroke="#22d3ee" stroke-width="1.6"/>
+        <!-- 12 protruding teeth, also filled -->
+        <g fill="#22d3ee">
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" />
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(30)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(60)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(90)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(120)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(150)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(180)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(210)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(240)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(270)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(300)"/>
+          <rect x="-1.6" y="-14" width="3.2" height="4.2" transform="rotate(330)"/>
+        </g>
+        <!-- Spokes through the hub for that "wheel" feel -->
+        <g stroke="#67e8f9" stroke-width="1.2" stroke-linecap="round">
+          <line x1="-9" y1="0" x2="9" y2="0"/>
+          <line x1="0" y1="-9" x2="0" y2="9"/>
+        </g>
+        <!-- Center pin -->
+        <circle r="2.4" fill="#0b1429" stroke="#67e8f9" stroke-width="1"/>
+      </symbol>
+    </defs>
+
+    <!-- Outer thin gear ring (the FAB rim) -->
+    <g class="gear-spin" stroke="rgba(255,255,255,0.45)" stroke-width="1.4" fill="none">
+      <g>
+        <line x1="50" y1="3"  x2="50" y2="9" />
+        <line x1="50" y1="91" x2="50" y2="97" />
+        <line x1="3"  y1="50" x2="9"  y2="50" />
+        <line x1="91" y1="50" x2="97" y2="50" />
+        <line x1="17" y1="17" x2="22" y2="22" />
+        <line x1="78" y1="78" x2="83" y2="83" />
+        <line x1="17" y1="83" x2="22" y2="78" />
+        <line x1="78" y1="22" x2="83" y2="17" />
+      </g>
+      <circle cx="50" cy="50" r="38" stroke-opacity="0.45"/>
+    </g>
+
+    <!-- Gear MOVEMENT layer — sits behind the translucent compass face.
+         Three gears at varied scale/position/speed, like a real watch. -->
+    <g>
+      <!-- Big center gear (back, slow CW) -->
+      <g transform="translate(50 52)">
+        <g class="watch-gear-1" style="transform-box: fill-box; transform-origin: center;">
+          <use href="#gear-shape" transform="scale(1.45)"/>
+        </g>
+      </g>
+      <!-- Medium gear, upper-right, faster CCW -->
+      <g transform="translate(66 36)">
+        <g class="watch-gear-2" style="transform-box: fill-box; transform-origin: center;">
+          <use href="#gear-shape" transform="scale(0.85)"/>
+        </g>
+      </g>
+      <!-- Small gear, lower-left, fastest CW -->
+      <g transform="translate(35 66)">
+        <g class="watch-gear-3" style="transform-box: fill-box; transform-origin: center;">
+          <use href="#gear-shape" transform="scale(0.6)"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Translucent compass face — gears bleed through -->
+    <circle cx="50" cy="50" r="32" fill="url(#w-face)" stroke="rgba(255,255,255,0.18)" stroke-width="1"/>
+
+    <!-- Cardinal markers + N label -->
+    <g stroke="rgba(255,255,255,0.55)" stroke-width="1">
+      <line x1="50" y1="20" x2="50" y2="25" />
+      <line x1="50" y1="75" x2="50" y2="80" />
+      <line x1="20" y1="50" x2="25" y2="50" />
+      <line x1="75" y1="50" x2="80" y2="50" />
+    </g>
+    <text x="50" y="18" text-anchor="middle" fill="rgba(255,255,255,0.75)" font-size="7" font-family="ui-sans-serif">N</text>
+
+    <!-- Needle (top layer, always sharp) — north half red, classic compass -->
+    <g class="needle-wrap">
+      <path d="M50 22 L46 50 L54 50 Z" fill="#dc2626" filter="url(#w-glow)"/>
+      <path d="M50 78 L46 50 L54 50 Z" fill="#f1f5f9" opacity="0.85"/>
+      <circle cx="50" cy="50" r="2.6" fill="#f1f5f9" stroke="#0b1429" stroke-width="0.8"/>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-mono">
+  <svg viewBox="0 0 100 100" width="100%" height="100%">
+    <g class="gear-spin" stroke="rgba(255,255,255,0.85)" stroke-width="1.4" fill="none">
+      <g>
+        <line x1="50" y1="3"  x2="50" y2="9" />
+        <line x1="50" y1="91" x2="50" y2="97" />
+        <line x1="3"  y1="50" x2="9"  y2="50" />
+        <line x1="91" y1="50" x2="97" y2="50" />
+        <line x1="17" y1="17" x2="22" y2="22" />
+        <line x1="78" y1="78" x2="83" y2="83" />
+        <line x1="17" y1="83" x2="22" y2="78" />
+        <line x1="78" y1="22" x2="83" y2="17" />
+      </g>
+      <circle cx="50" cy="50" r="38"/>
+    </g>
+    <circle cx="50" cy="50" r="32" fill="#000" stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
+    <g stroke="rgba(255,255,255,0.45)" stroke-width="1">
+      <line x1="50" y1="20" x2="50" y2="25" />
+      <line x1="50" y1="75" x2="50" y2="80" />
+      <line x1="20" y1="50" x2="25" y2="50" />
+      <line x1="75" y1="50" x2="80" y2="50" />
+    </g>
+    <g class="needle-wrap">
+      <path d="M50 22 L46 50 L54 50 Z" fill="#f1f5f9"/>
+      <path d="M50 78 L46 50 L54 50 Z" fill="rgba(255,255,255,0.4)"/>
+      <circle cx="50" cy="50" r="2.6" fill="#f1f5f9" stroke="#000" stroke-width="0.8"/>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-brass">
+  <svg viewBox="0 0 100 100" width="100%" height="100%">
+    <defs>
+      <radialGradient id="b-face" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#f5e1a8"/>
+        <stop offset="100%" stop-color="#c89c4a"/>
+      </radialGradient>
+      <radialGradient id="b-rim" cx="50%" cy="50%" r="50%">
+        <stop offset="60%" stop-color="#d4a04a"/>
+        <stop offset="100%" stop-color="#7a5520"/>
+      </radialGradient>
+    </defs>
+    <g class="gear-spin">
+      <circle cx="50" cy="50" r="46" fill="url(#b-rim)"/>
+      <g fill="#7a5520">
+        <rect x="48" y="2"  width="4" height="6"/>
+        <rect x="48" y="92" width="4" height="6"/>
+        <rect x="2"  y="48" width="6" height="4"/>
+        <rect x="92" y="48" width="6" height="4"/>
+        <rect x="14" y="14" width="5" height="5" transform="rotate(45 16.5 16.5)"/>
+        <rect x="81" y="81" width="5" height="5" transform="rotate(45 83.5 83.5)"/>
+        <rect x="14" y="81" width="5" height="5" transform="rotate(-45 16.5 83.5)"/>
+        <rect x="81" y="14" width="5" height="5" transform="rotate(-45 83.5 16.5)"/>
+      </g>
+    </g>
+    <circle cx="50" cy="50" r="32" fill="url(#b-face)" stroke="#7a5520" stroke-width="1.5"/>
+    <g stroke="#5a3a10" stroke-width="1">
+      <line x1="50" y1="20" x2="50" y2="25" />
+      <line x1="50" y1="75" x2="50" y2="80" />
+      <line x1="20" y1="50" x2="25" y2="50" />
+      <line x1="75" y1="50" x2="80" y2="50" />
+    </g>
+    <g class="needle-wrap">
+      <path d="M50 22 L46 50 L54 50 Z" fill="#9a1f1f"/>
+      <path d="M50 78 L46 50 L54 50 Z" fill="#1f1f1f"/>
+      <circle cx="50" cy="50" r="2.6" fill="#5a3a10"/>
+    </g>
+  </svg>
+</template>
+
+<script>
+  // Inflate every .fab with the matching template
+  document.querySelectorAll('.fab').forEach((fab) => {
+    const style = fab.dataset.style;
+    const tpl = document.getElementById('tpl-' + style);
+    fab.appendChild(tpl.content.cloneNode(true));
+  });
+
+  // Cursor tracking — for every needle on the page
+  const allNeedles = () => document.querySelectorAll('.fab .needle-wrap');
+
+  function updateNeedles(mx, my) {
+    allNeedles().forEach((needle) => {
+      const fab = needle.closest('.fab');
+      const r = fab.getBoundingClientRect();
+      const cx = r.left + r.width / 2;
+      const cy = r.top + r.height / 2;
+      const dx = mx - cx;
+      const dy = my - cy;
+      // SVG needle points up by default → angle from up direction (-y)
+      const angle = Math.atan2(dx, -dy) * (180 / Math.PI);
+      needle.style.transform = `rotate(${angle}deg)`;
+    });
+  }
+
+  window.addEventListener('mousemove', (e) => updateNeedles(e.clientX, e.clientY));
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches[0]) updateNeedles(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+</script>
+</body>
+</html>
