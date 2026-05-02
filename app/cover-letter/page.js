@@ -1,8 +1,15 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 
 import FloatingControls from '../components/FloatingControls';
+
+// Chrome dino game — same lazy-loaded import the resume Banner uses.
+const ChromeDino = dynamic(
+  () => import('react-chrome-dino').then((m) => m.default || m),
+  { ssr: false }
+);
 
 /* ----- Configuration ----- */
 
@@ -152,7 +159,7 @@ const SOCIALS = [
 
 function SocialIcons() {
   return (
-    <div className="hidden sm:flex items-center gap-2">
+    <div className="flex items-center gap-2">
       {SOCIALS.map((s) => (
         <a
           key={s.name}
@@ -263,8 +270,34 @@ export default function CoverLetterPage() {
   const [copied, setCopied] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlayingIntro, setIsPlayingIntro] = useState(false);
+  const [gameOpen, setGameOpen] = useState(false);
   const audioRef = useRef(null);
   const resultRef = useRef(null);
+
+  // ESC closes the dino game (mirrors Banner's behavior).
+  useEffect(() => {
+    if (!gameOpen) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setGameOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [gameOpen]);
+
+  // react-chrome-dino can mount duplicate canvases on hot-reload. Prune them.
+  useEffect(() => {
+    if (!gameOpen) return;
+    const host = document.getElementById('cover-letter-dino-host');
+    if (!host) return;
+    const prune = () => {
+      const canvases = host.querySelectorAll('canvas.runner-canvas');
+      for (let i = 1; i < canvases.length; i++) canvases[i].remove();
+    };
+    prune();
+    const obs = new MutationObserver(prune);
+    obs.observe(host, { childList: true, subtree: true });
+    return () => obs.disconnect();
+  }, [gameOpen]);
 
   const toggleAudio = () => {
     const audio = audioRef.current;
@@ -371,16 +404,23 @@ export default function CoverLetterPage() {
 
   return (
     <div className="min-h-screen bg-[#F0F4F8] text-[#1f1f1f] overflow-x-hidden">
-      {/* Sticky header — name on the left, tabs CENTERED, socials on the right */}
+      {/* Sticky header — desktop: name left / tabs centered / socials right.
+          Mobile: name + socials on row 1, tabs on row 2 (so 3 tabs don't
+          squeeze the socials off-screen). */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-3 grid grid-cols-3 items-center gap-3">
-          <span className="text-base sm:text-lg font-medium text-gray-800 truncate">
-            Miguel Lacanienta
-          </span>
+        <div className="max-w-4xl mx-auto px-4 py-2.5 sm:py-3 flex flex-col gap-2 sm:grid sm:grid-cols-3 sm:items-center sm:gap-3">
+          <div className="flex items-center justify-between sm:justify-start gap-2 min-w-0">
+            <span className="text-base sm:text-lg font-medium text-gray-800 truncate">
+              Miguel Lacanienta
+            </span>
+            <div className="sm:hidden">
+              <SocialIcons />
+            </div>
+          </div>
           <div className="flex justify-center">
             <HeaderTabs active="cover-letter" />
           </div>
-          <div className="flex justify-end">
+          <div className="hidden sm:flex justify-end">
             <SocialIcons />
           </div>
         </div>
@@ -589,11 +629,28 @@ export default function CoverLetterPage() {
         isMuted={isMuted}
         onToggleMute={toggleAudio}
         onPlayAbout={() => setIsPlayingIntro(true)}
-        onPlayGame={() => {
-          window.open(RESUME_URL, '_blank', 'noopener,noreferrer');
-        }}
+        onPlayGame={() => setGameOpen(true)}
         cvHref={CV_URL}
       />
+
+      {gameOpen && (
+        <div className="fixed inset-0 z-[80] bg-white overflow-hidden">
+          <div className="w-full h-full flex flex-col justify-center" id="cover-letter-dino-host">
+            <ChromeDino />
+          </div>
+          <button
+            type="button"
+            onClick={() => setGameOpen(false)}
+            className="absolute top-3 right-3 z-[81] w-9 h-9 rounded-full bg-gray-900/90 text-white hover:bg-gray-800 flex items-center justify-center cursor-pointer shadow-lg"
+            aria-label="Close game"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -875,7 +932,7 @@ function CoverLetterBanner({
         style={{ aspectRatio: '1/1', zIndex: 7 }}
       />
 
-      {/* Top-left: EN|DE toggle */}
+      {/* Top-left: EN|DE toggle + Play intro button */}
       <div className="absolute top-3 left-3 z-[6] flex items-center gap-2">
         <div className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-sm border border-white/15 rounded-md opacity-50 hover:opacity-100 transition-all">
           <button
@@ -902,6 +959,16 @@ function CoverLetterBanner({
             DE
           </button>
         </div>
+        <button
+          type="button"
+          onClick={() => onPlayIntro?.()}
+          className="opacity-50 hover:opacity-100 transition-opacity cursor-pointer"
+          aria-label="Play about"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white" stroke="none">
+            <polygon points="6 3 20 12 6 21 6 3" />
+          </svg>
+        </button>
       </div>
 
       {/* Top-right: mute toggle */}
