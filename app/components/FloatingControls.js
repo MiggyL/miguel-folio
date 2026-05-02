@@ -218,6 +218,28 @@ export default function FloatingControls({
           <span>CV</span>
         </a>
 
+        {/* Cover Letter — fountain pen on paper, points to the miguel-ai generator page */}
+        <a
+          href="https://miguel-ai.vercel.app/cover-letter"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setOpen(false)}
+          className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-medium text-white/80 hover:text-white hover:bg-white/10 transition-colors cursor-pointer no-underline border-t border-white/10"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+            {/* Paper */}
+            <path d="M5 3h11l3 3v15a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#F8FAFC" stroke="#94A3B8" strokeWidth="1" />
+            <path d="M16 3v3h3" fill="#E2E8F0" />
+            {/* Text lines */}
+            <line x1="6" y1="9" x2="13" y2="9" stroke="#94A3B8" strokeWidth="0.8" strokeLinecap="round" />
+            <line x1="6" y1="11.5" x2="15" y2="11.5" stroke="#94A3B8" strokeWidth="0.8" strokeLinecap="round" />
+            <line x1="6" y1="14" x2="11" y2="14" stroke="#94A3B8" strokeWidth="0.8" strokeLinecap="round" />
+            {/* Fountain pen tip drawing on the page */}
+            <path d="M16 18l3-3 1.5 1.5-3 3-1.8 0.3 0.3-1.8z" fill="#1D4ED8" stroke="#1E3A8A" strokeWidth="0.4" strokeLinejoin="round" />
+          </svg>
+          <span>Cover Letter</span>
+        </a>
+
         {/* Play Game — Chrome dino, last in the menu */}
         <button
           onClick={() => {
