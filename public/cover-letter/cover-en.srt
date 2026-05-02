@@ -1,0 +1,43 @@
+1
+00:00:00,000 --> 00:00:01,800
+Hi. I'm Miguel.
+
+2
+00:00:01,800 --> 00:00:05,200
+If you're evaluating candidates, paste the job description,
+
+3
+00:00:05,200 --> 00:00:09,000
+pick a model — Llama, Mistral, or Gemma, whichever's up —
+
+4
+00:00:09,000 --> 00:00:12,500
+and in ten seconds you'll get a real cover letter:
+
+5
+00:00:12,500 --> 00:00:15,200
+three paragraphs, two of my most relevant projects,
+
+6
+00:00:15,200 --> 00:00:17,000
+every line tied to your JD.
+
+7
+00:00:17,000 --> 00:00:20,500
+It pulls from my actual work — computer vision, RAG pipelines,
+
+8
+00:00:20,500 --> 00:00:23,000
+Power Platform automation, cloud architecture —
+
+9
+00:00:23,000 --> 00:00:25,000
+not a template with your name swapped in.
+
+10
+00:00:25,000 --> 00:00:27,800
+If what comes back sounds like someone you'd hire,
+
+11
+00:00:27,800 --> 00:00:29,300
+click "Talk to Miguel" below.

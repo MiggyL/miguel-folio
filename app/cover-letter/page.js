@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 
 import FloatingControls from '../components/FloatingControls';
+import Subtitles from '../components/Subtitles';
 
 // Chrome dino game — same lazy-loaded import the resume Banner uses.
 const ChromeDino = dynamic(
@@ -933,6 +934,17 @@ function CoverLetterBanner({
           isPlayingIntro ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
         style={{ aspectRatio: '1/1', zIndex: 7 }}
+      />
+
+      {/* Subtitles — same component the resume Banner uses for About. Only
+          renders cues while the intro is playing. */}
+      <Subtitles
+        videoRef={introRef}
+        srtUrl={
+          isPlayingIntro
+            ? `/cover-letter/cover-${language.toLowerCase()}.srt`
+            : undefined
+        }
       />
 
       {/* Top-left: EN|DE toggle + Play intro button */}

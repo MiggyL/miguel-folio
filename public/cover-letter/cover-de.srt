@@ -1,0 +1,43 @@
+1
+00:00:00,000 --> 00:00:02,500
+Hallo. Ich bin Miguel.
+
+2
+00:00:02,500 --> 00:00:07,500
+Wenn Sie Kandidaten bewerten, fügen Sie die Stellenbeschreibung ein,
+
+3
+00:00:07,500 --> 00:00:13,000
+wählen Sie ein Modell — Llama, Mistral oder Gemma, je nachdem was verfügbar ist —
+
+4
+00:00:13,000 --> 00:00:18,500
+und in zehn Sekunden bekommen Sie ein echtes Anschreiben:
+
+5
+00:00:18,500 --> 00:00:22,500
+drei Absätze, zwei meiner relevantesten Projekte,
+
+6
+00:00:22,500 --> 00:00:26,000
+jede Zeile auf Ihre Stellenbeschreibung zugeschnitten.
+
+7
+00:00:26,000 --> 00:00:30,500
+Es greift auf meine tatsächliche Arbeit zurück — Computer Vision, RAG-Pipelines,
+
+8
+00:00:30,500 --> 00:00:34,500
+Power-Platform-Automatisierung, Cloud-Architektur —
+
+9
+00:00:34,500 --> 00:00:38,000
+keine Vorlage mit Ihrem Namen ausgetauscht.
+
+10
+00:00:38,000 --> 00:00:42,000
+Wenn das nach jemandem klingt, den Sie einstellen würden,
+
+11
+00:00:42,000 --> 00:00:44,500
+klicken Sie unten auf "Talk to Miguel".
