@@ -170,27 +170,34 @@ export default function Home() {
     <div className="min-h-screen bg-[#F0F4F8] text-[#1f1f1f] overflow-x-hidden">
       {/* Top Bar */}
       <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center bg-gray-100 rounded-full p-0.5">
-              <a
-                href="https://miguel-app.pages.dev/"
-                className="px-3 py-1 rounded-full text-xs font-medium text-gray-500 hover:text-gray-700 transition-colors"
-              >
-                Resume
-              </a>
-              <a
-                href="https://miguel-folio.pages.dev/"
-                className="px-3 py-1 rounded-full text-xs font-medium bg-white text-gray-900 shadow-sm"
-              >
-                Portfolio
-              </a>
-            </div>
-            <span className="text-lg font-medium text-gray-800">
-              Miguel Lacanienta
-            </span>
+        <div className="max-w-4xl mx-auto px-4 py-3 grid grid-cols-3 items-center gap-3">
+          <span className="text-base sm:text-lg font-medium text-gray-800 truncate">
+            Miguel Lacanienta
+          </span>
+          <nav className="flex justify-center items-center gap-1">
+            <a
+              href="https://miguel-app.pages.dev/"
+              className="px-3 py-1.5 rounded-md text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+            >
+              Resume
+            </a>
+            <a
+              href="https://miguel-folio.pages.dev/"
+              aria-current="page"
+              className="px-3 py-1.5 rounded-md text-xs font-medium bg-gray-900 text-white"
+            >
+              Portfolio
+            </a>
+            <a
+              href="https://miguel-ai.vercel.app/cover-letter"
+              className="px-3 py-1.5 rounded-md text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+            >
+              Cover Letter
+            </a>
+          </nav>
+          <div className="flex justify-end">
+            <SocialIcons />
           </div>
-          <SocialIcons />
         </div>
       </header>
 
