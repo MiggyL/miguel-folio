@@ -535,6 +535,24 @@ export default function CoverLetterPage() {
                   onChange={(m) => set('model', m)}
                 />
               </div>
+
+              {/* Pre-letter "Talk to Miguel" — visible until a letter is drafted.
+                  Once `letter` lands, the post-letter button under the
+                  letterhead takes over and this one hides. */}
+              {!letter && (
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <p className="text-[11px] text-slate-500 leading-snug">
+                    Fill the form and draft a letter — or reach out directly.
+                  </p>
+                  <a
+                    href={mailtoHref()}
+                    className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                  >
+                    Talk to Miguel
+                    <span aria-hidden>→</span>
+                  </a>
+                </div>
+              )}
             </div>
           </div>
         </CoverLetterBanner>
