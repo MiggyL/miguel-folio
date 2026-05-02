@@ -441,6 +441,8 @@ export default function CoverLetterPage() {
           isPlayingIntro={isPlayingIntro}
           onPlayIntro={() => setIsPlayingIntro(true)}
           onIntroEnded={() => setIsPlayingIntro(false)}
+          gameOpen={gameOpen}
+          onCloseGame={() => setGameOpen(false)}
         >
           <div className="absolute inset-0 z-[6] flex items-center justify-center px-4 sm:px-8 pt-12 pb-16 sm:pt-14 sm:pb-12 pointer-events-none">
             <div className="w-full max-w-md rounded-2xl bg-white/95 backdrop-blur-md shadow-xl border border-white/40 p-4 sm:p-5 pointer-events-auto">
@@ -632,25 +634,6 @@ export default function CoverLetterPage() {
         onPlayGame={() => setGameOpen(true)}
         cvHref={CV_URL}
       />
-
-      {gameOpen && (
-        <div className="fixed inset-0 z-[80] bg-white overflow-hidden">
-          <div className="w-full h-full flex flex-col justify-center" id="cover-letter-dino-host">
-            <ChromeDino />
-          </div>
-          <button
-            type="button"
-            onClick={() => setGameOpen(false)}
-            className="absolute top-3 right-3 z-[81] w-9 h-9 rounded-full bg-gray-900/90 text-white hover:bg-gray-800 flex items-center justify-center cursor-pointer shadow-lg"
-            aria-label="Close game"
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
@@ -865,6 +848,8 @@ function CoverLetterBanner({
   isPlayingIntro,
   onPlayIntro,
   onIntroEnded,
+  gameOpen,
+  onCloseGame,
   children,
 }) {
   const introRef = useRef(null);
@@ -1008,6 +993,29 @@ function CoverLetterBanner({
 
       {/* Form (or any children) overlaid in the centre */}
       {children}
+
+      {/* Dino game — confined to the banner panel via absolute inset-0 */}
+      {gameOpen && (
+        <div className="absolute inset-0 z-[70] bg-white overflow-hidden">
+          <div
+            id="cover-letter-dino-host"
+            className="w-full h-full flex flex-col justify-center"
+          >
+            <ChromeDino />
+          </div>
+          <button
+            type="button"
+            onClick={onCloseGame}
+            className="absolute top-2 right-2 z-[71] w-8 h-8 rounded-full bg-gray-900/90 text-white hover:bg-gray-800 flex items-center justify-center cursor-pointer shadow-lg"
+            aria-label="Close game"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 }
