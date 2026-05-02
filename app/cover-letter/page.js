@@ -262,6 +262,7 @@ export default function CoverLetterPage() {
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [isPlayingIntro, setIsPlayingIntro] = useState(false);
   const audioRef = useRef(null);
   const resultRef = useRef(null);
 
@@ -397,6 +398,9 @@ export default function CoverLetterPage() {
           isMuted={isMuted}
           onToggleMute={toggleAudio}
           audioRef={audioRef}
+          isPlayingIntro={isPlayingIntro}
+          onPlayIntro={() => setIsPlayingIntro(true)}
+          onIntroEnded={() => setIsPlayingIntro(false)}
         >
           <div className="absolute inset-0 z-[6] flex items-center justify-center px-4 sm:px-8 pt-12 pb-16 sm:pt-14 sm:pb-12 pointer-events-none">
             <div className="w-full max-w-md rounded-2xl bg-white/95 backdrop-blur-md shadow-xl border border-white/40 p-4 sm:p-5 pointer-events-auto">
@@ -584,9 +588,7 @@ export default function CoverLetterPage() {
         onLanguageChange={(v) => set('language', v)}
         isMuted={isMuted}
         onToggleMute={toggleAudio}
-        onPlayAbout={() => {
-          /* Click the avatar in the banner to play the about intro */
-        }}
+        onPlayAbout={() => setIsPlayingIntro(true)}
         onPlayGame={() => {
           window.open(RESUME_URL, '_blank', 'noopener,noreferrer');
         }}
@@ -803,8 +805,40 @@ function CoverLetterBanner({
   isMuted,
   onToggleMute,
   audioRef,
+  isPlayingIntro,
+  onPlayIntro,
+  onIntroEnded,
   children,
 }) {
+  const introRef = useRef(null);
+
+  // Drive the intro video. When isPlayingIntro flips true, swap src to the
+  // cover-letter intro for the current language and play unmuted; on ended
+  // / errored, notify parent so the idle resumes.
+  useEffect(() => {
+    const v = introRef.current;
+    if (!v) return;
+    if (isPlayingIntro) {
+      v.src = `/cover-letter/cover-${language.toLowerCase()}.mp4`;
+      v.loop = false;
+      v.muted = false;
+      v.currentTime = 0;
+      const onEnd = () => onIntroEnded?.();
+      const onErr = () => onIntroEnded?.();
+      v.addEventListener('ended', onEnd);
+      v.addEventListener('error', onErr);
+      v.play().catch(() => onIntroEnded?.());
+      return () => {
+        v.removeEventListener('ended', onEnd);
+        v.removeEventListener('error', onErr);
+      };
+    } else {
+      v.pause();
+      v.removeAttribute('src');
+      v.load();
+    }
+  }, [isPlayingIntro, language, onIntroEnded]);
+
   return (
     <div className="relative bg-black rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
       <audio ref={audioRef} loop src={`${V2_BASE}/ambient.mp3`} />
@@ -825,9 +859,20 @@ function CoverLetterBanner({
         loop
         muted
         playsInline
-        className="absolute bottom-0 right-0 object-cover rounded-br-2xl h-[45%] md:h-[35%]"
+        onClick={() => onPlayIntro?.()}
+        className="absolute bottom-0 right-0 object-cover rounded-br-2xl h-[45%] md:h-[35%] cursor-pointer"
         style={{ aspectRatio: '1/1', zIndex: 5 }}
         src={`${V2_BASE}/idle.mp4`}
+      />
+
+      {/* Intro video overlay — sits on top of the idle, only visible while playing */}
+      <video
+        ref={introRef}
+        playsInline
+        className={`absolute bottom-0 right-0 object-cover rounded-br-2xl h-[45%] md:h-[35%] transition-opacity duration-300 ${
+          isPlayingIntro ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        style={{ aspectRatio: '1/1', zIndex: 7 }}
       />
 
       {/* Top-left: EN|DE toggle */}
