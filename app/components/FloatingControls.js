@@ -50,40 +50,85 @@ export default function FloatingControls({
     };
   }, [open]);
 
-  // Compass needle tracks the pointer — mouse on desktop, finger on touch.
-  // On mobile this means the needle still moves while the user scrolls, since
-  // touchmove fires for the finger that's driving the scroll.
+  // Magnetic-needle physics: the needle is a damped harmonic oscillator
+  // pulled toward the pointer (mouse on desktop, finger on touch). Two
+  // sinusoidal "breeze" forcings plus a tiny noise term keep it alive even
+  // when the pointer is still — the same kind of restless wobble a real
+  // magnetic compass shows on a slightly disturbed surface.
   useEffect(() => {
+    const needle = needleRef.current;
+    if (!needle) return;
+
+    // We drive the transform every frame, so suppress the CSS transition
+    // that was set inline on the <g> for the old non-physics behavior.
+    const prevTransition = needle.style.transition;
+    needle.style.transition = 'none';
+
+    let targetAngle = 0; // deg — where the needle "wants" to point
+    let angle = 0;       // deg — current displayed angle
+    let velocity = 0;    // deg / sec — angular velocity
+    let lastT = performance.now();
     let raf = 0;
-    let pending = null;
-    const apply = () => {
-      raf = 0;
+
+    // Tuned for ~1.4 Hz natural frequency, lightly damped so the needle
+    // overshoots and oscillates the way a real magnetic needle does.
+    const STIFFNESS = 70;       // spring constant: higher = snappier tracking
+    const DAMPING = 1.5;        // friction: lower = longer oscillation tail
+    const BREEZE_1_AMP = 700;   // primary slow breeze, in deg/s²
+    const BREEZE_1_FREQ = 0.3;  // ~3.3 sec period
+    const BREEZE_2_AMP = 320;   // secondary faster wobble
+    const BREEZE_2_FREQ = 0.85; // near resonance, gives a richer flutter
+    const NOISE_AMP = 90;       // micro-vibrations
+
+    const tick = (now) => {
+      const dt = Math.min(0.05, (now - lastT) / 1000);
+      lastT = now;
+      const t = now / 1000;
+
+      // Take the shortest angular path so wraparound (e.g. 179° → -179°)
+      // doesn't make the needle spin the long way round.
+      let diff = targetAngle - angle;
+      while (diff > 180) diff -= 360;
+      while (diff < -180) diff += 360;
+
+      const breeze =
+        Math.sin(t * 2 * Math.PI * BREEZE_1_FREQ) * BREEZE_1_AMP +
+        Math.sin(t * 2 * Math.PI * BREEZE_2_FREQ + 1.7) * BREEZE_2_AMP;
+      const noise = (Math.random() - 0.5) * 2 * NOISE_AMP;
+
+      const accel = diff * STIFFNESS - velocity * DAMPING + breeze + noise;
+      velocity += accel * dt;
+      angle += velocity * dt;
+
+      needle.style.transform = `rotate(${angle.toFixed(2)}deg)`;
+      raf = requestAnimationFrame(tick);
+    };
+
+    const setTarget = (x, y) => {
       const fab = fabRef.current;
-      const needle = needleRef.current;
-      if (!fab || !needle || !pending) return;
+      if (!fab) return;
       const r = fab.getBoundingClientRect();
       const cx = r.left + r.width / 2;
       const cy = r.top + r.height / 2;
-      const angle = Math.atan2(pending.x - cx, -(pending.y - cy)) * (180 / Math.PI);
-      needle.style.transform = `rotate(${angle}deg)`;
+      targetAngle = Math.atan2(x - cx, -(y - cy)) * (180 / Math.PI);
     };
-    const queue = (x, y) => {
-      pending = { x, y };
-      if (!raf) raf = requestAnimationFrame(apply);
-    };
-    const onMouse = (e) => queue(e.clientX, e.clientY);
+    const onMouse = (e) => setTarget(e.clientX, e.clientY);
     const onTouch = (e) => {
-      const t = e.touches && e.touches[0];
-      if (t) queue(t.clientX, t.clientY);
+      const tch = e.touches && e.touches[0];
+      if (tch) setTarget(tch.clientX, tch.clientY);
     };
+
     window.addEventListener('mousemove', onMouse);
     window.addEventListener('touchstart', onTouch, { passive: true });
     window.addEventListener('touchmove', onTouch, { passive: true });
+    raf = requestAnimationFrame(tick);
+
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener('mousemove', onMouse);
       window.removeEventListener('touchstart', onTouch);
       window.removeEventListener('touchmove', onTouch);
-      if (raf) cancelAnimationFrame(raf);
+      needle.style.transition = prevTransition;
     };
   }, []);
 
