@@ -909,7 +909,10 @@ function CoverLetterBanner({
           loop
           muted
           playsInline
-          className="w-full h-full object-cover"
+          onClick={isPlayingIntro ? undefined : () => onPlayIntro?.()}
+          className={`w-full h-full object-cover ${
+            isPlayingIntro ? '' : 'cursor-pointer'
+          }`}
           src={`${V2_BASE}/bg.mp4`}
         />
       </div>
@@ -920,8 +923,10 @@ function CoverLetterBanner({
         loop
         muted
         playsInline
-        onClick={() => onPlayIntro?.()}
-        className="absolute bottom-0 right-0 object-cover rounded-br-2xl h-[45%] md:h-[35%] cursor-pointer"
+        onClick={isPlayingIntro ? undefined : () => onPlayIntro?.()}
+        className={`absolute bottom-0 right-0 object-cover rounded-br-2xl h-[45%] md:h-[35%] ${
+          isPlayingIntro ? '' : 'cursor-pointer'
+        }`}
         style={{ aspectRatio: '1/1', zIndex: 5 }}
         src={`${V2_BASE}/idle.mp4`}
       />
