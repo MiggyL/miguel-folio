@@ -189,7 +189,7 @@ export default function Home() {
               Portfolio
             </a>
             <a
-              href="https://miguel-ai.vercel.app/cover-letter"
+              href="/cover-letter"
               className="px-3 py-1.5 rounded-md text-xs font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-100 transition-colors"
             >
               Cover Letter
