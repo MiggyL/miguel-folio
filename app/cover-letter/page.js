@@ -390,7 +390,7 @@ export default function CoverLetterPage() {
     URL.revokeObjectURL(url);
   };
 
-  const mailtoHref = () => {
+  const composeHref = () => {
     const hasContext = form.company.trim() && form.role.trim();
     const subject = encodeURIComponent(
       hasContext
@@ -402,7 +402,10 @@ export default function CoverLetterPage() {
         ? `Hi Miguel,\n\nI work at ${form.company}. I tried your cover-letter generator and would love to talk about ${form.role}.\n\n— Sent from miguel-ai.vercel.app`
         : `Hi Miguel,\n\nI came across your portfolio and would like to get in touch.\n\n— Sent from miguel-ai.vercel.app`
     );
-    return `mailto:${MIGUEL_EMAIL}?subject=${subject}&body=${body}`;
+    // Gmail web compose, not mailto: avoids silent failures on phones with
+    // no default mail handler. Opens in a new tab so the cover-letter page
+    // is preserved.
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(MIGUEL_EMAIL)}&su=${subject}&body=${body}`;
   };
 
   const wordCount = letter ? letter.trim().split(/\s+/).length : 0;
@@ -549,7 +552,9 @@ export default function CoverLetterPage() {
         {!letter && (
           <div className="mt-4 flex justify-end">
             <a
-              href={mailtoHref()}
+              href={composeHref()}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-colors"
             >
               Talk to Miguel
@@ -598,7 +603,9 @@ export default function CoverLetterPage() {
                   </span>
                 )}
                 <a
-                  href={mailtoHref()}
+                  href={composeHref()}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="ml-auto inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-colors"
                 >
                   Talk to Miguel
