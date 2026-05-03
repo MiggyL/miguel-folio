@@ -391,11 +391,16 @@ export default function CoverLetterPage() {
   };
 
   const mailtoHref = () => {
+    const hasContext = form.company.trim() && form.role.trim();
     const subject = encodeURIComponent(
-      `Re: ${form.role || 'a role'} at ${form.company || 'your company'}`
+      hasContext
+        ? `Re: ${form.role} at ${form.company}`
+        : 'Reaching out via your portfolio'
     );
     const body = encodeURIComponent(
-      `Hi Miguel,\n\nI work at ${form.company}. I tried your cover-letter generator and would love to talk about ${form.role || 'a role'}.\n\n— Sent from miguel-ai.vercel.app`
+      hasContext
+        ? `Hi Miguel,\n\nI work at ${form.company}. I tried your cover-letter generator and would love to talk about ${form.role}.\n\n— Sent from miguel-ai.vercel.app`
+        : `Hi Miguel,\n\nI came across your portfolio and would like to get in touch.\n\n— Sent from miguel-ai.vercel.app`
     );
     return `mailto:${MIGUEL_EMAIL}?subject=${subject}&body=${body}`;
   };
@@ -537,26 +542,21 @@ export default function CoverLetterPage() {
                 />
               </div>
 
-              {/* Pre-letter "Talk to Miguel" — visible until a letter is drafted.
-                  Once `letter` lands, the post-letter button under the
-                  letterhead takes over and this one hides. */}
-              {!letter && (
-                <div className="mt-3 flex items-center justify-between gap-2">
-                  <p className="text-[11px] text-slate-500 leading-snug">
-                    Fill the form and draft a letter — or reach out directly.
-                  </p>
-                  <a
-                    href={mailtoHref()}
-                    className="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-                  >
-                    Talk to Miguel
-                    <span aria-hidden>→</span>
-                  </a>
-                </div>
-              )}
             </div>
           </div>
         </CoverLetterBanner>
+
+        {!letter && (
+          <div className="mt-4 flex justify-end">
+            <a
+              href={mailtoHref()}
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-colors"
+            >
+              Talk to Miguel
+              <span aria-hidden>→</span>
+            </a>
+          </div>
+        )}
 
         {error && (
           <p className="mt-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
@@ -567,22 +567,26 @@ export default function CoverLetterPage() {
         {/* Result */}
         {(letter || loading) && (
           <section ref={resultRef} className="mt-8">
-            {picked.length > 0 && (
+            {letter && (
               <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="text-xs uppercase tracking-wider text-slate-500 font-medium">
-                  Matched on
-                </span>
-                {picked.map((p) => (
-                  <span
-                    key={p}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-xs font-medium text-slate-700"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                    {p}
-                  </span>
-                ))}
+                {picked.length > 0 && (
+                  <>
+                    <span className="text-xs uppercase tracking-wider text-slate-500 font-medium">
+                      Matched on
+                    </span>
+                    {picked.map((p) => (
+                      <span
+                        key={p}
+                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-slate-200 text-xs font-medium text-slate-700"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+                        {p}
+                      </span>
+                    ))}
+                  </>
+                )}
                 {usedModel && (
-                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 text-white text-xs font-medium ml-auto">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-900 text-white text-xs font-medium">
                     <span
                       className="w-1.5 h-1.5 rounded-full"
                       style={{
@@ -593,14 +597,39 @@ export default function CoverLetterPage() {
                     {MODELS_BY_ID[usedModel]?.name || usedModel}
                   </span>
                 )}
+                <a
+                  href={mailtoHref()}
+                  className="ml-auto inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-colors"
+                >
+                  Talk to Miguel
+                  <span aria-hidden>→</span>
+                </a>
               </div>
             )}
 
             <Letterhead loading={loading && !letter}>
               {letter && (
-                <p className="whitespace-pre-wrap font-serif text-[16.5px] leading-[1.75] text-slate-800">
-                  {letter}
-                </p>
+                <>
+                  <div className="absolute top-3 right-3 flex gap-1 z-10">
+                    <IconButton
+                      onClick={copyLetter}
+                      title={copied ? 'Copied' : 'Copy letter'}
+                      ariaLabel={copied ? 'Copied' : 'Copy letter'}
+                    >
+                      {copied ? <CheckIcon /> : <CopyIcon />}
+                    </IconButton>
+                    <IconButton
+                      onClick={downloadLetter}
+                      title="Download .txt"
+                      ariaLabel="Download letter"
+                    >
+                      <DownloadIcon />
+                    </IconButton>
+                  </div>
+                  <p className="whitespace-pre-wrap font-serif text-[16.5px] leading-[1.75] text-slate-800">
+                    {letter}
+                  </p>
+                </>
               )}
             </Letterhead>
 
@@ -616,32 +645,18 @@ export default function CoverLetterPage() {
                       : '✓ standard length'}
                   </span>
                 </div>
-
-                <div className="mt-5 flex flex-wrap gap-2">
-                  <ActionButton onClick={copyLetter}>
-                    {copied ? '✓ Copied' : 'Copy'}
-                  </ActionButton>
-                  <ActionButton onClick={downloadLetter}>
-                    Download .txt
-                  </ActionButton>
-                  <a
-                    href={mailtoHref()}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-slate-900 text-white text-sm font-medium hover:bg-slate-800 transition-colors"
-                  >
-                    Talk to Miguel about this role
-                    <span aria-hidden>→</span>
-                  </a>
-                </div>
               </>
             )}
           </section>
         )}
 
-        <p className="mt-10 pt-5 border-t border-gray-200 text-xs text-gray-500 leading-relaxed">
-          Letters are generated by an LLM; review carefully before sending.
-          Some companies have policies about AI-assisted applications. Inputs
-          aren't stored.
-        </p>
+        {letter && (
+          <p className="mt-10 pt-5 border-t border-gray-200 text-xs text-gray-500 leading-relaxed">
+            This draft is generated by an LLM from the role details you paste
+            in — a quick sketch of how Miguel might frame his fit, not a
+            substitute for talking with him. Your inputs aren't stored.
+          </p>
+        )}
       </main>
 
       <FloatingControls
@@ -713,15 +728,44 @@ function Textarea({ label, hint, value, maxLength, ...rest }) {
   );
 }
 
-function ActionButton({ onClick, children }) {
+function IconButton({ onClick, title, ariaLabel, children }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-white border border-slate-200 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+      title={title}
+      aria-label={ariaLabel}
+      className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-white/70 backdrop-blur-sm border border-slate-200/80 text-slate-600 hover:bg-white hover:text-slate-900 hover:border-slate-300 transition-colors"
     >
       {children}
     </button>
+  );
+}
+
+function CopyIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function CheckIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
   );
 }
 
