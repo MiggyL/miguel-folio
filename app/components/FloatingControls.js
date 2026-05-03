@@ -135,11 +135,13 @@ export default function FloatingControls({
   return (
     <div
       ref={rootRef}
-      className="fixed bottom-4 right-4 z-[60] flex flex-col items-end gap-2"
+      className="fixed bottom-4 right-4 z-[60] flex flex-col items-end gap-2 pointer-events-none"
       onMouseEnter={hoverCapable ? () => setOpen(true) : undefined}
       onMouseLeave={hoverCapable ? () => setOpen(false) : undefined}
     >
-      {/* Single frosted-dark panel with rows inside — Next.js dev style */}
+      {/* Single frosted-dark panel with rows inside — Next.js dev style.
+          Wrapper is pointer-events-none so the empty space around the
+          FAB/panel doesn't hijack taps from page content beneath it. */}
       <div
         className={`bg-gray-900/95 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl overflow-hidden min-w-[11rem] transition-all duration-200 origin-bottom-right ${
           open ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
@@ -235,7 +237,7 @@ export default function FloatingControls({
       <button
         ref={fabRef}
         onClick={() => setOpen((o) => !o)}
-        className="w-12 h-12 rounded-full shadow-lg hover:shadow-xl cursor-pointer transition-shadow overflow-hidden p-0 bg-transparent"
+        className="w-12 h-12 rounded-full shadow-lg hover:shadow-xl cursor-pointer transition-shadow overflow-hidden p-0 bg-transparent pointer-events-auto"
         aria-label={open ? 'Close controls' : 'Open controls'}
       >
         <svg viewBox="2 2 96 96" width="100%" height="100%" aria-hidden="true">
