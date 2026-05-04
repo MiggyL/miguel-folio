@@ -56,6 +56,8 @@ const MODELS_BY_ID = Object.fromEntries(MODELS.map((m) => [m.id, m]));
 const CV_URL =
   'https://drive.google.com/file/d/1RyQRN930zeyjLZe2o_J52zWEB1kWyWQF';
 const MIGUEL_EMAIL = 'mmlacanienta@gmail.com';
+// International format, digits only — wa.me expects no '+' or spaces.
+const MIGUEL_WHATSAPP = '639499934007';
 const RESUME_URL = 'https://miguel-app.pages.dev/';
 const PORTFOLIO_URL = 'https://miguel-folio.pages.dev/';
 
@@ -392,20 +394,15 @@ export default function CoverLetterPage() {
 
   const composeHref = () => {
     const hasContext = form.company.trim() && form.role.trim();
-    const subject = encodeURIComponent(
+    const text = encodeURIComponent(
       hasContext
-        ? `Re: ${form.role} at ${form.company}`
-        : 'Reaching out via your portfolio'
+        ? `Hi Miguel — I work at ${form.company} and tried your cover-letter generator. I'd love to talk about ${form.role}.`
+        : `Hi Miguel — I came across your portfolio and would like to get in touch.`
     );
-    const body = encodeURIComponent(
-      hasContext
-        ? `Hi Miguel,\n\nI work at ${form.company}. I tried your cover-letter generator and would love to talk about ${form.role}.\n\n— Sent from miguel-ai.vercel.app`
-        : `Hi Miguel,\n\nI came across your portfolio and would like to get in touch.\n\n— Sent from miguel-ai.vercel.app`
-    );
-    // Gmail web compose, not mailto: avoids silent failures on phones with
-    // no default mail handler. Opens in a new tab so the cover-letter page
-    // is preserved.
-    return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(MIGUEL_EMAIL)}&su=${subject}&body=${body}`;
+    // WhatsApp click-to-chat. Opens the WhatsApp app on mobile and
+    // web.whatsapp.com on desktop. Avoids the mailto silent-failure mode
+    // on phones with no default mail handler.
+    return `https://wa.me/${MIGUEL_WHATSAPP}?text=${text}`;
   };
 
   const wordCount = letter ? letter.trim().split(/\s+/).length : 0;
